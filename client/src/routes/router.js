@@ -4,6 +4,7 @@ import Main from "../pages/main/Main";
 import Login from "../pages/login/Login";
 import Signup from "../pages/signUp/SignUp";
 import PageNotFound from "../pages/error/PageNotFound";
+import Schedules from "../pages/schedules/Schedules";
 
 const router = createBrowserRouter([
     {
@@ -13,6 +14,10 @@ const router = createBrowserRouter([
             {
                 path: "/",
                 element: <Main />,
+            },
+            {
+                path: "/schedules",
+                element: <Schedules />,
             },
         ],
     },
