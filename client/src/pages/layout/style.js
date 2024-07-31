@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import theme from "../../global/theme";
-import { flexCenter, flexCenterColumn } from "../../global/common";
 
 const S = {};
 
@@ -18,24 +17,24 @@ S.Wrapper = styled.div`
     display: flex;
     flex-direction: column;
     position: absolute;
-    /* position: relative */
 `;
 
 S.Header = styled.header`
-    background-color: ${theme.PALETTE.white};
+    background-color: white;
     padding: 20px;
-    display: block;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid ${theme.PALETTE.gray};
-`;
-
-S.HeaderContainer = styled.div`
     display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
+    flex-direction: column;
     justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid gray;
+
+    .header-top {
+        display: flex;
+        width: 100%;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+    }
 `;
 
 S.MainLogo = styled.div`
@@ -48,19 +47,39 @@ S.MainLogo = styled.div`
     }
 `;
 
+S.SearchBarTop = styled.div`
+    display: flex;
+    align-items: center;
+    margin-left: 20px;
+    margin-right: auto;
+
+    & input {
+        padding: 5px;
+        font-size: 0.9em;
+        border: 1px solid #ddd;
+        border-radius: 15px;
+        height: 25px;
+        width: 220px;
+    }
+`;
+
 S.UserContainer = styled.div`
     display: flex;
     align-items: center;
+
     & a {
         margin-left: 40px;
         text-decoration: none;
-        color: ${theme.PALETTE.black};
+        color: #333;
+    }
+
+    .welcome-name {
+        color: red;
     }
 `;
 
 S.Navbar = styled.nav`
     width: 100%;
-    display: block;
     margin-top: 10px;
 
     & ul {
@@ -68,7 +87,7 @@ S.Navbar = styled.nav`
         padding: 0;
         margin: 0;
         display: flex;
-        gap: 15px;
+        gap: 20px;
         justify-content: left;
     }
 
@@ -79,11 +98,15 @@ S.Navbar = styled.nav`
     & ul li a {
         text-decoration: none;
         color: #333;
+        padding: 10px 15px;
+        border-radius: 5px;
     }
 
-    & ul li:nth-child(3) {
-        background-color: #fff5cc;
-        /* background-color: ${theme.PALETTE.background.yellow}; */
+    & ul li .current-page {
+        background-color: #fdf5de;
+        color: #000;
+        padding: 5px 10px;
+        border-radius: 10px;
     }
 `;
 
