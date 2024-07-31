@@ -10,7 +10,6 @@ import { setUser, setUserStatus } from "../../modules/login";
 const Login = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-
     const currentUser = useSelector((state) => state.login.currentUser);
     const userStatus = useSelector((state) => state.login.isLogin);
 
@@ -88,7 +87,47 @@ const Login = () => {
     };
 
     // 카카오 로그인
-    const onClickKakaoSignUp = () => {};
+    const onClickKakaoSignUp = () => {
+        const kakaoAuthURL = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_KAKAO_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_KAKAO_REDIRECT_URI}&response_type=code`;
+        window.location.href = kakaoAuthURL;
+        console.log("Kakao Client ID:", process.env.REACT_APP_KAKAO_CLIENT_ID);
+        console.log("Kakao Redirect URI:", process.env.REACT_APP_KAKAO_REDIRECT_URI);
+    };
+
+    useEffect(() => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get("code");
+
+        if (code) {
+            const getKakaoToken = async () => {
+                try {
+                    // 백엔드에서 인증 코드로 JWT를 요청
+                    const response = await fetch(`http://localhost:8081/api/users/login/oauth2/code/kakao?code=${code}`, {
+                        method: "GET",
+                        credentials: "include",
+                    });
+
+                    if (response.ok) {
+                        const result = await response.json();
+                        const { data: token } = result; // JWT 토큰을 받아옵니다.
+
+                        if (token) {
+                            localStorage.setItem("token", token); // 로컬 스토리지에 JWT 토큰 저장
+                            dispatch(setUserStatus(true)); // 사용자 로그인 상태 업데이트
+                            navigate("/", { replace: true }); // 홈 페이지로 리다이렉트
+                        } else {
+                            console.error("JWT token is missing from the response");
+                        }
+                    } else {
+                        console.error("Kakao login failed");
+                    }
+                } catch (error) {
+                    console.error("Error fetching Kakao token:", error);
+                }
+            };
+            getKakaoToken();
+        }
+    }, [navigate, dispatch]);
 
     return (
         <S.Background>
@@ -126,6 +165,7 @@ const Login = () => {
                                 {...register("password", {
                                     required: true,
                                 })}
+                                type="password"
                                 variant={"white"}
                                 shape={"large"}
                                 size={"large"}
@@ -147,7 +187,7 @@ const Login = () => {
                             </DetourButton>
                         </S.LoginButtonContainer>
                         <S.KakaoLoginButtonWrapper>
-                            <DetourButton type="button" variant={"kakao"} shape={"large"} size={"large"} color={"black"} border={"default"}>
+                            <DetourButton type="button" variant={"kakao"} shape={"large"} size={"large"} color={"black"} border={"default"} onClick={onClickKakaoSignUp}>
                                 카카오 로그인
                             </DetourButton>
                         </S.KakaoLoginButtonWrapper>
