@@ -165,6 +165,7 @@ const Login = () => {
                                 {...register("password", {
                                     required: true,
                                 })}
+                                type="password"
                                 variant={"white"}
                                 shape={"large"}
                                 size={"large"}
