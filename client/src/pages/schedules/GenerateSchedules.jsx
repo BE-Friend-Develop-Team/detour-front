@@ -45,6 +45,8 @@ const GenerateSchedules = () => {
         console.log(startDate);
         console.log(endDate);
 
+        const accessToken = localStorage.getItem('token').substring(7);
+
         if (!startDate || !endDate) {
             alert("여행 기간을 선택해 주세요.");
             return;
@@ -55,10 +57,11 @@ const GenerateSchedules = () => {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
+                    "Authorization": `Bearer ${accessToken}`
                 },
                 body: JSON.stringify({
                     title: title,
-                    departualDate: startDate ? startDate.toISOString() : null,
+                    departureDate: startDate ? startDate.toISOString() : null,
                     arrivalDate: endDate ? endDate.toISOString() : null,
                 }),
             });

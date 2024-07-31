@@ -51,11 +51,15 @@ const Login = () => {
             console.log(response, "response data");
             console.log(response.ok);
 
+            console.log([...response.headers.entries()]);
+
             if (!response.ok) {
                 const result = await response.json();
                 throw new Error(result.message || "Login failed");
             }
 
+            const authHeader = response.headers.get('Authorization');
+            console.log(authHeader);
             const result = await response.json();
             console.log(result);
             console.log(result.user);
@@ -65,7 +69,7 @@ const Login = () => {
             // store에 로그인 데이터 업데이트
             dispatch(setUser(result.user));
             dispatch(setUserStatus(true));
-            localStorage.setItem("token", token);
+            localStorage.setItem("token", authHeader);
             // 메인 페이지로 이동
             navigate("/", { replace: true });
         } catch (error) {
@@ -102,7 +106,7 @@ const Login = () => {
             const getKakaoToken = async () => {
                 try {
                     // 백엔드에서 인증 코드로 JWT를 요청
-                    const response = await fetch(`http://localhost:8081/api/users/login/oauth2/code/kakao?code=${code}`, {
+                    const response = await fetch(`http://52.78.2.148:80/api/users/login/oauth2/code/kakao?code=${code}`, {
                         method: "GET",
                         credentials: "include",
                     });
