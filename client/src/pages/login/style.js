@@ -8,7 +8,7 @@ const S = {};
 S.Background = styled.div`
     width: 100vw;
     height: 100vh;
-    ${flexCenterColumn}
+    ${flexCenterColumn};
     flex: 1;
     position: relative;
 `;
@@ -27,7 +27,7 @@ S.WhiteBackground = styled.div`
 
 S.Wrapper = styled.div`
     width: 100%;
-    ${flexCenterColumn}
+    ${flexCenterColumn};
     position: absolute;
     /* position: relative */
 `;
