@@ -56,6 +56,40 @@ const Layout = () => {
         }
     }, [isLoading, profileData, navigate]);
 
+    const handleLogout = async () => {
+        try {
+            const accessToken = localStorage.getItem('token');
+
+            if (!accessToken) {
+                throw new Error("로그인 상태가 아닙니다.");
+            }
+
+            // 서버에 로그아웃 요청 보내기
+            const response = await fetch("http://localhost:8081/api/users/logout", {
+                method: "POST",
+                headers: {
+                    "Authorization": accessToken,
+                    "Content-Type": "application/json"
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error("로그아웃 요청에 실패했습니다.");
+            }
+
+            const result = await response.json();
+            console.log(result.message);
+
+            // 로컬 스토리지에서 토큰 삭제
+            localStorage.removeItem('token');
+
+            // 로그인 페이지로 리디렉션
+            navigate('/login');
+        } catch (error) {
+            console.error("로그아웃 중 오류 발생:", error);
+        }
+    };
+
     if (isLoading) {
         return <div>Loading...</div>;
     }
@@ -73,7 +107,7 @@ const Layout = () => {
                         </S.SearchBarTop>
                         <S.UserContainer>
                             <span className="welcome-name">{profileData.nickname}</span>님 환영합니다💕
-                            <a href="#">로그아웃</a>
+                            <a href="#" onClick={handleLogout}>로그아웃</a>
                         </S.UserContainer>
                     </div>
                     <S.Navbar>
