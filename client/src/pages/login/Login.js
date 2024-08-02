@@ -37,8 +37,8 @@ const Login = () => {
     const onSubmit = async (data) => {
         try {
             // fetch 날리는 주소 체크후 수정해야함
-            const response = await fetch("http://52.78.2.148:80/api/users/login", {
-                // const response = await fetch("http://localhost:8000/user/passportLogin", {
+            const response = await fetch("https://52.78.2.148:80/api/users/login", {
+                // const response = await fetch("https://localhost:8000/user/passportLogin", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -92,7 +92,7 @@ const Login = () => {
 
     // 카카오 로그인
     const onClickKakaoSignUp = () => {
-        const kakaoAuthURL = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_KAKAO_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_KAKAO_REDIRECT_URI}&response_type=code`;
+        const kakaoAuthURL = `httpss://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_KAKAO_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_KAKAO_REDIRECT_URI}&response_type=code`;
         window.location.href = kakaoAuthURL;
         console.log("Kakao Client ID:", process.env.REACT_APP_KAKAO_CLIENT_ID);
         console.log("Kakao Redirect URI:", process.env.REACT_APP_KAKAO_REDIRECT_URI);
@@ -106,7 +106,7 @@ const Login = () => {
             const getKakaoToken = async () => {
                 try {
                     // 백엔드에서 인증 코드로 JWT를 요청
-                    const response = await fetch(`http://52.78.2.148:80/api/users/login/oauth2/code/kakao?code=${code}`, {
+                    const response = await fetch(`https://52.78.2.148:80/api/users/login/oauth2/code/kakao?code=${code}`, {
                         method: "GET",
                         credentials: "include",
                     });
