@@ -32,7 +32,6 @@ const GetProfile = () => {
         setError: setFormError,
     } = useForm({ mode: "onSubmit" });
 
-    const idRegex = /^[a-z0-9]{4,10}$/;
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,15}$/;
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
@@ -254,6 +253,18 @@ const GetProfile = () => {
         }
     };
 
+    const handleViewScheduleDetail = (scheduleId) => {
+        navigate(`/schedules/${scheduleId}`);
+    };
+
+    const handleViewAllMySchedules = () => {
+        navigate("/mytrip");
+    };
+
+    const handleViewAllLikedSchedules = () => {
+        navigate("/liked-schedules");
+    };
+
     const handleDeleteAccount = () => {
         navigate("/withdraw");
     };
@@ -308,7 +319,7 @@ const GetProfile = () => {
             <S.Section className="trips-collection">
                 <S.TripsHeader>
                     <S.SectionTitle>📅 내 일정 모음</S.SectionTitle>
-                    <S.ViewAllButton>전체보기</S.ViewAllButton>
+                    <S.ViewAllButton onClick={handleViewAllMySchedules}>전체보기</S.ViewAllButton>
                 </S.TripsHeader>
                 <S.Trips>
                     {schedules.map((schedule) => (
@@ -316,7 +327,7 @@ const GetProfile = () => {
                             <S.ImageContainer>
                                 <img src={schedule.imageUrl} alt={schedule.title} />
                                 <S.TripLocation>{schedule.title}</S.TripLocation>
-                                <S.DetailButton>상세보기</S.DetailButton>
+                                <S.DetailButton onClick={() => handleViewScheduleDetail(schedule.scheduleId)}>상세보기</S.DetailButton>
                             </S.ImageContainer>
                             <S.TitleContainer>
                                 <S.TripTitle>{schedule.title}</S.TripTitle>
@@ -328,7 +339,7 @@ const GetProfile = () => {
 
             <S.Section className="favorite-trips">
                 <S.TripsHeader>
-                    <S.SectionTitle>❤️ 내가 좋아요 한 일정 모음</S.SectionTitle>
+                    <S.SectionTitle onClick={handleViewAllLikedSchedules}>❤️ 내가 좋아요 한 일정 모음</S.SectionTitle>
                     <S.ViewAllButton>전체보기</S.ViewAllButton>
                 </S.TripsHeader>
                 <S.Trips>
@@ -337,7 +348,7 @@ const GetProfile = () => {
                             <S.ImageContainer>
                                 <img src={schedule.imageUrl} alt={schedule.title} />
                                 <S.TripLocation>{schedule.title}</S.TripLocation>
-                                <S.DetailButton>상세보기</S.DetailButton>
+                                <S.DetailButton onClick={() => handleViewScheduleDetail(schedule.scheduleId)}>상세보기</S.DetailButton>
                             </S.ImageContainer>
                             <S.TitleContainer>
                                 <S.TripTitle>{schedule.title}</S.TripTitle>
