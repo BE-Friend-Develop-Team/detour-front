@@ -31,7 +31,7 @@ const GetTrip = () => {
         }
 
         try {
-            const response = await fetch("https://52.78.2.148:80/api/schedules/users?page=1", {
+            const response = await fetch("http://52.78.2.148:80/api/schedules/users?page=1", {
                 method: "GET",
                 headers: {
                     "Authorization": accessToken
@@ -78,7 +78,7 @@ const GetTrip = () => {
                 console.log("2 - " + "scheduleId : " + scheduleId + ", liked : " + liked + ", likeId : " + likeId);
                 let likeIdresult = null
                 if(likeId == null) {
-                    const response2 = await fetch(`https://52.78.2.148:80/api/schedules/likes/${scheduleId}`, {
+                    const response2 = await fetch(`http://52.78.2.148:80/api/schedules/likes/${scheduleId}`, {
                         method: "GET",
                         headers: {
                             "Authorization": accessToken
@@ -92,7 +92,7 @@ const GetTrip = () => {
                     likeIdresult = result.data.likeId
 
                     console.log("3 - " + "scheduleId : " + scheduleId + ", liked : " + liked + ", likeId : " + likeIdresult);
-                    const response = await fetch(`https://52.78.2.148:80/api/schedules/likes/${likeIdresult}`, {
+                    const response = await fetch(`http://52.78.2.148:80/api/schedules/likes/${likeIdresult}`, {
                         method: "DELETE",
                         headers: {
                             "Authorization": accessToken
@@ -104,7 +104,7 @@ const GetTrip = () => {
                 }
             } else {
                 console.log("5 - " + "scheduleId : " + scheduleId + ", liked : " + liked + ", likeId : " + likeId);
-                const response = await fetch(`https://52.78.2.148:80/api/schedules/${scheduleId}/likes`, {
+                const response = await fetch(`http://52.78.2.148:80/api/schedules/${scheduleId}/likes`, {
                     method: "POST",
                     headers: {
                         "Authorization": accessToken
@@ -135,7 +135,7 @@ const GetTrip = () => {
         let result = null;
         console.log(likeId);
         if(likeId == null) {
-            const response2 = await fetch(`https://52.78.2.148:80/api/schedules/likes/${scheduleId}`, {
+            const response2 = await fetch(`http://52.78.2.148:80/api/schedules/likes/${scheduleId}`, {
                 method: "GET",
                 headers: {
                     "Authorization": accessToken
@@ -159,8 +159,8 @@ const GetTrip = () => {
 
 
             const url = liked
-                ? `https://52.78.2.148:80/api/schedules/likes/${likeId}`
-                : `https://52.78.2.148:80/api/schedules/${scheduleId}/likes`;
+                ? `http://52.78.2.148:80/api/schedules/likes/${likeId}`
+                : `http://52.78.2.148:80/api/schedules/${scheduleId}/likes`;
             console.log(likeId);
             console.log("liked : " + liked);
             const method = liked ? 'DELETE' : 'POST';

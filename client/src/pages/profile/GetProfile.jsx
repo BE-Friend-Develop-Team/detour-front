@@ -54,7 +54,7 @@ const GetProfile = () => {
         }
 
         try {
-            const response = await fetch("https://52.78.2.148:80/api/users/profile", {
+            const response = await fetch("http://52.78.2.148:80/api/users/profile", {
                 method: "GET",
                 headers: {
                     "Authorization": accessToken
@@ -86,7 +86,7 @@ const GetProfile = () => {
         }
 
         try {
-            const response = await fetch("https://52.78.2.148:80/api/schedules/users?page=1", {
+            const response = await fetch("http://52.78.2.148:80/api/schedules/users?page=1", {
                 method: "GET",
                 headers: {
                     "Authorization": accessToken
@@ -116,7 +116,7 @@ const GetProfile = () => {
         }
 
         try {
-            const response = await fetch("https://52.78.2.148:80/api/schedules/users/likes?page=1", {
+            const response = await fetch("http://52.78.2.148:80/api/schedules/users/likes?page=1", {
                 method: "GET",
                 headers: {
                     "Authorization": accessToken
@@ -221,7 +221,7 @@ const GetProfile = () => {
         }
 
         try {
-            const response = await fetch(`https://52.78.2.148:80${endpoint}`, {
+            const response = await fetch(`http://52.78.2.148:80${endpoint}`, {
                 method: method,
                 headers: {
                     "Content-Type": "application/json",
