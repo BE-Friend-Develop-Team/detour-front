@@ -4,7 +4,7 @@ import SearchButton from '../../components/button/SearchButton';
 
 const GenerateTrip = ({ onSearch }) => {
     const [search, setSearch] = useState('');
- 
+
     const handleSearch = () => {
         onSearch(search);
     };

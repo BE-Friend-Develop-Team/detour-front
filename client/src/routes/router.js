@@ -6,9 +6,10 @@ import Signup from "../pages/signUp/SignUp";
 import PageNotFound from "../pages/error/PageNotFound";
 import Schedules from "../pages/schedules/Schedules";
 import MyTrip from "../pages/mytrip/MyTrip";
+import MyLikeTrip from "../pages/mylike/MyLikeTrip";
 import Profiles from "../pages/profile/Profile";
 import Withdraw from "../pages/withdraw/Withdraw";
-import Trip from "../pages/trip/Trip"
+import Trip from "../pages/trip/Trip";
 
 const router = createBrowserRouter([
     {
@@ -38,6 +39,10 @@ const router = createBrowserRouter([
             {
                 path: "/trip",
                 element: <Trip />,
+            },
+            {
+                path: "/mylike",
+                element: <MyLikeTrip />,
             },
         ],
     },
