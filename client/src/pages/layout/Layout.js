@@ -68,6 +68,7 @@ const Layout = () => {
 
             // 서버에 로그아웃 요청 보내기
             const response = await fetch("http://52.78.2.148:80/api/users/logout", {
+
                 method: "POST",
                 headers: {
                     "Authorization": accessToken,
