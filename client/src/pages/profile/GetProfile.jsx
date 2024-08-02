@@ -255,8 +255,7 @@ const GetProfile = () => {
     };
 
     const handleDeleteAccount = () => {
-        // 계정 삭제 로직 구현
-        navigate("/login");
+        navigate("/withdraw");
     };
 
     if (isLoading) {
