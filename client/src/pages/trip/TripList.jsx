@@ -1,4 +1,3 @@
-// src/components/TripList/TripList.js
 import React, { useEffect, useState } from 'react';
 import S from './style'; // 스타일 파일 import
 import { useNavigate } from 'react-router-dom';
@@ -10,7 +9,7 @@ const TripList = ({ search }) => {
     const [sortBy, setSortBy] = useState('최신');
     const [error, setError] = useState(null);
     const [editingImage, setEditingImage] = useState(null);
-    const [newImageUrl, setNewImageUrl] = useState('');
+    const [newImageFile, setNewImageFile] = useState(null);
     const [modalOpen, setModalOpen] = useState(false); // 모달 상태 추가
     const navigate = useNavigate();
 
@@ -126,7 +125,7 @@ const TripList = ({ search }) => {
 
     const handleImageEdit = (scheduleId) => {
         setEditingImage(scheduleId);
-        setNewImageUrl('');
+        setNewImageFile(null); // 파일 선택 상태 초기화
         setModalOpen(true); // 모달 열기
     };
 
@@ -138,31 +137,40 @@ const TripList = ({ search }) => {
             return;
         }
 
-        if (!editingImage || !newImageUrl) {
+        if (!editingImage || !newImageFile) {
             console.error('Missing image data');
             return;
         }
 
         try {
-            const response = await fetch(`http://localhost:8081/api/schedules/${editingImage}`, {
+            const formData = new FormData();
+            formData.append('file', newImageFile); // key를 'file'로 수정
+
+            const response = await fetch(`http://localhost:8081/api/schedules/${editingImage}/files`, { // URL 수정
                 method: "PATCH",
                 headers: {
-                    "Authorization": `Bearer ${accessToken}`,
-                    "Content-Type": "application/json"
+                    "Authorization": `Bearer ${accessToken}`
                 },
-                body: JSON.stringify({ mainImage: newImageUrl }),
+                body: formData,
             });
 
             if (!response.ok) {
-                const errorData = await response.text();
-                throw new Error(errorData || 'Network response was not ok');
+                const errorData = await response.json();
+                const errorMessage = errorData.message || 'Network response was not ok';
+
+                if (errorMessage.includes('해당 일정에 존재하지 않는 일행입니다')) {
+                    alert('해당 게시글 작성자만 수정할 수 있습니다.');
+                } else {
+                    alert('이미지 업로드 중 오류가 발생했습니다.');
+                }
+                return;
             }
 
-            // Update trips with new image URL
+            const responseData = await response.json();
             setTrips(prevTrips =>
                 prevTrips.map(trip =>
                     trip.scheduleId === editingImage
-                        ? { ...trip, mainImage: newImageUrl }
+                        ? { ...trip, imageUrl: responseData.data.imageUrl }
                         : trip
                 )
             );
@@ -197,7 +205,7 @@ const TripList = ({ search }) => {
                                 <h4>{trip.departureDate}</h4>
                             </S.TripHeader>
                             <S.TripImageWrapper>
-                                <S.TripImage src={trip.mainImage} alt={trip.title} />
+                                <S.TripImage src={trip.imageUrl} alt={trip.title} />
                                 <S.EditImageButton onClick={() => handleImageEdit(trip.scheduleId)}>
                                     <img src="/images/modal/edit-icon.png" alt="Edit" />
                                 </S.EditImageButton>
@@ -231,11 +239,10 @@ const TripList = ({ search }) => {
             {/* 모달 컴포넌트 추가 */}
             <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
                 <h2></h2>
-                <ModalInput
-                    type="text"
-                    placeholder="새 이미지 URL"
-                    value={newImageUrl}
-                    onChange={(e) => setNewImageUrl(e.target.value)}
+                <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => setNewImageFile(e.target.files[0])}
                 />
                 <ModalButton onClick={submitNewImage}>제출</ModalButton>
             </Modal>
