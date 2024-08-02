@@ -12,15 +12,14 @@ const Layout = () => {
 
     const [profileData, setProfileData] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [accessToken, setAccessToken] = useState(null);
 
     useEffect(() => {
         const fetchUser = async () => {
-            try {
-                const accessToken = localStorage.getItem('token').substring(7);
-            } catch (error) {
+            setAccessToken(localStorage.getItem('token').substring(7));
+            if(accessToken == null) {
                 console.error("엑세스 토큰을 찾을 수 없습니다.");
                 navigate('/login');
-                return;
             }
 
             try {
