@@ -29,7 +29,6 @@ const TripList = ({ search }) => {
                     "Content-Type": "application/json"
                 },
             });
-            console.log(search);
 
             if (!response.ok) {
                 const result = await response.json();
@@ -43,6 +42,10 @@ const TripList = ({ search }) => {
             console.error('Error fetching trips:', error);
             setError(error.message);
         }
+    };
+
+    const handleSortChange = (event) => {
+        setSortBy(event.target.value);
     };
 
     const toggleLike = async (scheduleId, liked, likeId) => {
@@ -116,46 +119,55 @@ const TripList = ({ search }) => {
     };
 
     return (
-        <S.TripSection>
-            {trips ? (
-                trips.map((trip) => (
-                    <S.TripCard key={trip.scheduleId || `trip-${Math.random()}`}>
-                        <S.TripHeader>
-                            <h3>{trip.title}</h3>
-                            <h5>
-                                <S.Nickname>{trip.nickname}</S.Nickname>
-                                <S.ScheduleText>님의 일정</S.ScheduleText>
-                            </h5>
-                            <h4>{trip.departureDate}</h4>
-                        </S.TripHeader>
-                        <S.TripImageWrapper>
-                            <S.TripImage src={trip.mainImage} alt={trip.title} />
-                        </S.TripImageWrapper>
-                        <S.TripFooter>
-                            <S.LikeButton
-                                onClick={() => {
-                                    if (trip.scheduleId) {
-                                        toggleLike(trip.scheduleId, trip.liked, trip.likeId);
-                                    } else {
-                                        console.error('Trip ID is missing');
-                                    }
-                                }}
-                            >
-                                <img
-                                    src={trip.liked ? '/images/trip/heart.png' : '/images/trip/noheart.png'}
-                                    alt="Like"
-                                    style={{ width: '24px', height: '24px' }}
-                                />
-                                <S.LikeCount>{trip.likeCount || 0}</S.LikeCount>
-                            </S.LikeButton>
-                            <S.ViewCount>조회수 {trip.hits || 0}</S.ViewCount>
-                        </S.TripFooter>
-                    </S.TripCard>
-                ))
-            ) : (
-                <p>Loading...</p>
-            )}
-        </S.TripSection>
+        <div>
+            <S.SortSection>
+                <label htmlFor="sortBy"></label>
+                <select id="sortBy" value={sortBy} onChange={handleSortChange}>
+                    <option value="최신">최신순</option>
+                    <option value="좋아요">좋아요순</option>
+                </select>
+            </S.SortSection>
+            <S.TripSection>
+                {trips ? (
+                    trips.map((trip) => (
+                        <S.TripCard key={trip.scheduleId || `trip-${Math.random()}`}>
+                            <S.TripHeader>
+                                <h3>{trip.title}</h3>
+                                <h5>
+                                    <S.Nickname>{trip.nickname}</S.Nickname>
+                                    <S.ScheduleText>님의 일정</S.ScheduleText>
+                                </h5>
+                                <h4>{trip.departureDate}</h4>
+                            </S.TripHeader>
+                            <S.TripImageWrapper>
+                                <S.TripImage src={trip.mainImage} alt={trip.title} />
+                            </S.TripImageWrapper>
+                            <S.TripFooter>
+                                <S.LikeButton
+                                    onClick={() => {
+                                        if (trip.scheduleId) {
+                                            toggleLike(trip.scheduleId, trip.liked, trip.likeId);
+                                        } else {
+                                            console.error('Trip ID is missing');
+                                        }
+                                    }}
+                                >
+                                    <img
+                                        src={trip.liked ? '/images/trip/heart.png' : '/images/trip/noheart.png'}
+                                        alt="Like"
+                                        style={{ width: '24px', height: '24px' }}
+                                    />
+                                    <S.LikeCount>{trip.likeCount || 0}</S.LikeCount>
+                                </S.LikeButton>
+                                <S.ViewCount>조회수 {trip.hits || 0}</S.ViewCount>
+                            </S.TripFooter>
+                        </S.TripCard>
+                    ))
+                ) : (
+                    <p>Loading...</p>
+                )}
+            </S.TripSection>
+        </div>
     );
 };
 

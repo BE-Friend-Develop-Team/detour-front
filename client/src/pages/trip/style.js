@@ -53,11 +53,37 @@ S.SearchBar = styled.div`
 `;
 
 S.TripSection = styled.section`
+    position: relative; /* 필수 추가 */
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 40px; /* 공백을 늘림 */
     justify-content: center;
     padding: 20px;
+`;
+
+S.SortSection = styled.div`
+    position: relative; /* 상대 위치 지정 */
+    right: -430px; /* 우측으로 이동 */
+    width: auto;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+    z-index: 10; /* 카드보다 위로 위치 시킴 */
+
+    label {
+        margin-right: 10px;
+        font-size: 1rem;
+    }
+
+    select {
+        padding: 8px;
+        font-size: 1rem;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        background-color: #fff;
+        color: #333;
+        cursor: pointer;
+    }
 `;
 
 S.TripCard = styled.div`
