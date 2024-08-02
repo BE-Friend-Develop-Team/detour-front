@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import S from './style';
 import GetTrip from './GetTrip';
-import MyTripList from './MyTripList';
+import MyTripList from './MyLikeTripList';
 
-const Trip = () => {
+const MyLikeTrip = () => {
     const [search, setSearch] = useState('');
 
     const handleSearch = (keyword) => {
@@ -18,4 +18,4 @@ const Trip = () => {
     );
 };
 
-export default Trip;
+export default MyLikeTrip;

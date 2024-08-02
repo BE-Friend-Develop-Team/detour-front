@@ -25,6 +25,10 @@ const GetProfile = () => {
     const [schedules, setSchedules] = useState([]);
     const [likedSchedules, setLikedSchedules] = useState([]);
 
+    const handleViewAllClick = (path) => {
+        navigate(path);
+    };
+
     const {
         register,
         handleSubmit,
@@ -276,7 +280,7 @@ const GetProfile = () => {
                 <S.SectionTitle>😊 나의 프로필</S.SectionTitle>
                 <S.ProfileInfo>
                     <S.ProfilePicture>
-                        <img src={process.env.PUBLIC_URL + "/images/profile/Profile.jpeg"} alt="Profile" />
+                        <img src={process.env.PUBLIC_URL + "/images/profile/profile.jpeg"} alt="Profile" />
                     </S.ProfilePicture>
                     <S.ProfileDetails>
                         <S.ProfileDetailItem>
@@ -308,7 +312,7 @@ const GetProfile = () => {
             <S.Section className="trips-collection">
                 <S.TripsHeader>
                     <S.SectionTitle>📅 내 일정 모음</S.SectionTitle>
-                    <S.ViewAllButton>전체보기</S.ViewAllButton>
+                    <S.ViewAllButton onClick={() => handleViewAllClick("/mytrip")}>전체보기</S.ViewAllButton>
                 </S.TripsHeader>
                 <S.Trips>
                     {schedules.map((schedule) => (
@@ -329,7 +333,7 @@ const GetProfile = () => {
             <S.Section className="favorite-trips">
                 <S.TripsHeader>
                     <S.SectionTitle>❤️ 내가 좋아요 한 일정 모음</S.SectionTitle>
-                    <S.ViewAllButton>전체보기</S.ViewAllButton>
+                    <S.ViewAllButton onClick={() => handleViewAllClick("/mylike")}>전체보기</S.ViewAllButton>
                 </S.TripsHeader>
                 <S.Trips>
                     {likedSchedules.map((schedule) => (
