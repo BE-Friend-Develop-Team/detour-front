@@ -325,7 +325,7 @@ const GetProfile = () => {
                     {schedules.map((schedule) => (
                         <S.TripArticle key={schedule.scheduleId}>
                             <S.ImageContainer>
-                                <img src={schedule.mainImage} alt={schedule.title} />
+                                <img src={schedule.imageUrl} alt={schedule.title} />
                                 <S.TripLocation>{schedule.title}</S.TripLocation>
                                 <S.DetailButton onClick={() => handleViewScheduleDetail(schedule.scheduleId)}>상세보기</S.DetailButton>
                             </S.ImageContainer>
@@ -346,7 +346,7 @@ const GetProfile = () => {
                     {likedSchedules.map((schedule) => (
                         <S.TripArticle key={schedule.scheduleId}>
                             <S.ImageContainer>
-                                <img src={schedule.mainImage} alt={schedule.title} />
+                                <img src={schedule.imageUrl} alt={schedule.title} />
                                 <S.TripLocation>{schedule.title}</S.TripLocation>
                                 <S.DetailButton onClick={() => handleViewScheduleDetail(schedule.scheduleId)}>상세보기</S.DetailButton>
                             </S.ImageContainer>

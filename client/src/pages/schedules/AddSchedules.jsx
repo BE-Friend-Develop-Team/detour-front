@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import S from "./style";
 import SearchLocation from "./SearchLocation";
 import DetourButton from "../../components/button/DetourButton";
+import { useNavigate } from "react-router-dom";
+import {DateTime} from "luxon";
 
 // kakao maps api를 심어서 가져오면 window 전역객체에 들어간다
 // 함수형 컴포넌트에서는 이걸 바로 인식하지 못하는경우가 있어서
@@ -9,6 +11,7 @@ import DetourButton from "../../components/button/DetourButton";
 const { kakao } = window;
 
 const AddSchedules = ({ title, startDate, endDate }) => {
+    const navigate = useNavigate();
     // 각 카드의 위치 배열을 저장하기 위한 상태
     const [cardLocations, setCardLocations] = useState({});
     const [searchVisible, setSearchVisible] = useState(false);
@@ -16,6 +19,8 @@ const AddSchedules = ({ title, startDate, endDate }) => {
     const [currentCardIndex, setCurrentCardIndex] = useState(null);
     const [map, setMap] = useState(null); // 지도 객체 상태
     const [markers, setMarkers] = useState([]); // 마커 객체 상태
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         const container = document.getElementById("map");
@@ -105,36 +110,114 @@ const AddSchedules = ({ title, startDate, endDate }) => {
     };
 
     const onClickGenerateSchedules = async () => {
-        const scheduleData = {
-            title: `${title}`,
-            startDate: startDate.toISOString(),
-            endDate: endDate.toISOString(),
-            itinerary: Object.keys(cardLocations).map((key) => ({
-                day: parseInt(key) + 1, // 1일부터 시작
-                locations: cardLocations[key],
-            })),
-        };
-
-        console.log(scheduleData);
+        const accessToken = localStorage.getItem('token');
+        if (!accessToken) {
+            setError("로그인이 필요합니다.");
+            navigate('/login');
+            return;
+        }
 
         try {
-            const response = await fetch("https://localhost:8081/api/schedules", {
+            setIsLoading(true);
+            // 1. 일정 생성
+            const scheduleResponse = await fetch('http://localhost:8081/api/schedules', {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json",
+                    "Authorization": accessToken,
+                    "Content-Type": "application/json"
                 },
-                body: JSON.stringify(scheduleData),
+                body: JSON.stringify({
+                    title: title,
+                    departureDate: startDate,
+                    arrivalDate: endDate
+                }),
             });
-
-            if (!response.ok) {
-                throw new Error("Network response was not ok");
+            if (!scheduleResponse.ok) {
+                throw new Error('일정 생성에 실패했습니다.');
             }
+            const scheduleData = await scheduleResponse.json();
+            const scheduleId = scheduleData.data.scheduleId;
 
-            const result = await response.json();
-            console.log("Schedule saved successfully:", result);
-            // navigate 일정 상세 페이지
-        } catch (error) {
-            console.error("Error saving schedule:", error);
+            // 2. 데일리플랜 생성
+            const totalDays = (endDate-startDate)/86400000 +1;
+            console.log(totalDays)
+
+            for (let day = 1; day <= totalDays; day++) {
+                console.log("log2:")
+                const dailyPlanResponse = await fetch(`http://localhost:8081/api/schedules/${scheduleId}/dailyplans`, {
+                    method: "POST",
+                    headers: {
+                        "Authorization": accessToken,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ day: day }),
+                });
+                console.log("log3:")
+
+                if (!dailyPlanResponse.ok) {
+                    throw new Error(`${day}일차 데일리플랜 생성에 실패했습니다.`);
+                }
+                const dailyPlanData = await dailyPlanResponse.json();
+                console.log("dailyPlanData:", dailyPlanData)
+
+                const dailyPlanId = dailyPlanData.data.dailyPlanId;
+                console.log("dailyPlanId:", dailyPlanId)
+
+                console.log("log4:")
+
+                // 3. 각 장소에 대해 place 생성 및 marker 생성
+                for (const location of cardLocations[day - 1] || []) {
+                    console.log("location:", location)
+                    console.log("log5:")
+
+                    // Place 생성
+                    const placeResponse = await fetch("http://localhost:8081/api/place", {
+                        method: "POST",
+                        headers: {
+                            "Authorization": accessToken,
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            name: location.place_name,
+                            address: location.address_name,
+                            telNumber: location.phone,
+                        }),
+                    });
+                    console.log("log6:")
+
+                    if (!placeResponse.ok) {
+                        throw new Error("Place 생성에 실패했습니다.");
+                    }
+                    const placeData = await placeResponse.json();
+                    const placeId = placeData.data.placeId;
+                    console.log("log7:")
+
+                    // Marker 생성
+                    const markerResponse = await fetch(`http://localhost:8081/api/daily-plans/${dailyPlanId}/place/${placeId}/markers`, {
+                        method: "POST",
+                        headers: {
+                            "Authorization": accessToken,
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            latitude: location.y,
+                            longitude: location.x,
+                        }),
+                    });
+                    if (!markerResponse.ok) {
+                        throw new Error("Marker 생성에 실패했습니다.");
+                    }
+                }
+                console.log("day:", day)
+                console.log("totalDays:", totalDays)
+
+            }
+            alert('여행 일정이 성공적으로 생성되었습니다!');
+            // navigate(`/schedules/${scheduleId}`); // 생성된 일정의 상세 페이지로 이동
+        } catch (err) {
+            setError('일정 생성 중 오류가 발생했습니다: ' + err.message);
+        } finally {
+            setIsLoading(false);
         }
     };
 
