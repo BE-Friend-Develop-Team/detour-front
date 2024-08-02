@@ -194,4 +194,74 @@ S.ViewCount = styled.span`
     color: gray;
 `;
 
+S.EditImageButton = styled.button`
+    position: absolute;
+    top: 45px;
+    right: 10px;
+    background-color: #fff;
+    border: 2px solid #ffffff;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+
+    &:hover {
+        background-color: #e5e5e5;
+        border-color: #e3e3e3;
+        color: #fff;
+    }
+
+    img {
+        width: 20px;
+        height: 20px;
+    }
+`;
+export const ModalInput = styled.input`
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 1em;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease;
+    outline: none;
+
+    &:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
+    }
+
+    &::placeholder {
+        color: #888;
+    }
+`;
+
+export const ModalButton = styled.button`
+    background-color: #f3d35f;
+    color: #fff;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+    &:hover {
+        background-color: #e7c758;
+    }
+
+    &:focus {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(240, 246, 194, 0.5);
+    }
+`;
+
+
+
 export default S;

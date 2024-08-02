@@ -1,11 +1,17 @@
+// src/components/TripList/TripList.js
 import React, { useEffect, useState } from 'react';
-import S from './style';
+import S from './style'; // 스타일 파일 import
 import { useNavigate } from 'react-router-dom';
+import Modal from '../../components/modal/Modal'; // 상대 경로
+import { ModalInput, ModalButton } from './style'; // 새로운 스타일 import
 
 const TripList = ({ search }) => {
     const [trips, setTrips] = useState(null);
     const [sortBy, setSortBy] = useState('최신');
     const [error, setError] = useState(null);
+    const [editingImage, setEditingImage] = useState(null);
+    const [newImageUrl, setNewImageUrl] = useState('');
+    const [modalOpen, setModalOpen] = useState(false); // 모달 상태 추가
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -118,6 +124,57 @@ const TripList = ({ search }) => {
         }
     };
 
+    const handleImageEdit = (scheduleId) => {
+        setEditingImage(scheduleId);
+        setNewImageUrl('');
+        setModalOpen(true); // 모달 열기
+    };
+
+    const submitNewImage = async () => {
+        const accessToken = localStorage.getItem('token')?.substring(7);
+        if (!accessToken) {
+            setError("로그인이 필요합니다.");
+            navigate('/login');
+            return;
+        }
+
+        if (!editingImage || !newImageUrl) {
+            console.error('Missing image data');
+            return;
+        }
+
+        try {
+            const response = await fetch(`http://localhost:8081/api/schedules/${editingImage}`, {
+                method: "PATCH",
+                headers: {
+                    "Authorization": `Bearer ${accessToken}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ mainImage: newImageUrl }),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.text();
+                throw new Error(errorData || 'Network response was not ok');
+            }
+
+            // Update trips with new image URL
+            setTrips(prevTrips =>
+                prevTrips.map(trip =>
+                    trip.scheduleId === editingImage
+                        ? { ...trip, mainImage: newImageUrl }
+                        : trip
+                )
+            );
+
+            setEditingImage(null);
+            setModalOpen(false); // 모달 닫기
+        } catch (error) {
+            console.error('Error updating image:', error);
+            alert(error.message);
+        }
+    };
+
     return (
         <div>
             <S.SortSection>
@@ -141,6 +198,9 @@ const TripList = ({ search }) => {
                             </S.TripHeader>
                             <S.TripImageWrapper>
                                 <S.TripImage src={trip.mainImage} alt={trip.title} />
+                                <S.EditImageButton onClick={() => handleImageEdit(trip.scheduleId)}>
+                                    <img src="/images/modal/edit-icon.png" alt="Edit" />
+                                </S.EditImageButton>
                             </S.TripImageWrapper>
                             <S.TripFooter>
                                 <S.LikeButton
@@ -167,6 +227,18 @@ const TripList = ({ search }) => {
                     <p>Loading...</p>
                 )}
             </S.TripSection>
+
+            {/* 모달 컴포넌트 추가 */}
+            <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
+                <h2></h2>
+                <ModalInput
+                    type="text"
+                    placeholder="새 이미지 URL"
+                    value={newImageUrl}
+                    onChange={(e) => setNewImageUrl(e.target.value)}
+                />
+                <ModalButton onClick={submitNewImage}>제출</ModalButton>
+            </Modal>
         </div>
     );
 };
