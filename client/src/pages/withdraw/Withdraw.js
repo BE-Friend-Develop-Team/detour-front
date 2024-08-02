@@ -43,14 +43,13 @@ const Withdraw = () => {
 
             const result = await response.json();
             setProfileData(result.data);
-            console.log('nickname:', result.data.nickname);
+            setNickname(result.data.nickname);
         } catch (error) {
             console.error("Error fetching nickname:", error);
             setError(error.message);
         } finally {
             setIsLoading(false);
         }
-        console.log('nickname:', profileData.nickname);
     };
 
     const handlePasswordChange = (e) => {
@@ -77,9 +76,6 @@ const Withdraw = () => {
         }
 
         try {
-            console.log('Access Token:', accessToken);
-            console.log('Password:', password);
-            // Mock API call for account deletion
             const response = await fetch("http://localhost:8081/api/users/withdrawal", {
                 method: "PATCH",
                 headers: {
@@ -100,7 +96,7 @@ const Withdraw = () => {
             navigate("/login"); // 계정 탈퇴 시 로그인 페이지로 이동
         } catch (error) {
             console.error("Error during account deletion:", error);
-            alert("계정 탈퇴에 실패했습니다.");
+            alert("계정 탈퇴에 실패했습니다. 비밀번호를 확인해주세요");
         }
     };
 
@@ -124,7 +120,7 @@ const Withdraw = () => {
                         <S.NicknameContainerSpan>
                             <S.NicknameLabel>계정 닉네임</S.NicknameLabel>
                             <S.VirticalLine>ㅣ</S.VirticalLine>
-                            <S.NicknameValue>{nickname}</S.NicknameValue> {/*{profileData.nickname}*/}
+                            <S.NicknameValue>{nickname}</S.NicknameValue>
                         </S.NicknameContainerSpan>
                     </S.NicknameContainer>
                 </S.ProfileDetails>
