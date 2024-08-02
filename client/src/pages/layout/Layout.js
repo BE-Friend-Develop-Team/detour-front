@@ -15,9 +15,9 @@ const Layout = () => {
 
     useEffect(() => {
         const fetchUser = async () => {
-            const accessToken = localStorage.getItem('token').substring(7);
-
-            if (!accessToken) {
+            try {
+                const accessToken = localStorage.getItem('token').substring(7);
+            } catch (error) {
                 console.error("엑세스 토큰을 찾을 수 없습니다.");
                 navigate('/login');
                 return;
