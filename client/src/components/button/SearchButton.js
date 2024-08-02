@@ -2,20 +2,24 @@ import React from 'react';
 import styled from 'styled-components';
 
 const Button = styled.button`
-    height: 2.4rem;
-    background: transparent;
+    background: none;
     border: none;
     cursor: pointer;
-    border-radius: 20px;
+    display: flex;
+    align-items: center;
 
     img {
-        width: 100%;
-        height: 100%;
+        width: 24px;
+        height: 24px;
     }
 `;
 
-const SearchButton = ({ children }) => {
-    return <Button>{children}</Button>;
+const SearchButton = ({ onClick }) => {
+    return (
+        <Button onClick={onClick}>
+            <img src="/images/trip/search.png" alt="Search" />
+        </Button>
+    );
 };
 
 export default SearchButton;

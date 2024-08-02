@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import S from './style';
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 
-const TripList = () => {
+const TripList = ({ search }) => {
     const [trips, setTrips] = useState(null);
     const [sortBy, setSortBy] = useState('최신');
     const [error, setError] = useState(null);
@@ -10,9 +10,10 @@ const TripList = () => {
 
     useEffect(() => {
         fetchTrips();
-    }, [sortBy]);
+    }, [sortBy, search]);
 
     const fetchTrips = async () => {
+        console.log('fetchTrips called with search:', search);
         const accessToken = localStorage.getItem('token')?.substring(7);
         if (!accessToken) {
             setError("로그인이 필요합니다.");
@@ -21,12 +22,14 @@ const TripList = () => {
         }
 
         try {
-            const response = await fetch(`http://localhost:8081/api/schedules?page=1&sortBy=${sortBy}`, {
+            const response = await fetch(`http://localhost:8081/api/schedules?page=1&sortBy=${sortBy}&search=${encodeURIComponent(search)}`, {
                 method: "GET",
                 headers: {
-                    "Authorization": `Bearer ${accessToken}`
+                    "Authorization": `Bearer ${accessToken}`,
+                    "Content-Type": "application/json"
                 },
             });
+            console.log(search);
 
             if (!response.ok) {
                 const result = await response.json();
