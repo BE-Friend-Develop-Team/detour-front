@@ -5,6 +5,7 @@ import Login from "../pages/login/Login";
 import Signup from "../pages/signUp/SignUp";
 import PageNotFound from "../pages/error/PageNotFound";
 import Schedules from "../pages/schedules/Schedules";
+import MyTrip from "../pages/mytrip/MyTrip";
 import Profiles from "../pages/profile/Profile";
 import Withdraw from "../pages/withdraw/Withdraw";
 
@@ -20,6 +21,10 @@ const router = createBrowserRouter([
             {
                 path: "/schedules",
                 element: <Schedules />,
+            },
+            {
+                path: "/mytrip",
+                element: <MyTrip />,
             },
             {
                 path: "/withdraw",
