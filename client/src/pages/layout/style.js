@@ -74,7 +74,7 @@ S.UserContainer = styled.div`
     }
 
     .welcome-name {
-        color: red;
+        color: blue;
     }
 `;
 
