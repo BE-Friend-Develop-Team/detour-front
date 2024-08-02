@@ -120,7 +120,7 @@ const AddSchedules = ({ title, startDate, endDate }) => {
         try {
             setIsLoading(true);
             // 1. 일정 생성
-            const scheduleResponse = await fetch('http://localhost:8081/api/schedules', {
+            const scheduleResponse = await fetch('http://52.78.2.148:80/api/schedules', {
                 method: "POST",
                 headers: {
                     "Authorization": accessToken,
@@ -144,7 +144,7 @@ const AddSchedules = ({ title, startDate, endDate }) => {
 
             for (let day = 1; day <= totalDays; day++) {
                 console.log("log2:")
-                const dailyPlanResponse = await fetch(`http://localhost:8081/api/schedules/${scheduleId}/dailyplans`, {
+                const dailyPlanResponse = await fetch(`http://52.78.2.148:80/api/schedules/${scheduleId}/dailyplans`, {
                     method: "POST",
                     headers: {
                         "Authorization": accessToken,
@@ -171,7 +171,7 @@ const AddSchedules = ({ title, startDate, endDate }) => {
                     console.log("log5:")
 
                     // Place 생성
-                    const placeResponse = await fetch("http://localhost:8081/api/place", {
+                    const placeResponse = await fetch("http://52.78.2.148:80/api/place", {
                         method: "POST",
                         headers: {
                             "Authorization": accessToken,
@@ -193,7 +193,7 @@ const AddSchedules = ({ title, startDate, endDate }) => {
                     console.log("log7:")
 
                     // Marker 생성
-                    const markerResponse = await fetch(`http://localhost:8081/api/daily-plans/${dailyPlanId}/place/${placeId}/markers`, {
+                    const markerResponse = await fetch(`http://52.78.2.148:80/api/daily-plans/${dailyPlanId}/place/${placeId}/markers`, {
                         method: "POST",
                         headers: {
                             "Authorization": accessToken,

@@ -29,7 +29,7 @@ const Withdraw = () => {
         }
 
         try {
-            const response = await fetch("http://localhost:8081/api/users/profile", {
+            const response = await fetch("http://52.78.2.148:80/api/users/profile", {
                 method: "GET",
                 headers: {
                     "Authorization": accessToken
@@ -76,7 +76,7 @@ const Withdraw = () => {
         }
 
         try {
-            const response = await fetch("http://localhost:8081/api/users/withdrawal", {
+            const response = await fetch("http://52.78.2.148:80/api/users/withdrawal", {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",
