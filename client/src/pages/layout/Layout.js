@@ -12,19 +12,21 @@ const Layout = () => {
 
     const [profileData, setProfileData] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [accessToken, setAccessToken] = useState(null);
 
     useEffect(() => {
         const fetchUser = async () => {
-            const accessToken = localStorage.getItem('token').substring(7);
-
-            if (!accessToken) {
-                console.error("엑세스 토큰을 찾을 수 없습니다.");
-                navigate('/login');
-                return;
+            try {
+                setAccessToken(localStorage.getItem('token').substring(7));
+            } catch (error) {
+                if(accessToken == null) {
+                    console.error("엑세스 토큰을 찾을 수 없습니다.");
+                    navigate('/login');
+                }
             }
 
             try {
-                const response = await fetch("http://localhost:8081/api/users/profile", {
+                const response = await fetch("http://52.78.2.148:80/api/users/profile", {
                     method: "GET",
                     headers: {
                         "Authorization": `Bearer ${accessToken}`
@@ -65,7 +67,8 @@ const Layout = () => {
             }
 
             // 서버에 로그아웃 요청 보내기
-            const response = await fetch("http://localhost:8081/api/users/logout", {
+            const response = await fetch("http://52.78.2.148:80/api/users/logout", {
+
                 method: "POST",
                 headers: {
                     "Authorization": accessToken,
