@@ -16,10 +16,13 @@ const Layout = () => {
 
     useEffect(() => {
         const fetchUser = async () => {
-            setAccessToken(localStorage.getItem('token').substring(7));
-            if(accessToken == null) {
-                console.error("엑세스 토큰을 찾을 수 없습니다.");
-                navigate('/login');
+            try {
+                setAccessToken(localStorage.getItem('token').substring(7));
+            } catch (error) {
+                if(accessToken == null) {
+                    console.error("엑세스 토큰을 찾을 수 없습니다.");
+                    navigate('/login');
+                }
             }
 
             try {
