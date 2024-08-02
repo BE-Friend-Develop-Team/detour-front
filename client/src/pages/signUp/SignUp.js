@@ -45,7 +45,7 @@ const SignUp = () => {
             payload.adminToken = data.adminToken;
         }
 
-        const response = await fetch("http://52.78.2.148:80/api/users/signup", {
+        const response = await fetch("https://52.78.2.148:80/api/users/signup", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -88,7 +88,7 @@ const SignUp = () => {
 
         setIsSendingEmail(true);
         try {
-            const response = await fetch("http://52.78.2.148:80/api/users/send-certification", {
+            const response = await fetch("https://52.78.2.148:80/api/users/send-certification", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -133,7 +133,7 @@ const SignUp = () => {
         try {
             const userEmail = watch("email");
 
-            const response = await fetch(`http://52.78.2.148:80/api/users/verify?certificationNumber=${authCode}&email=${userEmail}`, {
+            const response = await fetch(`https://52.78.2.148:80/api/users/verify?certificationNumber=${authCode}&email=${userEmail}`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
