@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import S from "./style";
 import DetourButton from "../../components/button/DetourButton";
 import Calendar from "./Calendar";
+import AddSchedules from "./AddSchedules";
 
 const GenerateSchedules = () => {
     const [isInput, setIsInput] = useState(false);
@@ -10,6 +11,7 @@ const GenerateSchedules = () => {
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
     const [calendarVisible, setCalendarVisible] = useState(false);
+    const [addSchedulesVisible, setAddSchedulesVisible] = useState(false);
 
     const onClickChangeAsInput = () => {
         setIsInput(true);
@@ -40,44 +42,18 @@ const GenerateSchedules = () => {
 
     // 여행일정 만들기 버튼 눌렀을 때, 저장된 title, startDate, endDate를 title, departualDate, arrivalDate로 fetch요청
 
-    const onClickGenerateSchedules = async () => {
+    const onClickShowAddSchedules = () => {
+        // const onClickGenerateSchedules = async () => {
         console.log(title);
         console.log(startDate);
         console.log(endDate);
-
-        const accessToken = localStorage.getItem('token').substring(7);
 
         if (!startDate || !endDate) {
             alert("여행 기간을 선택해 주세요.");
             return;
         }
 
-        try {
-            const response = await fetch("http://localhost:8081/api/schedules", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${accessToken}`
-                },
-                body: JSON.stringify({
-                    title: title,
-                    departureDate: startDate ? startDate.toISOString() : null,
-                    arrivalDate: endDate ? endDate.toISOString() : null,
-                }),
-            });
-
-            console.log(response, "response data");
-            console.log(response.ok);
-
-            if (!response.ok) {
-                const result = await response.json();
-                throw new Error(result.message || "Request failed");
-            }
-
-            return response.json();
-        } catch (error) {
-            console.error("Error:", error);
-        }
+        setAddSchedulesVisible(true);
     };
 
     const handleSelectDates = (start, end) => {
@@ -112,12 +88,15 @@ const GenerateSchedules = () => {
                     <span>{period}</span>
                     <S.CalendarButton onClick={onClickSetCalendar}>🗓️</S.CalendarButton>
                 </S.SelectPeriodContainer>
-                <S.GenerateSchedulesButtonWrapper>
-                    {/* 여행일정 만들기 클릭시 fetch요청 */}
-                    <DetourButton variant={"main"} shape={"small"} size={"medium"} color={"black"} border={"default"} onClick={onClickGenerateSchedules}>
-                        여행일정 만들기
-                    </DetourButton>
-                </S.GenerateSchedulesButtonWrapper>
+                {addSchedulesVisible ? (
+                    <AddSchedules title={title} startDate={startDate} endDate={endDate} />
+                ) : (
+                    <S.GenerateSchedulesButtonWrapper>
+                        <DetourButton variant={"main"} shape={"small"} size={"medium"} color={"black"} border={"default"} onClick={onClickShowAddSchedules}>
+                            여행 일정 만들기
+                        </DetourButton>
+                    </S.GenerateSchedulesButtonWrapper>
+                )}
                 {calendarVisible && <Calendar onClose={() => closeCalendar()} onSelectDates={handleSelectDates} />}
             </S.GenerateSchedulesContainer>
         </S.GenerateSchedulesWrapper>
