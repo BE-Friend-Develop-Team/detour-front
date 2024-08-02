@@ -8,6 +8,7 @@ import Schedules from "../pages/schedules/Schedules";
 import MyTrip from "../pages/mytrip/MyTrip";
 import Profiles from "../pages/profile/Profile";
 import Withdraw from "../pages/withdraw/Withdraw";
+import Trip from "../pages/trip/Trip"
 
 const router = createBrowserRouter([
     {
@@ -33,6 +34,10 @@ const router = createBrowserRouter([
             {
                 path: "/profile",
                 element: <Profiles />,
+            },
+            {
+                path: "/trip",
+                element: <Trip />,
             },
         ],
     },

@@ -79,7 +79,7 @@ const Layout = () => {
                     <S.Navbar>
                         <ul>
                             <li><a href="/schedules">💌일정 생성</a></li>
-                            <li><a href="#" className="current-page">🛫여행 기록</a></li>
+                            <li><a href="/trip" className="current-page">🛫여행 기록</a></li>
                             <li><a href="/profile">🚩마이페이지</a></li>
                             <li><a href="#">📃리뷰 남기기</a></li>
                         </ul>
