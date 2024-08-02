@@ -226,7 +226,7 @@ const GetTrip = () => {
                     {scheduleData.map(schedule => (
                         <S.ScheduleItem key={schedule.scheduleId}>
                             <S.ScheduleTitle>{schedule.title}</S.ScheduleTitle>
-                            <S.ScheduleImage><img src={schedule.mainImage}/></S.ScheduleImage>
+                            <S.ScheduleImage><img src={schedule.imageUrl}/></S.ScheduleImage>
                             <S.ScheduleDetails>좋아요 {schedule.likeCount}</S.ScheduleDetails>
                             <S.LikeButton
                                 onClick={() => {
