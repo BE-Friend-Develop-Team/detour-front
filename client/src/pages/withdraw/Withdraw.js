@@ -1,14 +1,57 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import S from "./style";
 import {useNavigate} from "react-router-dom";
+import layout from "../layout/Layout";
 
 const Withdraw = () => {
 
     const [password, setPassword] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [nickname, setNickname] = useState(""); // Nickname state
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
     const navigate = useNavigate();
+    const [profileData, setProfileData] = useState(null);
 
-    const [profileData] = useState(null);
+    useEffect(() => {
+        fetchNickname();
+    }, []);
+
+    const fetchNickname = async () => {
+        setIsLoading(true);
+        setError(null);
+
+        const accessToken = localStorage.getItem('token');
+        if (!accessToken) {
+            setError("로그인이 필요합니다.");
+            navigate('/login');
+            return;
+        }
+
+        try {
+            const response = await fetch("http://localhost:8081/api/users/profile", {
+                method: "GET",
+                headers: {
+                    "Authorization": accessToken
+                },
+            });
+
+            if (!response.ok) {
+                const result = await response.json();
+                throw new Error(result.message || "닉네임 정보를 가져오는데 실패했습니다.");
+            }
+
+            const result = await response.json();
+            setProfileData(result.data);
+            console.log('nickname:', result.data.nickname);
+        } catch (error) {
+            console.error("Error fetching nickname:", error);
+            setError(error.message);
+        } finally {
+            setIsLoading(false);
+        }
+        console.log('nickname:', profileData.nickname);
+    };
 
     const handlePasswordChange = (e) => {
         setPassword(e.target.value);
@@ -81,7 +124,7 @@ const Withdraw = () => {
                         <S.NicknameContainerSpan>
                             <S.NicknameLabel>계정 닉네임</S.NicknameLabel>
                             <S.VirticalLine>ㅣ</S.VirticalLine>
-                            <S.NicknameValue>이창봉</S.NicknameValue> {/*{profileData.nickname*/}
+                            <S.NicknameValue>{nickname}</S.NicknameValue> {/*{profileData.nickname}*/}
                         </S.NicknameContainerSpan>
                     </S.NicknameContainer>
                 </S.ProfileDetails>
