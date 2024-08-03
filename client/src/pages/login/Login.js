@@ -62,16 +62,17 @@ const Login = () => {
             console.log(authHeader);
             const result = await response.json();
             console.log(result);
-            console.log(result.user);
+            console.log(result.data.nickname);
 
             let { token, user } = result;
             console.log(token, user);
             // store에 로그인 데이터 업데이트
-            dispatch(setUser(result.user));
+            dispatch(setUser(result.data));
             dispatch(setUserStatus(true));
+            localStorage.setItem('nickname', result.data.nickname);
             localStorage.setItem("token", authHeader);
             // 메인 페이지로 이동
-            navigate("/", { replace: true });
+            //navigate("/", { replace: true });
         } catch (error) {
             console.error("Error during login:", error);
             setError("id", {

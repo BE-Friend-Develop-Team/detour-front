@@ -3,60 +3,24 @@ import S from "./style";
 import { useNavigate } from "react-router-dom";
 import { Outlet } from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
+import {setUser, setUserStatus} from "../../modules/login";
 
 const Layout = () => {
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const currentUser = useSelector((state) => state.login.currentUser);
 
-    const [profileData, setProfileData] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
-    const [accessToken, setAccessToken] = useState(null);
+    const [storedUser, setStoredUser] = useState(null);
 
     useEffect(() => {
-        const fetchUser = async () => {
-            try {
-                setAccessToken(localStorage.getItem('token').substring(7));
-            } catch (error) {
-                if(accessToken == null) {
-                    console.error("엑세스 토큰을 찾을 수 없습니다.");
-                    navigate('/login');
-                }
-            }
-
-            try {
-                const response = await fetch("http://52.78.2.148:80/api/users/profile", {
-                    method: "GET",
-                    headers: {
-                        "Authorization": `Bearer ${accessToken}`
-                    },
-                });
-
-                if (!response.ok) {
-                    throw new Error("Failed to fetch profile");
-                }
-
-                const result = await response.json();
-                console.log("result: ", result);
-
-                setProfileData(result.data);
-            } catch (error) {
-                console.error("Error fetching profile:", error);
-                navigate('/login');
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
-        fetchUser();
-    }, [navigate]);
-
-    useEffect(() => {
-        if (!isLoading && profileData == null) {
-            navigate('/login');
+        const storedUser = localStorage.getItem('nickname')
+        setStoredUser(storedUser);
+        if(storedUser == null) {
+            navigate("/login")
         }
-    }, [isLoading, profileData, navigate]);
+        setIsLoading(false);
+    }, []);
 
     const handleLogout = async () => {
         try {
@@ -109,7 +73,7 @@ const Layout = () => {
                             <input type="text" placeholder="🔍 내용을 입력해 주세요" />
                         </S.SearchBarTop>
                         <S.UserContainer>
-                            <span className="welcome-name">{profileData.nickname}</span>님 환영합니다💕
+                            <span className="welcome-name">{storedUser}</span>님 환영합니다💕
                             <a href="#" onClick={handleLogout}>로그아웃</a>
                         </S.UserContainer>
                     </div>
