@@ -213,6 +213,42 @@ S.AddScheduleCards = styled.div`
     border-radius: 4px;
 `;
 
+S.MapWrapper = styled.div`
+    display: flex;
+    justify-content: center;
+
+    & #map {
+        width: 50rem;
+        height: 30rem;
+    }
+`;
+
+S.DividerLine = styled.div`
+    margin-top: 4rem;
+    width: 100%;
+    height: 0.125rem;
+    background-color: ${theme.PALETTE.gray[300]};
+`;
+
+S.CardsWrapper = styled.div`
+    overflow-x: scroll;
+`;
+
+S.CardsContainer = styled.div`
+    display: inline-flex;
+`;
+
+S.Cards = styled.div`
+    width: 20rem;
+    height: 30rem;
+    display: flex;
+    flex-direction: column;
+    margin: 4rem 2rem;
+    padding: 1rem;
+    background-color: ${theme.PALETTE.background.main};
+    border-radius: 4px;
+`;
+
 S.CardTitleContainer = styled.div`
     display: flex;
     align-items: baseline;
@@ -364,4 +400,218 @@ S.SearchLocation = styled.div`
     border-radius: 4px;
 `;
 
+// SchedulesDetail
+S.PlanWrapper = styled.div``;
+
+S.SchedulesInformationContainer = styled.div`
+    display: flex;
+`;
+
+S.SchedulesTitlePeriodContainer = styled.div`
+    width: 65%;
+`;
+S.SchedulesLikesTravelersContainer = styled.div`
+    width: 35%;
+`;
+
+S.SchedulesLike = styled.div`
+    display: flex;
+    font-size: 1rem;
+    font-weight: 500;
+    margin-top: 1rem;
+`;
+
+S.SchedulesTravlers = styled.div`
+    display: flex;
+    font-size: 1rem;
+    font-weight: 500;
+    margin-top: 2rem;
+`;
+
+// SchedulesDetail
+S.SchedulesWrapper = styled.div`
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 40rem;
+    padding: 20px;
+    margin-top: 40px;
+`;
+
+S.SchedulesContainer = styled.div`
+    width: 80%;
+`;
+
+S.SchedulesTitle = styled.div`
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 2rem;
+    cursor: pointer;
+`;
+
+S.SchedulesInput = styled.input`
+    margin: 0;
+    padding: 0;
+    height: 2rem;
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 2rem;
+    background-color: transparent;
+`;
+
+S.SchedulesPeriodContainer = styled.div`
+    display: flex;
+    font-size: 1.5rem;
+    font-weight: 500;
+    margin-bottom: 2rem;
+`;
+
+// SchedulesDetail
+S.PlanWrapper = styled.div``;
+
+S.SchedulesInformationContainer = styled.div`
+    display: flex;
+`;
+
+S.SchedulesTitlePeriodContainer = styled.div`
+    width: 65%;
+`;
+
+S.SchedulesLikesTravelersContainer = styled.div`
+    width: 35%;
+`;
+
+S.SchedulesLike = styled.div`
+    display: flex;
+    font-size: 1rem;
+    font-weight: 500;
+    margin-top: 1rem;
+`;
+
+S.SchedulesTravlers = styled.div`
+    display: flex;
+    font-size: 1rem;
+    font-weight: 500;
+    margin-top: 2rem;
+`;
+
+S.GenerateSchedulesCompleteButtonWrapper = styled.div`
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+    & button {
+        margin-top: 2rem;
+        font-size: 1rem;
+    }
+`;
+
+// AddSchedule
+S.CardsWrapper = styled.div`
+    overflow-x: scroll;
+`;
+
+S.CardsContainer = styled.div`
+    display: inline-flex;
+`;
+
+S.Cards = styled.div`
+    width: 20rem;
+    height: 30rem;
+    display: flex;
+    flex-direction: column;
+    margin: 4rem 2rem;
+    padding: 1rem;
+    background-color: ${theme.PALETTE.background.main};
+    border-radius: 4px;
+`;
+
+S.CardTitleContainer = styled.div`
+    display: flex;
+    align-items: baseline;
+`;
+
+S.CardTitle = styled.h2`
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-right: 1rem;
+`;
+
+S.CardDate = styled.h5`
+    font-size: 0.8rem;
+    font-weight: 500;
+`;
+
+S.LocationContainerWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    height: 25.5rem;
+    overflow-y: auto;
+`;
+
+S.LocationContainer = styled.div`
+    display: inline-flex;
+    flex-direction: column;
+`;
+
+S.LocationWrapper = styled.div`
+    display: flex;
+    width: 100%;
+    height: 4rem;
+    align-items: center;
+`;
+
+S.Location = styled.div`
+    display: flex;
+    align-items: center;
+    width: 16.5rem;
+`;
+
+S.LocationIndex = styled.div`
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: ${theme.PALETTE.secondary.sub};
+    border-radius: 50%;
+`;
+
+S.LocationName = styled.div`
+    margin-left: 0.5rem;
+    height: 2rem;
+    line-height: 2rem;
+`;
+
+S.LocationDelete = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    line-height: 1.5rem;
+    margin-bottom: 0.375rem;
+    width: 2rem;
+    height: 2rem;
+    background-color: transparent;
+    cursor: pointer;
+`;
+
+S.PlusButtonWrapper = styled.div`
+    width: 100%;
+    display: flex;
+    justify-content: center;
+`;
+
+S.PlusButton = styled.div`
+    width: 2rem;
+    height: 2rem;
+    margin: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: ${theme.PALETTE.secondary.sub};
+    height: 2rem;
+    border-radius: 50%;
+    cursor: pointer;
+`;
 export default S;

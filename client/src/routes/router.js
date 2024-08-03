@@ -10,6 +10,7 @@ import MyLikeTrip from "../pages/mylike/MyLikeTrip";
 import Profiles from "../pages/profile/Profile";
 import Withdraw from "../pages/withdraw/Withdraw";
 import Trip from "../pages/trip/Trip";
+import SchedulesDetail from "../pages/schedules/SchedulesDetail";
 
 const router = createBrowserRouter([
     {
@@ -43,6 +44,10 @@ const router = createBrowserRouter([
             {
                 path: "/mylike",
                 element: <MyLikeTrip />,
+            },
+            {
+                path: "/schedules/:scheduleId",
+                element: <SchedulesDetail />,
             },
         ],
     },
