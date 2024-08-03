@@ -120,7 +120,7 @@ const AddSchedules = ({ title, startDate, endDate }) => {
         try {
             setIsLoading(true);
             // 1. 일정 생성
-            const scheduleResponse = await fetch('https://52.78.2.148:80/api/schedules', {
+            const scheduleResponse = await fetch('http://52.78.2.148:80/api/schedules', {
                 method: "POST",
                 headers: {
                     "Authorization": accessToken,
