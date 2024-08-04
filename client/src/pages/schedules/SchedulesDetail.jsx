@@ -17,7 +17,7 @@ const SchedulesDetail = () => {
     const fetchScheduleDetail = async () => {
         const accessToken = localStorage.getItem("token").substring(7);
         try {
-            const response = await fetch(`http://localhost:8081/api/schedules/${scheduleId}/details`, {
+            const response = await fetch(`https://detourofficial.shop/api/schedules/${scheduleId}/details`, {
                 method: "GET",
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
@@ -109,7 +109,7 @@ const SchedulesDetail = () => {
     const handleInviteSubmit = async () => {
         const accessToken = localStorage.getItem("token").substring(7);
         try {
-            const response = await fetch(`http://localhost:8081/api/schedules/${scheduleId}/invitation`, {
+            const response = await fetch(`https://detourofficial.shop/api/schedules/${scheduleId}/invitation`, {
                 method: "POST",
                 headers: {
                     Authorization: `Bearer ${accessToken}`,

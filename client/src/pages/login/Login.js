@@ -37,7 +37,7 @@ const Login = () => {
     const onSubmit = async (data) => {
         try {
             // fetch 날리는 주소 체크후 수정해야함
-            const response = await fetch("http://localhost:8081/api/users/login", {
+            const response = await fetch("https://detourofficial.shop/api/users/login", {
                 // const response = await fetch("http://localhost:8000/user/passportLogin", {
                 method: "POST",
                 headers: {
@@ -107,7 +107,7 @@ const Login = () => {
             const getKakaoToken = async () => {
                 try {
                     // 백엔드에서 인증 코드로 JWT를 요청
-                    const response = await fetch(`http://localhost:8081/api/users/login/oauth2/code/kakao?code=${code}`, {
+                    const response = await fetch(`https://detourofficial.shop/api/users/login/oauth2/code/kakao?code=${code}`, {
                         method: "GET",
                         credentials: "include",
                     });

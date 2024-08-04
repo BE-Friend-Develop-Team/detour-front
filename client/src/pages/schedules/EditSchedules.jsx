@@ -48,7 +48,7 @@ const EditSchedules = () => {
         }
 
         try {
-            const response = await fetch(`http://localhost:8081/api/schedules/${scheduleId}/details`, {
+            const response = await fetch(`https://detourofficial.shop/api/schedules/${scheduleId}/details`, {
                 method: "GET",
                 headers: {
                     "Authorization": `Bearer ${accessToken}`,
@@ -233,7 +233,7 @@ const EditSchedules = () => {
         try {
             setIsLoading(true);
 
-            const response = await fetch(`http://localhost:8081/api/schedules/${scheduleId}`, {
+            const response = await fetch(`https://detourofficial.shop/api/schedules/${scheduleId}`, {
                 method: "PATCH",
                 headers: {
                     "Authorization": `Bearer ${accessToken}`,
@@ -264,7 +264,7 @@ const EditSchedules = () => {
         try {
             setIsLoading(true);
 
-            const response = await fetch(`http://localhost:8081/api/schedules/${scheduleId}`, {
+            const response = await fetch(`https://detourofficial.shop/api/schedules/${scheduleId}`, {
                 method: "PATCH",
                 headers: {
                     "Authorization": `Bearer ${accessToken}`,
@@ -313,7 +313,7 @@ const EditSchedules = () => {
                         uniqueLocations.add(locationKey);
 
                         if (!placeMap.has(location.place_name)) {
-                            placeRequests.push(fetch("http://localhost:8081/api/place", {
+                            placeRequests.push(fetch("https://detourofficial.shop/api/place", {
                                 method: "POST",
                                 headers: {
                                     "Authorization": `Bearer ${accessToken}`,
@@ -345,7 +345,7 @@ const EditSchedules = () => {
                     const placeId = placeMap.get(location.place_name);
 
                     if (placeId) {
-                        const response = await fetch(`http://localhost:8081/api/daily-plans/${dailyPlan.dailyPlanId}/place/${placeId}/markers`, {
+                        const response = await fetch(`https://detourofficial.shop/api/daily-plans/${dailyPlan.dailyPlanId}/place/${placeId}/markers`, {
                             method: "POST",
                             headers: {
                                 "Authorization": `Bearer ${accessToken}`,

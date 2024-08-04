@@ -50,7 +50,7 @@ const LocationModal = ({ isOpen, onClose, location, onSave }) => {
                 }
 
                 try {
-                    const uploadResponse = await fetch(`http://localhost:8081/api/daily-plans/markers/${location.markerId}/files`, {
+                    const uploadResponse = await fetch(`https://detourofficial.shop/api/daily-plans/markers/${location.markerId}/files`, {
                         method: "POST",
                         headers: {
                             "Authorization": `Bearer ${accessToken}`,
@@ -78,7 +78,7 @@ const LocationModal = ({ isOpen, onClose, location, onSave }) => {
                 images: [...(location.images || []), ...uploadedImageUrls],
             };
 
-            const response = await fetch(`http://localhost:8081/api/daily-plans/markers/${location.markerId}/content`, {
+            const response = await fetch(`https://detourofficial.shop/api/daily-plans/markers/${location.markerId}/content`, {
                 method: "POST",
                 headers: {
                     "Authorization": `Bearer ${accessToken}`,
