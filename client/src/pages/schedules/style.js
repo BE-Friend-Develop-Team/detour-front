@@ -180,10 +180,13 @@ S.AddSchedulesWrapper = styled.div``;
 S.MapWrapper = styled.div`
     display: flex;
     justify-content: center;
+    position: relative;
+    z-index: 1;
 
     & #map {
         width: 50rem;
         height: 30rem;
+        
     }
 `;
 
@@ -211,23 +214,6 @@ S.AddScheduleCards = styled.div`
     padding: 1rem;
     background-color: ${theme.PALETTE.background.main};
     border-radius: 4px;
-`;
-
-S.MapWrapper = styled.div`
-    display: flex;
-    justify-content: center;
-
-    & #map {
-        width: 50rem;
-        height: 30rem;
-    }
-`;
-
-S.DividerLine = styled.div`
-    margin-top: 4rem;
-    width: 100%;
-    height: 0.125rem;
-    background-color: ${theme.PALETTE.gray[300]};
 `;
 
 S.CardsWrapper = styled.div`
@@ -300,10 +286,11 @@ S.LocationIndex = styled.div`
     border-radius: 50%;
 `;
 
-S.LocationName = styled.div`
-    margin-left: 0.5rem;
-    height: 2rem;
-    line-height: 2rem;
+S.LocationName = styled.span`
+    cursor: pointer;  // 추가된 부분
+    &:hover {
+        text-decoration: underline;
+    }
 `;
 S.LocationDelete = styled.div`
     display: flex;
@@ -467,55 +454,28 @@ S.SchedulesPeriodContainer = styled.div`
     margin-bottom: 2rem;
 `;
 
-// SchedulesDetail
-S.PlanWrapper = styled.div``;
+// EditSchedules에 필요한 추가 스타일 컴포넌트
 
-S.SchedulesInformationContainer = styled.div`
+S.EditSchedulesWrapper = styled.div`
+    flex: 1;
     display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 40rem;
+    padding: 20px;
+    margin-top: 40px;
 `;
 
-S.SchedulesTitlePeriodContainer = styled.div`
-    width: 65%;
-`;
-
-S.SchedulesLikesTravelersContainer = styled.div`
-    width: 35%;
-`;
-
-S.SchedulesLike = styled.div`
-    display: flex;
-    font-size: 1rem;
-    font-weight: 500;
-    margin-top: 1rem;
-`;
-
-S.SchedulesTravlers = styled.div`
-    display: flex;
-    font-size: 1rem;
-    font-weight: 500;
-    margin-top: 2rem;
-`;
-
-S.GenerateSchedulesCompleteButtonWrapper = styled.div`
-    display: flex;
-    justify-content: center;
-    margin-top: 2rem;
-    & button {
-        margin-top: 2rem;
-        font-size: 1rem;
-    }
-`;
-
-// AddSchedule
-S.CardsWrapper = styled.div`
+S.EditScheduleCardsWrapper = styled.div`
     overflow-x: scroll;
+    width: 100%;
 `;
 
-S.CardsContainer = styled.div`
+S.EditScheduleCardsContainer = styled.div`
     display: inline-flex;
 `;
 
-S.Cards = styled.div`
+S.EditScheduleCards = styled.div`
     width: 20rem;
     height: 30rem;
     display: flex;
@@ -526,92 +486,213 @@ S.Cards = styled.div`
     border-radius: 4px;
 `;
 
-S.CardTitleContainer = styled.div`
+S.UpdateScheduleButtonWrapper = styled.div`
     display: flex;
-    align-items: baseline;
+    justify-content: center;
+    margin-top: 2rem;
+    & button {
+        margin-top: 2rem;
+        font-size: 1rem;
+    }
 `;
 
-S.CardTitle = styled.h2`
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin-right: 1rem;
+S.ErrorMessage = styled.div`
+    color: red;
+    text-align: center;
+    margin-top: 1rem;
 `;
 
-S.CardDate = styled.h5`
-    font-size: 0.8rem;
+// SchedulesDetail에 필요한 추가 스타일 컴포넌트
+
+S.SchedulesInformationContainer = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 2rem;
+`;
+
+S.SchedulesTitlePeriodContainer = styled.div`
+    flex: 1;
+`;
+
+S.SchedulesLikesTravelersContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+`;
+
+S.SchedulesLike = styled.div`
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+`;
+
+S.SchedulesTravlers = styled.div`
+    font-size: 1rem;
     font-weight: 500;
 `;
 
-S.LocationContainerWrapper = styled.div`
+// 초대 모달을 위한 스타일
+S.Modal = styled.div`
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+`;
+
+S.ModalContent = styled.div`
+    background-color: #fefefe;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 500px;
+    border-radius: 5px;
     display: flex;
     flex-direction: column;
-    height: 25.5rem;
-    overflow-y: auto;
+    align-items: center;
+
+    h2 {
+        margin-bottom: 20px;
+    }
+
+    input {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+
+    button {
+        margin-top: 10px;
+    }
 `;
 
-S.LocationContainer = styled.div`
-    display: inline-flex;
+// Styles for LocationModal
+S.LocationModalWrapper = styled.div`
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+`;
+
+S.LocationModalContent = styled.div`
+    display: flex;
     flex-direction: column;
-`;
-
-S.LocationWrapper = styled.div`
-    display: flex;
+    align-items: center;
+    background-color: ${theme.PALETTE.white};
+    border-radius: 10px;
+    max-width: 30rem;
     width: 100%;
-    height: 4rem;
-    align-items: center;
+    padding: 20px;
+    position: relative;
+    z-index: 2001;
+
+    h2 {
+        margin-bottom: 20px;
+    }
+
+    input {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+
+    button {
+        margin-top: 10px;
+    }
 `;
 
-S.Location = styled.div`
+S.ModalOverlay = styled.div`
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
     display: flex;
     align-items: center;
-    width: 16.5rem;
-`;
-
-S.LocationIndex = styled.div`
-    width: 2rem;
-    height: 2rem;
-    display: flex;
     justify-content: center;
-    align-items: center;
-    background-color: ${theme.PALETTE.secondary.sub};
-    border-radius: 50%;
+    z-index: 2000;
 `;
 
-S.LocationName = styled.div`
-    margin-left: 0.5rem;
-    height: 2rem;
-    line-height: 2rem;
+S.ModalContent = styled.div`
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 400px;
+    max-width: 100%;
+    z-index: 2001;
 `;
 
-S.LocationDelete = styled.div`
+S.ModalHeader = styled.div`
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
-    font-size: 1.5rem;
-    line-height: 1.5rem;
-    margin-bottom: 0.375rem;
-    width: 2rem;
-    height: 2rem;
-    background-color: transparent;
-    cursor: pointer;
+    margin-bottom: 20px;
+    h2 {
+        margin: 0;
+    }
+    button {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        cursor: pointer;
+    }
 `;
 
-S.PlusButtonWrapper = styled.div`
+S.ModalBody = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+`;
+
+S.ImageUpload = styled.div`
+    input {
+        display: none;
+    }
+    img {
+        width: 100%;
+        height: auto;
+        margin-top: 10px;
+    }
+`;
+
+S.DescriptionInput = styled.textarea`
     width: 100%;
-    display: flex;
-    justify-content: center;
+    height: 100px;
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
 `;
 
-S.PlusButton = styled.div`
-    width: 2rem;
-    height: 2rem;
-    margin: 1rem;
+S.ModalFooter = styled.div`
     display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: ${theme.PALETTE.secondary.sub};
-    height: 2rem;
-    border-radius: 50%;
-    cursor: pointer;
+    justify-content: flex-end;
+    button {
+        background: #007bff;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
 `;
+
+
 export default S;

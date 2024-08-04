@@ -1,23 +1,23 @@
 import React, { useState, useEffect } from "react";
 import S from "./style";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Outlet } from "react-router-dom";
-import {useDispatch, useSelector} from "react-redux";
-import {setUser, setUserStatus} from "../../modules/login";
+import { useDispatch, useSelector } from "react-redux";
+import { setUser, setUserStatus } from "../../modules/login";
 
 const Layout = () => {
-
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const location = useLocation(); // useLocation 훅 사용
 
     const [isLoading, setIsLoading] = useState(true);
     const [storedUser, setStoredUser] = useState(null);
 
     useEffect(() => {
-        const storedUser = localStorage.getItem('nickname')
+        const storedUser = localStorage.getItem('nickname');
         setStoredUser(storedUser);
-        if(storedUser == null) {
-            navigate("/login")
+        if (storedUser == null) {
+            navigate("/login");
         }
         setIsLoading(false);
     }, []);
@@ -31,8 +31,7 @@ const Layout = () => {
             }
 
             // 서버에 로그아웃 요청 보내기
-            const response = await fetch("http://52.78.2.148:80/api/users/logout", {
-
+            const response = await fetch("https://detourofficial.shop/api/users/logout", {
                 method: "POST",
                 headers: {
                     "Authorization": accessToken,
@@ -79,10 +78,10 @@ const Layout = () => {
                     </div>
                     <S.Navbar>
                         <ul>
-                            <li><a href="/schedules">💌일정 생성</a></li>
-                            <li><a href="/trip" className="current-page">🛫여행 기록</a></li>
-                            <li><a href="/profile">🚩마이페이지</a></li>
-                            <li><a href="#">📃리뷰 남기기</a></li>
+                            <li><a href="/schedules" className={location.pathname === '/schedules' ? 'current-page' : ''}>💌일정 생성</a></li>
+                            <li><a href="/trip" className={location.pathname === '/trip' ? 'current-page' : ''}>🛫여행 기록</a></li>
+                            <li><a href="/profile" className={location.pathname === '/profile' ? 'current-page' : ''}>🚩마이페이지</a></li>
+                            <li><a href="/reviews" className={location.pathname === '/reviews' ? 'current-page' : ''}>📃리뷰 남기기</a></li>
                         </ul>
                     </S.Navbar>
                 </S.Header>
@@ -96,6 +95,5 @@ const Layout = () => {
         </S.Background>
     );
 };
-
 
 export default Layout;

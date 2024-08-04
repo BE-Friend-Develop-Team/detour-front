@@ -3,7 +3,6 @@ import S from "./style";
 import SearchLocation from "./SearchLocation";
 import DetourButton from "../../components/button/DetourButton";
 import { useNavigate } from "react-router-dom";
-import {DateTime} from "luxon";
 
 // kakao maps api를 심어서 가져오면 window 전역객체에 들어간다
 // 함수형 컴포넌트에서는 이걸 바로 인식하지 못하는경우가 있어서
@@ -120,7 +119,7 @@ const AddSchedules = ({ title, startDate, endDate }) => {
         try {
             setIsLoading(true);
             // 1. 일정 생성
-            const scheduleResponse = await fetch('http://52.78.2.148:80/api/schedules', {
+            const scheduleResponse = await fetch('https://detourofficial.shop/api/schedules', {
                 method: "POST",
                 headers: {
                     "Authorization": accessToken,
@@ -139,12 +138,10 @@ const AddSchedules = ({ title, startDate, endDate }) => {
             const scheduleId = scheduleData.data.scheduleId;
 
             // 2. 데일리플랜 생성
-            const totalDays = (endDate-startDate)/86400000 +1;
-            console.log(totalDays)
+            const totalDays = (new Date(endDate) - new Date(startDate)) / 86400000 + 1;
 
             for (let day = 1; day <= totalDays; day++) {
-                console.log("log2:")
-                const dailyPlanResponse = await fetch(`http://52.78.2.148:80/api/schedules/${scheduleId}/dailyplans`, {
+                const dailyPlanResponse = await fetch(`https://detourofficial.shop/api/schedules/${scheduleId}/dailyplans`, {
                     method: "POST",
                     headers: {
                         "Authorization": accessToken,
@@ -152,26 +149,17 @@ const AddSchedules = ({ title, startDate, endDate }) => {
                     },
                     body: JSON.stringify({ day: day }),
                 });
-                console.log("log3:")
 
                 if (!dailyPlanResponse.ok) {
                     throw new Error(`${day}일차 데일리플랜 생성에 실패했습니다.`);
                 }
                 const dailyPlanData = await dailyPlanResponse.json();
-                console.log("dailyPlanData:", dailyPlanData)
-
                 const dailyPlanId = dailyPlanData.data.dailyPlanId;
-                console.log("dailyPlanId:", dailyPlanId)
-
-                console.log("log4:")
 
                 // 3. 각 장소에 대해 place 생성 및 marker 생성
                 for (const location of cardLocations[day - 1] || []) {
-                    console.log("location:", location)
-                    console.log("log5:")
-
                     // Place 생성
-                    const placeResponse = await fetch("http://52.78.2.148:80/api/place", {
+                    const placeResponse = await fetch("https://detourofficial.shop/api/place", {
                         method: "POST",
                         headers: {
                             "Authorization": accessToken,
@@ -183,17 +171,15 @@ const AddSchedules = ({ title, startDate, endDate }) => {
                             telNumber: location.phone,
                         }),
                     });
-                    console.log("log6:")
 
                     if (!placeResponse.ok) {
                         throw new Error("Place 생성에 실패했습니다.");
                     }
                     const placeData = await placeResponse.json();
                     const placeId = placeData.data.placeId;
-                    console.log("log7:")
 
                     // Marker 생성
-                    const markerResponse = await fetch(`http://52.78.2.148:80/api/daily-plans/${dailyPlanId}/place/${placeId}/markers`, {
+                    const markerResponse = await fetch(`https://detourofficial.shop/api/daily-plans/${dailyPlanId}/place/${placeId}/markers`, {
                         method: "POST",
                         headers: {
                             "Authorization": accessToken,
@@ -208,12 +194,10 @@ const AddSchedules = ({ title, startDate, endDate }) => {
                         throw new Error("Marker 생성에 실패했습니다.");
                     }
                 }
-                console.log("day:", day)
-                console.log("totalDays:", totalDays)
-
             }
             alert('여행 일정이 성공적으로 생성되었습니다!');
-            // navigate(`/schedules/${scheduleId}`); // 생성된 일정의 상세 페이지로 이동
+            // 일정 생성 완료 후 SchedulesDetail 페이지로 리디렉션
+            navigate(`/schedules/${scheduleId}`);
         } catch (err) {
             setError('일정 생성 중 오류가 발생했습니다: ' + err.message);
         } finally {

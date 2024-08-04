@@ -22,8 +22,8 @@ const EditSchedules = () => {
     const [markers, setMarkers] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
-    const [isModalOpen, setIsModalOpen] = useState(false); // 추가된 부분
-    const [selectedLocation, setSelectedLocation] = useState(null); // 추가된 부분
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedLocation, setSelectedLocation] = useState(null);
 
     useEffect(() => {
         fetchScheduleDetails();
@@ -47,7 +47,7 @@ const EditSchedules = () => {
         }
 
         try {
-            const response = await fetch(`http://localhost:8081/api/schedules/${scheduleId}/details`, {
+            const response = await fetch(`https://detourofficial.shop/api/schedules/${scheduleId}/details`, {
                 method: "GET",
                 headers: {
                     "Authorization": `Bearer ${accessToken}`,
@@ -153,28 +153,40 @@ const EditSchedules = () => {
         closeSearch();
     };
 
-    const handleLocationClick = (location) => { // 추가된 부분
-        setSelectedLocation(location);
+    const handleLocationClick = (location, cardIndex) => {
+        const markerId = schedule.dailyPlanList[cardIndex].markerList.find(marker =>
+            marker.name === location.place_name &&
+            marker.latitude === location.y &&
+            marker.longitude === location.x
+        )?.id; // Assuming 'id' is the markerId
+
+        console.log("Location:", location);
+        console.log("Card Index:", cardIndex);
+        console.log("Markers List:", schedule.dailyPlanList[cardIndex].markerList);
+        setSelectedLocation({ ...location, cardIndex, markerId });
         setIsModalOpen(true);
     };
 
-    const handleModalClose = () => { // 추가된 부분
+    const handleModalClose = () => {
         setIsModalOpen(false);
         setSelectedLocation(null);
     };
 
-    const handleSaveLocation = (updatedLocation) => { // 추가된 부분
+    const handleSaveLocation = (updatedLocation) => {
         setCardLocations(prevLocations => {
             const newLocations = { ...prevLocations };
-            const cardIndex = Object.keys(newLocations).find(index =>
-                newLocations[index].some(loc => loc.place_name === updatedLocation.place_name && loc.x === updatedLocation.x && loc.y === updatedLocation.y)
+            const cardIndex = updatedLocation.cardIndex;
+            const locationIndex = newLocations[cardIndex].findIndex(loc =>
+                loc.place_name === updatedLocation.place_name &&
+                loc.x === updatedLocation.x &&
+                loc.y === updatedLocation.y
             );
-            if (cardIndex !== undefined) {
-                const locationIndex = newLocations[cardIndex].findIndex(loc => loc.place_name === updatedLocation.place_name && loc.x === updatedLocation.x && loc.y === updatedLocation.y);
+            if (locationIndex !== -1) {
                 newLocations[cardIndex][locationIndex] = updatedLocation;
             }
             return newLocations;
         });
+        handleModalClose();
     };
 
     const handleLocationDelete = (cardIndex, locIndex) => {
@@ -211,7 +223,7 @@ const EditSchedules = () => {
         try {
             setIsLoading(true);
 
-            const response = await fetch(`http://localhost:8081/api/schedules/${scheduleId}`, {
+            const response = await fetch(`https://detourofficial.shop/api/schedules/${scheduleId}`, {
                 method: "PATCH",
                 headers: {
                     "Authorization": `Bearer ${accessToken}`,
@@ -244,7 +256,7 @@ const EditSchedules = () => {
         try {
             setIsLoading(true);
 
-            const response = await fetch(`http://localhost:8081/api/schedules/${scheduleId}`, {
+            const response = await fetch(`https://detourofficial.shop/api/schedules/${scheduleId}`, {
                 method: "PATCH",
                 headers: {
                     "Authorization": `Bearer ${accessToken}`,
@@ -338,7 +350,11 @@ const EditSchedules = () => {
                                                     <S.LocationWrapper key={locIndex}>
                                                         <S.Location>
                                                             <S.LocationIndex>{locIndex + 1}</S.LocationIndex>
-                                                            <S.LocationName>{location.place_name}</S.LocationName>
+                                                            <S.LocationName
+                                                                onClick={() => handleLocationClick(location, index)}
+                                                            >
+                                                                {location.place_name}
+                                                            </S.LocationName>
                                                         </S.Location>
                                                         <S.LocationDelete onClick={() => handleLocationDelete(index, locIndex)}>&times;</S.LocationDelete>
                                                     </S.LocationWrapper>
@@ -366,7 +382,7 @@ const EditSchedules = () => {
                 />
             )}
             {error && <S.ErrorMessage>{error}</S.ErrorMessage>}
-            {selectedLocation && ( // 추가된 부분
+            {selectedLocation && (
                 <LocationModal
                     isOpen={isModalOpen}
                     onClose={handleModalClose}

@@ -11,6 +11,7 @@ import Profiles from "../pages/profile/Profile";
 import Withdraw from "../pages/withdraw/Withdraw";
 import Trip from "../pages/trip/Trip";
 import SchedulesDetail from "../pages/schedules/SchedulesDetail";
+import EditSchedules from "../pages/schedules/EditSchedules";
 
 const router = createBrowserRouter([
     {
@@ -48,6 +49,10 @@ const router = createBrowserRouter([
             {
                 path: "/schedules/:scheduleId",
                 element: <SchedulesDetail />,
+            },
+            {
+                path: "/schedules/:scheduleId/edit",
+                element: <EditSchedules />,
             },
         ],
     },

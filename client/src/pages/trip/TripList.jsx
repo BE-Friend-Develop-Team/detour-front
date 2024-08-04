@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import S from './style'; // 스타일 파일 import
 import { useNavigate } from 'react-router-dom';
 import Modal from '../../components/modal/Modal'; // 상대 경로
-import { ModalInput, ModalButton } from './style'; // 새로운 스타일 import
+import { ModalButton } from './style'; // 새로운 스타일 import
 
 const TripList = ({ search }) => {
     const [trips, setTrips] = useState(null);
@@ -27,7 +27,7 @@ const TripList = ({ search }) => {
         }
 
         try {
-            const response = await fetch(`http://52.78.2.148:80/api/schedules?page=1&sortBy=${sortBy}&search=${encodeURIComponent(search)}`, {
+            const response = await fetch(`https://detourofficial.shop/api/schedules?page=1&sortBy=${sortBy}&search=${encodeURIComponent(search)}`, {
                 method: "GET",
                 headers: {
                     "Authorization": `Bearer ${accessToken}`,
@@ -70,7 +70,7 @@ const TripList = ({ search }) => {
 
         try {
             if (liked && !likeId) {
-                const response2 = await fetch(`http://52.78.2.148:80/api/schedules/likes/${scheduleId}`, {
+                const response2 = await fetch(`https://detourofficial.shop/api/schedules/likes/${scheduleId}`, {
                     method: "GET",
                     headers: {
                         "Authorization": `Bearer ${accessToken}`
@@ -82,8 +82,8 @@ const TripList = ({ search }) => {
             }
 
             const url = liked
-                ? `http://52.78.2.148:80/api/schedules/likes/${likeId}`
-                : `http://52.78.2.148:80/api/schedules/${scheduleId}/likes`;
+                ? `https://detourofficial.shop/api/schedules/likes/${likeId}`
+                : `https://detourofficial.shop/api/schedules/${scheduleId}/likes`;
             const method = liked ? 'DELETE' : 'POST';
 
             const response = await fetch(url, {
@@ -146,7 +146,7 @@ const TripList = ({ search }) => {
             const formData = new FormData();
             formData.append('file', newImageFile); // key를 'file'로 수정
 
-            const response = await fetch(`http://52.78.2.148:80/api/schedules/${editingImage}/files`, { // URL 수정
+            const response = await fetch(`https://detourofficial.shop/api/schedules/${editingImage}/files`, { // URL 수정
                 method: "PATCH",
                 headers: {
                     "Authorization": `Bearer ${accessToken}`
@@ -179,8 +179,12 @@ const TripList = ({ search }) => {
             setModalOpen(false); // 모달 닫기
         } catch (error) {
             console.error('Error updating image:', error);
-            alert(error.message);
+            alert("업로드 가능 이미지 용량 크기를 초과했습니다.");
         }
+    };
+
+    const handleCardClick = (scheduleId) => {
+        navigate(`/schedules/${scheduleId}`);
     };
 
     return (
@@ -195,7 +199,10 @@ const TripList = ({ search }) => {
             <S.TripSection>
                 {trips ? (
                     trips.map((trip) => (
-                        <S.TripCard key={trip.scheduleId || `trip-${Math.random()}`}>
+                        <S.TripCard
+                            key={trip.scheduleId || `trip-${Math.random()}`}
+                            onClick={() => handleCardClick(trip.scheduleId)}
+                        >
                             <S.TripHeader>
                                 <h3>{trip.title}</h3>
                                 <h5>
@@ -206,19 +213,13 @@ const TripList = ({ search }) => {
                             </S.TripHeader>
                             <S.TripImageWrapper>
                                 <S.TripImage src={trip.imageUrl} alt={trip.title} />
-                                <S.EditImageButton onClick={() => handleImageEdit(trip.scheduleId)}>
+                                <S.EditImageButton onClick={(e) => { e.stopPropagation(); handleImageEdit(trip.scheduleId); }}>
                                     <img src="/images/modal/edit-icon.png" alt="Edit" />
                                 </S.EditImageButton>
                             </S.TripImageWrapper>
                             <S.TripFooter>
                                 <S.LikeButton
-                                    onClick={() => {
-                                        if (trip.scheduleId) {
-                                            toggleLike(trip.scheduleId, trip.liked, trip.likeId);
-                                        } else {
-                                            console.error('Trip ID is missing');
-                                        }
-                                    }}
+                                    onClick={(e) => { e.stopPropagation(); toggleLike(trip.scheduleId, trip.liked, trip.likeId); }}
                                 >
                                     <img
                                         src={trip.liked ? '/images/trip/heart.png' : '/images/trip/noheart.png'}
