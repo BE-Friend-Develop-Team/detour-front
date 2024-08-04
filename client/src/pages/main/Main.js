@@ -59,6 +59,10 @@ const Main = () => {
         }
     };
 
+    const handleDetailButtonClick = (scheduleId) => {
+        navigate(`/schedules/${scheduleId}`);
+    };
+
     return (
         <S.Main>
             <S.PopularSection>
@@ -72,7 +76,9 @@ const Main = () => {
                                 <S.TripImageWrapper>
                                     <S.TripImage src={ranking.imageUrl} alt={ranking.title} />
                                     <S.TripLocation>{index + 1}등</S.TripLocation>
-                                    <S.DetailButton>둘러보기</S.DetailButton>
+                                    <S.DetailButton onClick={() => handleDetailButtonClick(ranking.scheduleId)}>
+                                        둘러보기
+                                    </S.DetailButton>
                                 </S.TripImageWrapper>
                                 <S.TripFooter>
                                     <h3>{ranking.title}</h3>
