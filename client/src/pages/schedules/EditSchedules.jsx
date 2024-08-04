@@ -33,8 +33,9 @@ const EditSchedules = () => {
         if (schedule) {
             initializeMap();
             setTitle(schedule.title);
-            setStartDate(new Date(schedule.departureDate).toISOString().substring(0, 10));
-            setEndDate(new Date(schedule.arrivalDate).toISOString().substring(0, 10));
+            // Use 'getDateString' function to ensure proper date formatting
+            setStartDate(getDateString(new Date(schedule.departureDate)));
+            setEndDate(getDateString(new Date(schedule.arrivalDate)));
         }
     }, [schedule]);
 
@@ -47,7 +48,7 @@ const EditSchedules = () => {
         }
 
         try {
-            const response = await fetch(`https://detourofficial.shop/api/schedules/${scheduleId}/details`, {
+            const response = await fetch(`http://localhost:8081/api/schedules/${scheduleId}/details`, {
                 method: "GET",
                 headers: {
                     "Authorization": `Bearer ${accessToken}`,
@@ -62,6 +63,13 @@ const EditSchedules = () => {
         } catch (err) {
             setError('일정 정보를 불러오는 중 오류가 발생했습니다: ' + err.message);
         }
+    };
+
+    const getDateString = (date) => {
+        const year = date.getFullYear();
+        const month = (`0${date.getMonth() + 1}`).slice(-2);
+        const day = (`0${date.getDate()}`).slice(-2);
+        return `${year}-${month}-${day}`;
     };
 
     const initializeMap = () => {
@@ -108,6 +116,7 @@ const EditSchedules = () => {
             locations[index] = dailyPlan.markerList.map(marker => ({
                 place_name: marker.name,
                 address_name: marker.address,
+                markerId: marker.markerId,
                 x: marker.longitude,
                 y: marker.latitude,
             }));
@@ -154,12 +163,13 @@ const EditSchedules = () => {
     };
 
     const handleLocationClick = (location, cardIndex) => {
+        console.log(location);
         const markerId = schedule.dailyPlanList[cardIndex].markerList.find(marker =>
             marker.name === location.place_name &&
             marker.latitude === location.y &&
             marker.longitude === location.x
-        )?.id; // Assuming 'id' is the markerId
-
+        )?.markerId;
+        console.log("마커아이디: "+markerId);
         console.log("Location:", location);
         console.log("Card Index:", cardIndex);
         console.log("Markers List:", schedule.dailyPlanList[cardIndex].markerList);
@@ -223,7 +233,7 @@ const EditSchedules = () => {
         try {
             setIsLoading(true);
 
-            const response = await fetch(`https://detourofficial.shop/api/schedules/${scheduleId}`, {
+            const response = await fetch(`http://localhost:8081/api/schedules/${scheduleId}`, {
                 method: "PATCH",
                 headers: {
                     "Authorization": `Bearer ${accessToken}`,
@@ -235,8 +245,6 @@ const EditSchedules = () => {
             if (!response.ok) {
                 throw new Error('일정 제목 업데이트에 실패했습니다.');
             }
-
-            alert('일정 제목이 성공적으로 수정되었습니다!');
         } catch (err) {
             setError('일정 제목 수정 중 오류가 발생했습니다: ' + err.message);
         } finally {
@@ -256,15 +264,15 @@ const EditSchedules = () => {
         try {
             setIsLoading(true);
 
-            const response = await fetch(`https://detourofficial.shop/api/schedules/${scheduleId}`, {
+            const response = await fetch(`http://localhost:8081/api/schedules/${scheduleId}`, {
                 method: "PATCH",
                 headers: {
                     "Authorization": `Bearer ${accessToken}`,
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    departureDate: startDate + 'T00:00:00',
-                    arrivalDate: endDate + 'T23:59:59',
+                    departureDate: new Date(startDate).toISOString(),
+                    arrivalDate: new Date(endDate).toISOString(),
                 }),
             });
 
@@ -272,8 +280,6 @@ const EditSchedules = () => {
                 throw new Error('일정 기간 업데이트에 실패했습니다.');
             }
 
-            alert('일정 기간이 성공적으로 수정되었습니다!');
-            navigate(`/schedules/${scheduleId}`);
         } catch (err) {
             setError('일정 기간 수정 중 오류가 발생했습니다: ' + err.message);
         } finally {
@@ -281,9 +287,97 @@ const EditSchedules = () => {
         }
     };
 
+    const updateMarker = async () => {
+        const accessToken = localStorage.getItem('token')?.substring(7);
+
+        if (!accessToken) {
+            setError("로그인이 필요합니다.");
+            navigate('/login');
+            return;
+        }
+
+        try {
+            setIsLoading(true);
+
+            // 1. Collect place creation requests
+            const placeRequests = [];
+            const placeMap = new Map(); // To map place names to IDs
+            const uniqueLocations = new Set(); // To track unique locations
+
+            for (const dailyPlan of schedule.dailyPlanList) {
+                for (const location of cardLocations[dailyPlan.day - 1] || []) {
+                    // Create a unique key based on location data
+                    const locationKey = `${location.place_name}-${location.x}-${location.y}`;
+
+                    if (!uniqueLocations.has(locationKey)) {
+                        uniqueLocations.add(locationKey);
+
+                        if (!placeMap.has(location.place_name)) {
+                            placeRequests.push(fetch("http://localhost:8081/api/place", {
+                                method: "POST",
+                                headers: {
+                                    "Authorization": `Bearer ${accessToken}`,
+                                    "Content-Type": "application/json",
+                                },
+                                body: JSON.stringify({
+                                    name: location.place_name,
+                                    address: location.address_name,
+                                    telNumber: location.phone,
+                                }),
+                            }).then(async (response) => {
+                                if (!response.ok) {
+                                    throw new Error("Place 생성에 실패했습니다.");
+                                }
+                                const placeData = await response.json();
+                                placeMap.set(location.place_name, placeData.data.placeId);
+                            }));
+                        }
+                    }
+                }
+            }
+
+            // Wait for all place creation requests to complete
+            await Promise.all(placeRequests);
+
+            // 2. Update markers with place IDs
+            for (const dailyPlan of schedule.dailyPlanList) {
+                for (const location of cardLocations[dailyPlan.day - 1] || []) {
+                    const placeId = placeMap.get(location.place_name);
+
+                    if (placeId) {
+                        const response = await fetch(`http://localhost:8081/api/daily-plans/${dailyPlan.dailyPlanId}/place/${placeId}/markers`, {
+                            method: "POST",
+                            headers: {
+                                "Authorization": `Bearer ${accessToken}`,
+                                "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify({
+                                latitude: location.y,
+                                longitude: location.x,
+                            }),
+                        });
+
+                        if (!response.ok) {
+                            throw new Error('마커 업데이트에 실패했습니다.');
+                        }
+                    }
+                }
+            }
+
+            alert('일정이 성공적으로 수정되었습니다!');
+            navigate(`/schedules/${scheduleId}`);
+        } catch (err) {
+            setError('일정 수정 중 오류가 발생했습니다: ' + err.message);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+
     const updateScheduleTitleAndPeriod = async () => {
         await updateScheduleTitle();
         await updateSchedulePeriod();
+        await updateMarker();
     };
 
     const getDateForDay = (day) => {
@@ -292,7 +386,7 @@ const EditSchedules = () => {
         const startDate = new Date(schedule.departureDate);
         const date = new Date(startDate);
         date.setDate(startDate.getDate() + day - 1);
-        return date.toLocaleDateString();
+        return getDateString(date);
     };
 
     return (
@@ -311,13 +405,13 @@ const EditSchedules = () => {
                         <input
                             type="date"
                             value={startDate}
-                            onChange={(e) => setStartDate(e.target.value)}
+                            onChange={(e) => setStartDate(e.target.value)-1}
                         />
                         <span> ~ </span>
                         <input
                             type="date"
                             value={endDate}
-                            onChange={(e) => setEndDate(e.target.value)}
+                            onChange={(e) => setEndDate(e.target.value)-1}
                         />
                     </S.SchedulesPeriodContainer>
                     <DetourButton

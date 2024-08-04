@@ -270,6 +270,26 @@ S.LocationWrapper = styled.div`
     align-items: center;
 `;
 
+// 이미지 업로드 영역
+const ImageUpload = styled.div`
+  margin-bottom: 15px;
+  
+  label {
+    display: block;
+    margin-bottom: 5px;
+  }
+  
+  input[type="file"] {
+    margin-bottom: 10px;
+  }
+  
+  img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+  }
+`;
+
 S.Location = styled.div`
     display: flex;
     align-items: center;

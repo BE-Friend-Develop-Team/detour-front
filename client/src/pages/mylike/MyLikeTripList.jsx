@@ -27,7 +27,7 @@ const MyLikeTripList = ({ search }) => {
         }
 
         try {
-            const response = await fetch(`https://detourofficial.shop/api/schedules/users/likes?page=1&sortBy=${sortBy}&search=${encodeURIComponent(search)}`, {
+            const response = await fetch(`http://localhost:8081/api/schedules/users/likes?page=1&sortBy=${sortBy}&search=${encodeURIComponent(search)}`, {
                 method: "GET",
                 headers: {
                     "Authorization": `Bearer ${accessToken}`,
@@ -70,7 +70,7 @@ const MyLikeTripList = ({ search }) => {
 
         try {
             if (liked && !likeId) {
-                const response2 = await fetch(`https://detourofficial.shop/api/schedules/likes/${scheduleId}`, {
+                const response2 = await fetch(`http://localhost:8081/api/schedules/likes/${scheduleId}`, {
                     method: "GET",
                     headers: {
                         "Authorization": `Bearer ${accessToken}`
@@ -146,7 +146,7 @@ const MyLikeTripList = ({ search }) => {
             const formData = new FormData();
             formData.append('file', newImageFile); // key를 'file'로 수정
 
-            const response = await fetch(`https://detourofficial.shop/schedules/${editingImage}/files`, { // URL 수정
+            const response = await fetch(`http://localhost:8081/schedules/${editingImage}/files`, { // URL 수정
                 method: "PATCH",
                 headers: {
                     "Authorization": `Bearer ${accessToken}`

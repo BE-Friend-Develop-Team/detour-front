@@ -17,7 +17,7 @@ const SchedulesDetail = () => {
     const fetchScheduleDetail = async () => {
         const accessToken = localStorage.getItem("token").substring(7);
         try {
-            const response = await fetch(`https://detourofficial.shop/api/schedules/${scheduleId}/details`, {
+            const response = await fetch(`http://localhost:8081/api/schedules/${scheduleId}/details`, {
                 method: "GET",
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
@@ -27,11 +27,42 @@ const SchedulesDetail = () => {
                 throw new Error("Network response was not ok");
             }
             const result = await response.json();
-            setSchedule(result.data);
+
+            // Calculate the ISO date format for departure and arrival
+            const departureDate = new Date(result.data.departureDate);
+            const arrivalDate = new Date(result.data.arrivalDate);
+
+            // Ensure that date calculations are done in UTC
+            const departureDateUTC = new Date(Date.UTC(departureDate.getFullYear(), departureDate.getMonth(), departureDate.getDate()));
+            const arrivalDateUTC = new Date(Date.UTC(arrivalDate.getFullYear(), arrivalDate.getMonth(), arrivalDate.getDate()));
+
+            const days = Math.ceil((arrivalDateUTC - departureDateUTC) / (1000 * 60 * 60 * 24)) + 1;
+
+            // Add daily dates to dailyPlanList
+            const dailyPlanListWithDates = result.data.dailyPlanList.map((dayPlan, index) => {
+                const planDate = new Date(departureDateUTC);
+                planDate.setUTCDate(departureDateUTC.getUTCDate() + index);
+                return {
+                    ...dayPlan,
+                    date: planDate.toISOString().substring(0, 10),
+                };
+            });
+
+            setSchedule({
+                ...result.data,
+                departureDate: departureDateUTC.toISOString().substring(0, 10),
+                arrivalDate: arrivalDateUTC.toISOString().substring(0, 10),
+                dailyPlanList: dailyPlanListWithDates,
+            });
         } catch (error) {
             console.error("Failed to fetch schedule detail:", error);
         }
     };
+
+
+    useEffect(() => {
+        fetchScheduleDetail();
+    }, []);
 
     useEffect(() => {
         if (schedule && schedule.dailyPlanList) {
@@ -67,10 +98,6 @@ const SchedulesDetail = () => {
         }
     }, [schedule]);
 
-    useEffect(() => {
-        fetchScheduleDetail();
-    }, []);
-
     const handleEditClick = () => {
         navigate(`/schedules/${scheduleId}/edit`);
     };
@@ -82,7 +109,7 @@ const SchedulesDetail = () => {
     const handleInviteSubmit = async () => {
         const accessToken = localStorage.getItem("token").substring(7);
         try {
-            const response = await fetch(`https://detourofficial.shop/api/schedules/${scheduleId}/invitation`, {
+            const response = await fetch(`http://localhost:8081/api/schedules/${scheduleId}/invitation`, {
                 method: "POST",
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
@@ -110,7 +137,7 @@ const SchedulesDetail = () => {
                         <S.SchedulesTitlePeriodContainer>
                             <S.SchedulesTitle>{schedule.title}</S.SchedulesTitle>
                             <S.SchedulesPeriodContainer>
-                                <span>{`${new Date(schedule.departureDate).toLocaleDateString()} ~ ${new Date(schedule.arrivalDate).toLocaleDateString()}`}</span>
+                                <span>{`${schedule.departureDate} ~ ${schedule.arrivalDate}`}</span>
                             </S.SchedulesPeriodContainer>
                         </S.SchedulesTitlePeriodContainer>
                         <S.SchedulesLikesTravelersContainer>
@@ -148,8 +175,8 @@ const SchedulesDetail = () => {
                                 {schedule.dailyPlanList.map((dayPlan, index) => (
                                     <S.Cards key={index}>
                                         <S.CardTitleContainer>
-                                            <S.CardTitle>DAY {dayPlan.day}</S.CardTitle>
-                                            <S.CardDate>{new Date(schedule.departureDate).toLocaleDateString()}</S.CardDate>
+                                            <S.CardTitle>DAY {index + 1}</S.CardTitle>
+                                            <S.CardDate>{dayPlan.date}</S.CardDate> {/* ISO 형식 날짜 표시 */}
                                         </S.CardTitleContainer>
                                         <S.LocationContainerWrapper>
                                             <S.LocationContainer>

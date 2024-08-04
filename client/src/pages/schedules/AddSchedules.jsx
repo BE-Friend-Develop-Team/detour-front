@@ -4,20 +4,16 @@ import SearchLocation from "./SearchLocation";
 import DetourButton from "../../components/button/DetourButton";
 import { useNavigate } from "react-router-dom";
 
-// kakao maps api를 심어서 가져오면 window 전역객체에 들어간다
-// 함수형 컴포넌트에서는 이걸 바로 인식하지 못하는경우가 있어서
-// const {kakao} = window로 인지시키고 kakao객체를 뽑아쓴다
 const { kakao } = window;
 
 const AddSchedules = ({ title, startDate, endDate }) => {
     const navigate = useNavigate();
-    // 각 카드의 위치 배열을 저장하기 위한 상태
     const [cardLocations, setCardLocations] = useState({});
     const [searchVisible, setSearchVisible] = useState(false);
     const [searchValue, setSearchValue] = useState("");
     const [currentCardIndex, setCurrentCardIndex] = useState(null);
-    const [map, setMap] = useState(null); // 지도 객체 상태
-    const [markers, setMarkers] = useState([]); // 마커 객체 상태
+    const [map, setMap] = useState(null);
+    const [markers, setMarkers] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
 
@@ -28,7 +24,7 @@ const AddSchedules = ({ title, startDate, endDate }) => {
             level: 13,
         };
         const mapInstance = new kakao.maps.Map(container, options);
-        setMap(mapInstance); // 지도 객체 저장
+        setMap(mapInstance);
     }, []);
 
     const getDateRange = (start, end) => {
@@ -38,7 +34,7 @@ const AddSchedules = ({ title, startDate, endDate }) => {
         let currentDate = startDate;
 
         while (currentDate <= endDate) {
-            dates.push(new Date(currentDate));
+            dates.push(currentDate.toISOString().substring(0, 10)); // ISO format
             currentDate.setDate(currentDate.getDate() + 1);
         }
 
@@ -63,7 +59,6 @@ const AddSchedules = ({ title, startDate, endDate }) => {
 
     const handleLocationSelect = (location) => {
         if (currentCardIndex !== null) {
-            // 지도에 마커 추가
             const position = new kakao.maps.LatLng(location.y, location.x);
             const marker = new kakao.maps.Marker({
                 map: map,
@@ -71,14 +66,11 @@ const AddSchedules = ({ title, startDate, endDate }) => {
                 title: location.place_name,
             });
 
-            // marker 객체에 cardIndex를 추가
             marker.cardIndex = currentCardIndex;
             setMarkers((prevMarkers) => [...prevMarkers, marker]);
 
-            // 선택한 위치의 중심으로 지도 이동
             map.panTo(position);
 
-            // 카드 위치 상태 업데이트
             setCardLocations((prevLocations) => {
                 const newLocations = { ...prevLocations };
                 newLocations[currentCardIndex] = [...(newLocations[currentCardIndex] || []), location];
@@ -89,7 +81,6 @@ const AddSchedules = ({ title, startDate, endDate }) => {
     };
 
     const handleLocationDelete = (cardIndex, locIndex) => {
-        // 해당 위치의 마커 삭제
         const locationToDelete = cardLocations[cardIndex][locIndex];
         const markerToRemove = markers.find((m) => m.cardIndex === cardIndex && m.getTitle() === locationToDelete.place_name);
         if (markerToRemove) {
@@ -97,7 +88,6 @@ const AddSchedules = ({ title, startDate, endDate }) => {
             setMarkers((prevMarkers) => prevMarkers.filter((m) => m !== markerToRemove));
         }
 
-        // 카드 위치 상태 업데이트
         setCardLocations((prevLocations) => {
             const newLocations = { ...prevLocations };
             newLocations[cardIndex].splice(locIndex, 1);
@@ -118,8 +108,9 @@ const AddSchedules = ({ title, startDate, endDate }) => {
 
         try {
             setIsLoading(true);
-            // 1. 일정 생성
-            const scheduleResponse = await fetch('https://detourofficial.shop/api/schedules', {
+
+            // 1. Create schedule
+            const scheduleResponse = await fetch('http://localhost:8081/api/schedules', {
                 method: "POST",
                 headers: {
                     "Authorization": accessToken,
@@ -127,21 +118,22 @@ const AddSchedules = ({ title, startDate, endDate }) => {
                 },
                 body: JSON.stringify({
                     title: title,
-                    departureDate: startDate,
-                    arrivalDate: endDate
+                    departureDate: new Date(startDate).toISOString(), // ISO format
+                    arrivalDate: new Date(endDate).toISOString(), // ISO format
                 }),
             });
+
             if (!scheduleResponse.ok) {
                 throw new Error('일정 생성에 실패했습니다.');
             }
             const scheduleData = await scheduleResponse.json();
             const scheduleId = scheduleData.data.scheduleId;
 
-            // 2. 데일리플랜 생성
+            // 2. Create daily plans
             const totalDays = (new Date(endDate) - new Date(startDate)) / 86400000 + 1;
 
             for (let day = 1; day <= totalDays; day++) {
-                const dailyPlanResponse = await fetch(`https://detourofficial.shop/api/schedules/${scheduleId}/dailyplans`, {
+                const dailyPlanResponse = await fetch(`http://localhost:8081/api/schedules/${scheduleId}/dailyplans`, {
                     method: "POST",
                     headers: {
                         "Authorization": accessToken,
@@ -156,10 +148,9 @@ const AddSchedules = ({ title, startDate, endDate }) => {
                 const dailyPlanData = await dailyPlanResponse.json();
                 const dailyPlanId = dailyPlanData.data.dailyPlanId;
 
-                // 3. 각 장소에 대해 place 생성 및 marker 생성
+                // 3. Create places and markers for each location
                 for (const location of cardLocations[day - 1] || []) {
-                    // Place 생성
-                    const placeResponse = await fetch("https://detourofficial.shop/api/place", {
+                    const placeResponse = await fetch("http://localhost:8081/api/place", {
                         method: "POST",
                         headers: {
                             "Authorization": accessToken,
@@ -178,8 +169,7 @@ const AddSchedules = ({ title, startDate, endDate }) => {
                     const placeData = await placeResponse.json();
                     const placeId = placeData.data.placeId;
 
-                    // Marker 생성
-                    const markerResponse = await fetch(`https://detourofficial.shop/api/daily-plans/${dailyPlanId}/place/${placeId}/markers`, {
+                    const markerResponse = await fetch(`http://localhost:8081/api/daily-plans/${dailyPlanId}/place/${placeId}/markers`, {
                         method: "POST",
                         headers: {
                             "Authorization": accessToken,
@@ -190,13 +180,14 @@ const AddSchedules = ({ title, startDate, endDate }) => {
                             longitude: location.x,
                         }),
                     });
+
                     if (!markerResponse.ok) {
                         throw new Error("Marker 생성에 실패했습니다.");
                     }
                 }
             }
+
             alert('여행 일정이 성공적으로 생성되었습니다!');
-            // 일정 생성 완료 후 SchedulesDetail 페이지로 리디렉션
             navigate(`/schedules/${scheduleId}`);
         } catch (err) {
             setError('일정 생성 중 오류가 발생했습니다: ' + err.message);
@@ -208,7 +199,7 @@ const AddSchedules = ({ title, startDate, endDate }) => {
     return (
         <S.AddSchedulesWrapper>
             <S.MapWrapper>
-                <div id="map"></div>
+                <div id="map" style={{ width: '100%', height: '400px' }}></div>
             </S.MapWrapper>
             <S.DividerLine />
             <S.AddScheduleCardsWrapper>
@@ -217,7 +208,7 @@ const AddSchedules = ({ title, startDate, endDate }) => {
                         <S.AddScheduleCards key={index}>
                             <S.CardTitleContainer>
                                 <S.CardTitle>DAY {index + 1}</S.CardTitle>
-                                <S.CardDate>{date.toLocaleDateString()}</S.CardDate>
+                                <S.CardDate>{date}</S.CardDate>
                             </S.CardTitleContainer>
                             <S.LocationContainerWrapper>
                                 <S.LocationContainer>
@@ -240,13 +231,27 @@ const AddSchedules = ({ title, startDate, endDate }) => {
                 </S.AddScheduleCardsContainer>
             </S.AddScheduleCardsWrapper>
             <S.GenerateSchedulesCompleteButtonWrapper>
-                <DetourButton variant={"main"} shape={"small"} size={"medium"} color={"black"} border={"default"} onClick={onClickGenerateSchedules}>
-                    완료
+                <DetourButton
+                    variant={"main"}
+                    shape={"small"}
+                    size={"medium"}
+                    color={"black"}
+                    border={"default"}
+                    onClick={onClickGenerateSchedules}
+                    disabled={isLoading}
+                >
+                    {isLoading ? '생성 중...' : '완료'}
                 </DetourButton>
             </S.GenerateSchedulesCompleteButtonWrapper>
             {searchVisible && (
-                <SearchLocation onClose={closeSearch} searchValue={searchValue} setSearchValue={setSearchValue} onSelectLocation={handleLocationSelect} />
+                <SearchLocation
+                    onClose={closeSearch}
+                    searchValue={searchValue}
+                    setSearchValue={setSearchValue}
+                    onSelectLocation={handleLocationSelect}
+                />
             )}
+            {error && <S.ErrorMessage>{error}</S.ErrorMessage>}
         </S.AddSchedulesWrapper>
     );
 };
