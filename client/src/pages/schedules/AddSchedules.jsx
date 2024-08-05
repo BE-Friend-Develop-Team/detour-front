@@ -18,13 +18,19 @@ const AddSchedules = ({ title, startDate, endDate }) => {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        const container = document.getElementById("map");
-        const options = {
-            center: new kakao.maps.LatLng(35.8242238, 127.1479532),
-            level: 13,
+        const kakaoMapScript = document.createElement("script");
+        kakaoMapScript.src = "//dapi.kakao.com/v2/maps/sdk.js?appkey=f4dfdaa7345c9489c37cc4069f53b2d0&libraries=services";
+        kakaoMapScript.async = true;
+        kakaoMapScript.onload = () => {
+            const container = document.getElementById("map");
+            const options = {
+                center: new kakao.maps.LatLng(35.8242238, 127.1479532),
+                level: 13,
+            };
+            const mapInstance = new kakao.maps.Map(container, options);
+            setMap(mapInstance);
         };
-        const mapInstance = new kakao.maps.Map(container, options);
-        setMap(mapInstance);
+        document.head.appendChild(kakaoMapScript);
     }, []);
 
     const getDateRange = (start, end) => {
