@@ -11,7 +11,7 @@ const GenerateTrip = ({ onSearch }) => {
 
     return (
         <S.SearchSection>
-            <h2>🛫 내 일정 모음</h2>
+            <h2>❤️ 내가 좋아요 한 일정 모음</h2>
             <p> </p>
             <S.SearchBar>
                 <input
