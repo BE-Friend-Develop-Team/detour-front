@@ -189,11 +189,11 @@ const GetProfile = () => {
                     });
                     return;
                 }
-                endpoint = '/api/users/profiles/nickname';
+                endpoint = 'api/users/profiles/nickname';
                 data = { nickname: newNickname };
                 break;
             case "edit-email":
-                endpoint = '/api/users/profiles/email';
+                endpoint = 'api/users/profiles/email';
                 data = { email: newEmail };
                 break;
             case "edit-password":
@@ -213,7 +213,7 @@ const GetProfile = () => {
                     return;
                 }
 
-                endpoint = '/api/users/profiles/password';
+                endpoint = 'api/users/profiles/password';
                 data = {
                     password: currentPassword,
                     newPassword: newPassword,
