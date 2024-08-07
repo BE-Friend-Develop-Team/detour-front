@@ -8,7 +8,7 @@ const S = {};
 S.Background = styled.div`
     width: 100vw;
     height: 100vh;
-    ${flexCenterColumn}
+    ${flexCenterColumn};
     position: relative;
     overflow: hidden;
 `;

@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import S from "./style";
 import { useParams, useNavigate } from "react-router-dom";
-import DetourButton from "../../components/button/DetourButton";
+import { Button, StyledImg, ButtonText, InputField, ModalContent1 } from "../../components/button/ButtonStyled";
+import LocationPlaceModal from './LocationPlaceModal';
 
 const { kakao } = window;
 
@@ -12,10 +13,21 @@ const SchedulesDetail = () => {
     const [map, setMap] = useState(null);
     const [markers, setMarkers] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isModalPlaceOpen, setIsModalPlaceOpen] = useState(false);
     const [inviteUserId, setInviteUserId] = useState("");
+    const [selectedLocation, setSelectedLocation] = useState(null);
+    const [error, setError] = useState(null);
+    const [selectedUserName, setSelectedUserName] = useState('');
+    const [departureDate, setDepartureDate] = useState('');
 
     const fetchScheduleDetail = async () => {
         const accessToken = localStorage.getItem("token").substring(7);
+        if (!accessToken) {
+            setError("로그인이 필요합니다.");
+            navigate('/login');
+            return;
+        }
+
         try {
             const response = await fetch(`http://localhost:8081/api/schedules/${scheduleId}/details`, {
                 method: "GET",
@@ -59,7 +71,7 @@ const SchedulesDetail = () => {
 
     useEffect(() => {
         fetchScheduleDetail();
-    }, []);
+    }, [scheduleId]);
 
     useEffect(() => {
         if (schedule && schedule.dailyPlanList) {
@@ -104,7 +116,12 @@ const SchedulesDetail = () => {
     };
 
     const handleInviteSubmit = async () => {
-        const accessToken = localStorage.getItem("token").substring(7);
+        const accessToken = localStorage.getItem("token")?.substring(7);
+        if (!accessToken) {
+            setError("로그인이 필요합니다.");
+            navigate('/login');
+            return;
+        }
         try {
             const response = await fetch(`http://localhost:8081/api/schedules/${scheduleId}/invitation`, {
                 method: "POST",
@@ -126,6 +143,51 @@ const SchedulesDetail = () => {
         }
     };
 
+    const handleLocationClick = async (location, cardIndex) => {
+        const accessToken = localStorage.getItem('token')?.substring(7);
+        if (!accessToken) {
+            setError("로그인이 필요합니다.");
+            navigate('/login');
+            return;
+        }
+        setIsModalPlaceOpen(true);
+        try {
+            const dailyPlan = schedule.dailyPlanList[cardIndex];
+            const response = await fetch(`http://localhost:8081/api/daily-plans/${dailyPlan.dailyPlanId}/markers/${location.markerId}`, {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${accessToken}`,
+                },
+            });
+            console.log("응답 상태:", response.status);
+            if (!response.ok) {
+                throw new Error("마커 정보를 불러오는데 실패했습니다.");
+            }
+            const data = await response.json();
+            const markerDetails = data.data;
+            console.log("이거머임"+data);
+            console.log(data.data);
+            setSelectedLocation({
+                ...location,
+                cardIndex,
+                markerId: markerDetails.markerId,
+                content: location.content,
+                images: markerDetails.images,
+                name: schedule.name,
+                title: markerDetails.name
+            });
+            console.log("제목제목제머래ㅓㄹ"+markerDetails.name);
+            console.log("하이"+location.content);
+            console.log("하이22"+markerDetails.images);
+            console.log("제목"+data.data.title);
+            console.log("진짜 제목임:"+markerDetails.title)
+            setSelectedUserName(schedule.nickname);
+            setDepartureDate(schedule.departureDate);
+        } catch (err) {
+            setError('마커 정보를 불러오는 중 오류가 발생했습니다: ' + err.message);
+        }
+    };
+
     return (
         <S.SchedulesWrapper>
             {schedule ? (
@@ -138,30 +200,18 @@ const SchedulesDetail = () => {
                             </S.SchedulesPeriodContainer>
                         </S.SchedulesTitlePeriodContainer>
                         <S.SchedulesLikesTravelersContainer>
-                            <S.SchedulesLike>좋아요: {schedule.likeCount || 0}</S.SchedulesLike>
-                            <S.SchedulesTravlers>조회수: {schedule.hits || 0}</S.SchedulesTravlers>
+                            <S.SchedulesLike>좋아요 : {schedule.likeCount || 0}</S.SchedulesLike>
+                            <S.SchedulesTravlers>조회수 : {schedule.hits || 0}</S.SchedulesTravlers>
                         </S.SchedulesLikesTravelersContainer>
                     </S.SchedulesInformationContainer>
-                    <DetourButton
-                        variant="main"
-                        shape="small"
-                        size="medium"
-                        color="black"
-                        border="default"
-                        onClick={handleEditClick}
-                    >
-                        수정
-                    </DetourButton>
-                    <DetourButton
-                        variant="main"
-                        shape="small"
-                        size="medium"
-                        color="black"
-                        border="default"
-                        onClick={handleInviteClick}
-                    >
-                        초대
-                    </DetourButton>
+                    <S.ButtonsContainer>
+                        <Button style={{ marginRight: '15px' }} onClick={handleEditClick}>
+                            <StyledImg src="/images/schedule/수정3.png" alt="수정" />
+                        </Button>
+                        <Button onClick={handleInviteClick}>
+                            <StyledImg src="/images/schedule/초대5.png" alt="초대" />
+                        </Button>
+                    </S.ButtonsContainer>
                     <S.PlanWrapper>
                         <S.MapWrapper>
                             <div id="map"></div>
@@ -173,17 +223,21 @@ const SchedulesDetail = () => {
                                     <S.Cards key={index}>
                                         <S.CardTitleContainer>
                                             <S.CardTitle>DAY {index + 1}</S.CardTitle>
-                                            <S.CardDate>{dayPlan.date}</S.CardDate> {/* ISO 형식 날짜 표시 */}
+                                            <S.CardDate>{dayPlan.date}</S.CardDate>
                                         </S.CardTitleContainer>
                                         <S.LocationContainerWrapper>
                                             <S.LocationContainer>
                                                 {dayPlan.markerList
-                                                    .sort((a, b) => a.markerIndex - b.markerIndex) // markerIndex에 따라 정렬
+                                                    .sort((a, b) => a.markerIndex - b.markerIndex)
                                                     .map((location, locIndex) => (
                                                         <S.LocationWrapper key={locIndex}>
                                                             <S.Location>
                                                                 <S.LocationIndex>{locIndex + 1}</S.LocationIndex>
-                                                                <S.LocationName>{location.name}</S.LocationName>
+                                                                <S.LocationName
+                                                                    onClick={() => handleLocationClick(location, index)}
+                                                                >
+                                                                    {location.name || "이름 없음"}
+                                                                </S.LocationName>
                                                             </S.Location>
                                                         </S.LocationWrapper>
                                                     ))}
@@ -199,19 +253,42 @@ const SchedulesDetail = () => {
                 <p>Loading...</p>
             )}
             {isModalOpen && (
-                <S.Modal>
-                    <S.ModalContent>
-                        <h2>사용자 초대</h2>
-                        <input
+                <S.Modal1>
+                    <ModalContent1>
+                        <h5>💌</h5>
+                        <p style={{fontSize: '0.875rem', color: '#666', marginBottom: '20px'}}>
+                            여행을 함께 떠날 사용자를 초대해 보세요!
+                        </p>
+                        <InputField
                             type="text"
                             value={inviteUserId}
                             onChange={(e) => setInviteUserId(e.target.value)}
-                            placeholder="사용자 아이디 입력"
+                            placeholder="사용자 닉네임 입력"
                         />
-                        <DetourButton onClick={handleInviteSubmit}>초대하기</DetourButton>
-                        <DetourButton onClick={() => setIsModalOpen(false)}>닫기</DetourButton>
-                    </S.ModalContent>
-                </S.Modal>
+                        <div style={{ marginTop: '10px' }}>
+                            <ButtonText onClick={handleInviteSubmit}>
+                                초대
+                            </ButtonText>
+                            <ButtonText onClick={() => setIsModalOpen(false)}>
+                                닫기
+                            </ButtonText>
+                        </div>
+                    </ModalContent1>
+                </S.Modal1>
+            )}
+            {isModalPlaceOpen && (
+                <LocationPlaceModal
+                    isOpen={isModalPlaceOpen}
+                    onClose={() => setIsModalPlaceOpen(false)}
+                    location={selectedLocation} // 올바른 location을 전달
+                    onSave={(updatedLocation) => {
+                        // 위치 업데이트 처리
+                        setSelectedLocation(updatedLocation);
+                    }}
+                    userName={selectedUserName}
+                    departureDate={departureDate}
+                    title={selectedLocation?.title}
+                />
             )}
         </S.SchedulesWrapper>
     );

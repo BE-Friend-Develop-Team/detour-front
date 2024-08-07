@@ -14,15 +14,36 @@ S.GenerateSchedulesWrapper = styled.div`
     margin-top: 40px;
 `;
 
-S.GenerateSchedulesContainer = styled.div`
-    width: 80%;
+S.SchedulesContainer = styled.div`
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  width: 70%;
+  margin: 0 auto;
 `;
 
-S.GenerateSchedulesTitle = styled.div`
-    font-size: 2rem;
-    font-weight: 600;
-    margin-bottom: 2rem;
-    cursor: pointer;
+S.SchedulesTitle = styled.div`
+  margin-bottom: 20px;
+  font-size: 1.5em;
+  font-weight: bold;
+  color: #333;
+  input[type="text"] {
+    border: 2px solid #ddd;
+    border-radius: 4px;
+    padding: 10px;
+    font-size: 1em;
+    transition: border-color 0.3s;
+    &:focus {
+      border-color: #5b9bd5;
+      outline: none;
+    }
+  }
+  span {
+    font-size: 1em;
+    color: #555;
+  }
+
 `;
 
 S.GenerateSchedulesInput = styled.input`
@@ -450,13 +471,6 @@ S.SchedulesContainer = styled.div`
     width: 80%;
 `;
 
-S.SchedulesTitle = styled.div`
-    font-size: 2rem;
-    font-weight: 600;
-    margin-bottom: 2rem;
-    cursor: pointer;
-`;
-
 S.SchedulesInput = styled.input`
     margin: 0;
     padding: 0;
@@ -468,10 +482,25 @@ S.SchedulesInput = styled.input`
 `;
 
 S.SchedulesPeriodContainer = styled.div`
-    display: flex;
-    font-size: 1.5rem;
-    font-weight: 500;
-    margin-bottom: 2rem;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  input[type="date"] {
+    border: 2px solid #ddd;
+    border-radius: 4px;
+    padding: 10px;
+    font-size: 1em;
+    transition: border-color 0.3s;
+    &:focus {
+      border-color: #5b9bd5;
+      outline: none;
+    }
+  }
+  span {
+    font-size: 1em;
+    color: #555;
+  }
 `;
 
 // EditSchedules에 필요한 추가 스타일 컴포넌트
@@ -554,46 +583,87 @@ S.SchedulesTravlers = styled.div`
 
 // 초대 모달을 위한 스타일
 S.Modal = styled.div`
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.5); /* 배경색을 어둡게 설정 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+S.Modal1 = styled.div`
     position: fixed;
-    z-index: 1000;
-    left: 0;
     top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
-    overflow: auto;
-    background-color: rgba(0,0,0,0.4);
+    background: rgba(0, 0, 0, 0.5); // 배경을 반투명 검정으로
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 1000; // 모달이 가장 위에 오도록
 `;
 
 S.ModalContent = styled.div`
-    background-color: #fefefe;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
-    max-width: 500px;
-    border-radius: 5px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-
-    h2 {
-        margin-bottom: 20px;
+  background-color: #fff;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 500px; /* 적절한 최대 너비를 설정 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 20px;
+  }
+  input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    margin-bottom: 20px;
+  }
+  button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.3s ease;
+    &:hover {
+      background-color: #0056b3;
     }
-
-    input {
-        width: 100%;
-        padding: 10px;
-        margin-bottom: 20px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-    }
-
-    button {
-        margin-top: 10px;
-    }
+  }
 `;
+
+S.ModalContent = styled.div`
+    padding: 15px;
+    flex-shrink: 0;
+`;
+
+S.ModalContent1 = styled.div`
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    max-width: 400px;
+    width: 100%;
+`;
+
 
 // Styles for LocationModal
 S.LocationModalWrapper = styled.div`
@@ -610,32 +680,52 @@ S.LocationModalWrapper = styled.div`
 `;
 
 S.LocationModalContent = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: ${theme.PALETTE.white};
-    border-radius: 10px;
-    max-width: 30rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: ${theme.PALETTE.white};
+  border-radius: 10px;
+  max-width: 30rem;
+  width: 400px;
+  padding: 20px;
+  position: relative;
+  z-index: 2001;
+  h2 {
+    margin-bottom: 20px;
+  }
+  input {
     width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  button {
+    margin-top: 10px;
+  }
+`;
+
+S.ButtonsContainer = styled.div`
+    display: flex;
+    justify-content: flex;
+    margin: 1rem 0; // 버튼과 다른 내용 사이에 여백 추가
+`;
+
+S.ModalContent = styled.div`
+    background: white;
     padding: 20px;
-    position: relative;
+    border-radius: 8px;
+    width: 600px;
+    max-width: 100%;
     z-index: 2001;
-
-    h2 {
-        margin-bottom: 20px;
-    }
-
-    input {
-        width: 100%;
-        padding: 10px;
-        margin-bottom: 20px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-    }
-
-    button {
-        margin-top: 10px;
-    }
+`;
+S.ModalContent1 = styled.div`
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 600px;
+    max-width: 100%;
+    z-index: 2001;
 `;
 
 S.ModalOverlay = styled.div`
@@ -661,58 +751,131 @@ S.ModalContent = styled.div`
 `;
 
 S.ModalHeader = styled.div`
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    h2 {
-        margin: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  h3 {
+    margin: 0;
+    font-size: 1.2em; /* 가장 큰 크기 */
+    text-align: center; /* 제목을 가운데 정렬 */
+    font-weight: bold;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  button {
+    background-color: #ffffff;
+    color: black;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.3s ease;
+    font-weight: bold;
+    &:hover {
+      background-color: #ffffff;
     }
-    button {
-        background: none;
-        border: none;
-        font-size: 1.5rem;
-        cursor: pointer;
-    }
+  }
 `;
 
 S.ModalBody = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  h4 {
+    margin: 5px 0;
+    font-size: 0.7em; /* 중간 크기 */
+    color: gray;
+    text-align: left; /* 좌측 정렬 */
+  }
+  h5 {
+    margin: 16px 0 5px 0; /* 제목과 nickname 사이에 공백 추가, 아래쪽에 약간의 여백 추가 */
+    font-size: 0.8em; /* 두 번째로 큰 크기 */
+    color: #333; /* 기본 텍스트 색상 */
+    text-align: left; /* 좌측 정렬 */
     display: flex;
-    flex-direction: column;
-    gap: 20px;
+    align-items: center; /* 수직 가운데 정렬 */
+  }
+`;
+
+S.UploadButtonImage = styled.img`
+    width: 50px; /* 원하는 크기로 조정 */
+    height: 50px; /* 원하는 크기로 조정 */
+    cursor: pointer;
+    margin-top: 20px;
 `;
 
 S.ImageUpload = styled.div`
-    input {
-        display: none;
-    }
-    img {
-        width: 100%;
-        height: auto;
-        margin-top: 10px;
-    }
+  .image-container {
+    display: flex;
+    overflow-x: auto;
+  }
+  input {
+    display: none;
+  }
+`;
+
+S.ImagePreview =  styled.img`
+    width: 300px;
+    height: auto;
+    object-fit: cover;
+    margin: 5px;
 `;
 
 S.DescriptionInput = styled.textarea`
     width: 100%;
-    height: 100px;
+    height: 150px;
     padding: 10px;
     border-radius: 4px;
     border: 1px solid #ccc;
 `;
 
 S.ModalFooter = styled.div`
-    display: flex;
-    justify-content: flex-end;
-    button {
-        background: #007bff;
-        color: white;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1rem;
+  button {
+    background: ${theme.PALETTE.primary.main};
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    &:hover {
+      color: ${theme.PALETTE.primary.dark};
     }
+  }
 `;
 
+S.CloseButtonImage = styled.img`
+    width: 30px;  // 원하는 너비로 설정
+    height: 30px; // 원하는 높이로 설정
+    object-fit: cover; // 이미지 비율에 맞게 잘림
+    cursor: pointer; // 클릭 가능한 상태로 표시
+`;
+S.ImagePreviewWrapper = styled.div`
+    position: relative;
+    display: inline-block;
+`;
+S.DeleteButtonImage = styled.img`
+    width: 40px; /* 원하는 크기로 조정 */
+    height: 40px; /* 원하는 크기로 조정 */
+    cursor: pointer;
+    margin-top: 20px;
+`;
+
+S.ScheduleText = styled.span`
+    color: black; /* 검정색으로 설정 */
+`;
+S.UserName = styled.span`
+    color: #4f1818; /* 빨간색으로 설정 */
+    font-weight: bold;
+`;
+
+S.StyleButton1 = styled.div`
+`
 
 export default S;

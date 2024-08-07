@@ -5,6 +5,8 @@ import DetourButton from "../../components/button/DetourButton";
 import { useNavigate, useParams } from "react-router-dom";
 import LocationModal from "./LocationModal";
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import CustomButton from "../../components/button/CustomButton";
+import ButtonWrapper from "../../components/button/ButtonWrapper";
 
 const { kakao } = window;
 
@@ -34,7 +36,6 @@ const EditSchedules = () => {
         if (schedule) {
             initializeMap();
             setTitle(schedule.title);
-            // Use 'getDateString' function to ensure proper date formatting
             setStartDate(getDateString(new Date(schedule.departureDate)));
             setEndDate(getDateString(new Date(schedule.arrivalDate)));
         }
@@ -165,15 +166,44 @@ const EditSchedules = () => {
         closeSearch();
     };
 
-    const handleLocationClick = (location, cardIndex) => {
-        const markerId = schedule.dailyPlanList[cardIndex].markerList.find(marker =>
-            marker.name === location.place_name &&
-            marker.latitude === location.y &&
-            marker.longitude === location.x
-        )?.markerId;
-        setSelectedLocation({ ...location, cardIndex, markerId });
-        setIsModalOpen(true);
+    const handleLocationClick = async (location, cardIndex) => {
+        const accessToken = localStorage.getItem('token')?.substring(7);
+        if (!accessToken) {
+            setError("로그인이 필요합니다.");
+            navigate('/login');
+            return;
+        }
+
+        try {
+            const dailyPlan = schedule.dailyPlanList[cardIndex];
+            const response = await fetch(`http://localhost:8081/api/daily-plans/${dailyPlan.dailyPlanId}/markers/${location.markerId}`, {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${accessToken}`,
+                },
+            });
+            console.log(response);
+            if (!response.ok) {
+                throw new Error("마커 정보를 불러오는데 실패했습니다.");
+            }
+
+            const data = await response.json();
+            const markerDetails = data.data;
+
+            setSelectedLocation({
+                ...location,
+                cardIndex,
+                markerId: location.markerId,
+                content: markerDetails.content,
+                images: markerDetails.images,
+                name: markerDetails.name
+            });
+            setIsModalOpen(true);
+        } catch (err) {
+            setError('마커 정보를 불러오는 중 오류가 발생했습니다: ' + err.message);
+        }
     };
+
 
     const handleModalClose = () => {
         setIsModalOpen(false);
@@ -197,8 +227,9 @@ const EditSchedules = () => {
         handleModalClose();
     };
 
-    const handleLocationDelete = (cardIndex, locIndex) => {
+    const handleLocationDelete = async (cardIndex, locIndex) => {
         const locationToDelete = cardLocations[cardIndex][locIndex];
+        console.log(locationToDelete);
         const markerToRemove = markers.find(m =>
             m.getPosition().getLat() === parseFloat(locationToDelete.y) &&
             m.getPosition().getLng() === parseFloat(locationToDelete.x)
@@ -209,14 +240,40 @@ const EditSchedules = () => {
             setMarkers(prevMarkers => prevMarkers.filter(m => m !== markerToRemove));
         }
 
-        setCardLocations(prevLocations => {
-            const newLocations = { ...prevLocations };
-            newLocations[cardIndex].splice(locIndex, 1);
-            if (newLocations[cardIndex].length === 0) {
-                delete newLocations[cardIndex];
+        const accessToken = localStorage.getItem('token')?.substring(7);
+        if (!accessToken) {
+            setError("로그인이 필요합니다.");
+            navigate('/login');
+            return;
+        }
+
+        try {
+            const dailyPlan = schedule.dailyPlanList[cardIndex];
+            const response = await fetch(`http://localhost:8081/api/daily-plans/${dailyPlan.dailyPlanId}/markers/${locationToDelete.markerId}`, {
+                method: "DELETE",
+                headers: {
+                    "Authorization": `Bearer ${accessToken}`,
+                    "Content-Type": "application/json",
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error('마커 삭제에 실패했습니다.');
             }
-            return newLocations;
-        });
+
+            setCardLocations(prevLocations => {
+                const newLocations = { ...prevLocations };
+                newLocations[cardIndex].splice(locIndex, 1);
+                if (newLocations[cardIndex].length === 0) {
+                    delete newLocations[cardIndex];
+                }
+                return newLocations;
+            });
+
+            alert('마커가 성공적으로 삭제되었습니다.');
+        } catch (err) {
+            setError('마커 삭제 중 오류가 발생했습니다: ' + err.message);
+        }
     };
 
     const updateScheduleTitle = async () => {
@@ -479,17 +536,19 @@ const EditSchedules = () => {
                             onChange={(e) => setEndDate(e.target.value)-1}
                         />
                     </S.SchedulesPeriodContainer>
-                    <DetourButton
-                        variant="main"
-                        shape="small"
-                        size="medium"
-                        color="black"
-                        border="default"
-                        onClick={updateScheduleTitleAndPeriod}
-                        disabled={isLoading}
-                    >
-                        {isLoading ? '수정 중...' : '수정 완료'}
-                    </DetourButton>
+                    <ButtonWrapper>
+                        <CustomButton
+                            variant="main"
+                            shape="small"
+                            size="medium"
+                            color="black"
+                            border="default"
+                            onClick={updateScheduleTitleAndPeriod}
+                            disabled={isLoading}
+                        >
+                            {isLoading ? '수정 중...' : '수정'}
+                        </CustomButton>
+                    </ButtonWrapper>
                     <S.PlanWrapper>
                         <S.MapWrapper>
                             <div id="map" style={{ width: '100%', height: '400px' }}></div>
@@ -593,6 +652,8 @@ const EditSchedules = () => {
                     onClose={handleModalClose}
                     location={selectedLocation}
                     onSave={handleSaveLocation}
+                    userName={schedule.nickname}
+                    departureDate = {schedule.departureDate}
                 />
             )}
         </S.SchedulesWrapper>
