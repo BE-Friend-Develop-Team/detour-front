@@ -21,7 +21,7 @@ const Main = () => {
         }
 
         try {
-            const response = await fetch(`https://detourofficial.shop/api/schedules/ranking`, {
+            const response = await fetch(`http://localhost:8081/api/schedules/ranking`, {
                 method: "GET",
                 headers: {
                     "Authorization": accessToken,
@@ -36,7 +36,7 @@ const Main = () => {
             const topScheduleIds = responseJson.data;
 
             const fetchScheduleDetails = async (scheduleId) => {
-                const detailResponse = await fetch(`https://detourofficial.shop/api/schedules/${scheduleId}/details`, {
+                const detailResponse = await fetch(`http://localhost:8081/api/schedules/${scheduleId}/details`, {
                     method: "GET",
                     headers: {
                         "Authorization": accessToken,

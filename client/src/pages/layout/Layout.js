@@ -31,7 +31,7 @@ const Layout = () => {
             }
 
             // 서버에 로그아웃 요청 보내기
-            const response = await fetch("https://detourofficial.shop/api/users/logout", {
+            const response = await fetch("http://localhost:8081/api/users/logout", {
                 method: "POST",
                 headers: {
                     "Authorization": accessToken,

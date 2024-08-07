@@ -14,6 +14,17 @@ S.GenerateSchedulesWrapper = styled.div`
     margin-top: 40px;
 `;
 
+S.GenerateSchedulesContainer = styled.div`
+    width: 80%;
+`;
+
+S.GenerateSchedulesTitle = styled.div`
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 2rem;
+    cursor: pointer;
+`;
+
 S.SchedulesContainer = styled.div`
   background: #ffffff;
   border-radius: 8px;

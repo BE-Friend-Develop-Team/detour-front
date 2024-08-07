@@ -58,7 +58,7 @@ const GetProfile = () => {
         }
 
         try {
-            const response = await fetch("https://detourofficial.shop/api/users/profile", {
+            const response = await fetch("http://localhost:8081/api/users/profile", {
                 method: "GET",
                 headers: {
                     "Authorization": accessToken
@@ -90,7 +90,7 @@ const GetProfile = () => {
         }
 
         try {
-            const response = await fetch("https://detourofficial.shop/api/schedules/users?page=1", {
+            const response = await fetch("http://localhost:8081/api/schedules/users?page=1", {
                 method: "GET",
                 headers: {
                     "Authorization": accessToken
@@ -120,7 +120,7 @@ const GetProfile = () => {
         }
 
         try {
-            const response = await fetch("https://detourofficial.shop/api/schedules/users/likes?page=1", {
+            const response = await fetch("http://localhost:8081/api/schedules/users/likes?page=1", {
                 method: "GET",
                 headers: {
                     "Authorization": accessToken
@@ -225,7 +225,7 @@ const GetProfile = () => {
         }
 
         try {
-            const response = await fetch(`https://detourofficial.shop/${endpoint}`, {
+            const response = await fetch(`http://localhost:8081/${endpoint}`, {
                 method: method,
                 headers: {
                     "Content-Type": "application/json",

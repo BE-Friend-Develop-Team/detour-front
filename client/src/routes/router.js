@@ -12,6 +12,7 @@ import Withdraw from "../pages/withdraw/Withdraw";
 import Trip from "../pages/trip/Trip";
 import SchedulesDetail from "../pages/schedules/SchedulesDetail";
 import EditSchedules from "../pages/schedules/EditSchedules";
+import KakaoCallback from "../pages/login/KakaoCallback";
 
 const router = createBrowserRouter([
     {
@@ -68,6 +69,10 @@ const router = createBrowserRouter([
         path: "*",
         element: <PageNotFound />,
     },
+    {
+        path: "/auth/kakao/callback",
+        element: <KakaoCallback />
+    }
 ]);
 
 export default router;
