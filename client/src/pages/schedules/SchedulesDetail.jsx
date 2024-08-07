@@ -17,7 +17,7 @@ const SchedulesDetail = () => {
     const fetchScheduleDetail = async () => {
         const accessToken = localStorage.getItem("token").substring(7);
         try {
-            const response = await fetch(`https://detourofficial.shop/api/schedules/${scheduleId}/details`, {
+            const response = await fetch(`http://localhost:8081/api/schedules/${scheduleId}/details`, {
                 method: "GET",
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
@@ -28,17 +28,14 @@ const SchedulesDetail = () => {
             }
             const result = await response.json();
 
-            // Calculate the ISO date format for departure and arrival
             const departureDate = new Date(result.data.departureDate);
             const arrivalDate = new Date(result.data.arrivalDate);
 
-            // Ensure that date calculations are done in UTC
             const departureDateUTC = new Date(Date.UTC(departureDate.getFullYear(), departureDate.getMonth(), departureDate.getDate()));
             const arrivalDateUTC = new Date(Date.UTC(arrivalDate.getFullYear(), arrivalDate.getMonth(), arrivalDate.getDate()));
 
             const days = Math.ceil((arrivalDateUTC - departureDateUTC) / (1000 * 60 * 60 * 24)) + 1;
 
-            // Add daily dates to dailyPlanList
             const dailyPlanListWithDates = result.data.dailyPlanList.map((dayPlan, index) => {
                 const planDate = new Date(departureDateUTC);
                 planDate.setUTCDate(departureDateUTC.getUTCDate() + index);
@@ -109,7 +106,7 @@ const SchedulesDetail = () => {
     const handleInviteSubmit = async () => {
         const accessToken = localStorage.getItem("token").substring(7);
         try {
-            const response = await fetch(`https://detourofficial.shop/api/schedules/${scheduleId}/invitation`, {
+            const response = await fetch(`http://localhost:8081/api/schedules/${scheduleId}/invitation`, {
                 method: "POST",
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
@@ -180,14 +177,16 @@ const SchedulesDetail = () => {
                                         </S.CardTitleContainer>
                                         <S.LocationContainerWrapper>
                                             <S.LocationContainer>
-                                                {dayPlan.markerList.map((location, locIndex) => (
-                                                    <S.LocationWrapper key={locIndex}>
-                                                        <S.Location>
-                                                            <S.LocationIndex>{locIndex + 1}</S.LocationIndex>
-                                                            <S.LocationName>{location.name}</S.LocationName>
-                                                        </S.Location>
-                                                    </S.LocationWrapper>
-                                                ))}
+                                                {dayPlan.markerList
+                                                    .sort((a, b) => a.markerIndex - b.markerIndex) // markerIndex에 따라 정렬
+                                                    .map((location, locIndex) => (
+                                                        <S.LocationWrapper key={locIndex}>
+                                                            <S.Location>
+                                                                <S.LocationIndex>{locIndex + 1}</S.LocationIndex>
+                                                                <S.LocationName>{location.name}</S.LocationName>
+                                                            </S.Location>
+                                                        </S.LocationWrapper>
+                                                    ))}
                                             </S.LocationContainer>
                                         </S.LocationContainerWrapper>
                                     </S.Cards>
