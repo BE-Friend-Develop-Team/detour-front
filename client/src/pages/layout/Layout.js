@@ -4,6 +4,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { Outlet } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setUser, setUserStatus } from "../../modules/login";
+import axios from "axios";
 
 const Layout = () => {
     const navigate = useNavigate();
@@ -22,12 +23,38 @@ const Layout = () => {
         setIsLoading(false);
     }, []);
 
+    const kakaoLogout = (kakaoToken) => {
+        axios({
+            method: 'POST',
+            url: 'https://kapi.kakao.com/v1/user/logout',
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+                "Authorization": `Bearer ${kakaoToken}`
+            },
+        }).catch((e) => {
+            console.log('e : ', e)
+            // 이미 만료된 토큰일 경우
+            if (e.response.data.code === -401) {
+                window.location.href = '/'
+            }
+        })
+    }
+
+
     const handleLogout = async () => {
         try {
             const accessToken = localStorage.getItem('token');
+            const kakaoToken = localStorage.getItem('Kakao-Token');
 
             if (!accessToken) {
                 throw new Error("로그인 상태가 아닙니다.");
+            }
+
+            console.log(kakaoToken);
+
+            if (kakaoToken) {
+                console.log("카카오 로그아웃 로직 실행");
+                kakaoLogout(kakaoToken);
             }
 
             // 서버에 로그아웃 요청 보내기
@@ -35,6 +62,7 @@ const Layout = () => {
                 method: "POST",
                 headers: {
                     "Authorization": accessToken,
+                    "Kakao-Token": kakaoToken,
                     "Content-Type": "application/json"
                 }
             });
