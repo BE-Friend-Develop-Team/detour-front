@@ -11,6 +11,36 @@ S.Main = styled.div`
     margin-top: 40px;
 `;
 
+S.Pagination = styled.div`
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+    
+    button {
+        background-color: #e5e5e5;
+        border: 1px solid #e5e5e5;
+        color: white;
+        padding: 8px 16px;
+        margin: 0 4px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 1em;
+        transition: background-color 0.3s ease, color 0.3s ease;
+        
+        &:hover {
+            background-color: #e7c758;
+            color: #333;
+        }
+        
+        &:disabled {
+            background-color: #e7c758;
+            color: #888;
+            cursor: not-allowed;
+        }
+    }
+`;
+
+
 S.SearchSection = styled.section`
     width: 100%;
     max-width: 800px;
