@@ -7,7 +7,7 @@ const LocationModal = ({ isOpen, onClose, location, onSave, userName, departureD
     const [error, setError] = useState(null);
     const [newImageFiles, setNewImageFiles] = useState([]);
     useEffect(() => {
-        setDescription(location.description || "");
+        setDescription(location.content || "");
         setImages(location.images || []);
     }, [location]);
     const handleImageChange = (e) => {
