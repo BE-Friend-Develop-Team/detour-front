@@ -13,12 +13,16 @@ export default function KakaoCallback() {
         const kakaoLogin = async (code) => {
             try {
                 const res = await axios.get(`http://localhost:8081/api/users/login/oauth2/code/kakao?code=${code}`);
-                const NICKNAME = res.data.data;
+                const KAKAO_TOKEN = res.data.data;
 
-                localStorage.setItem("nickname", NICKNAME);
+                console.log(res.headers);
+
+                localStorage.setItem("Kakao-Token", KAKAO_TOKEN);
                 localStorage.setItem("token", res.headers.get('Authorization'));
-                console.log("nickname:", NICKNAME);
+
+                console.log("kakao-token:", KAKAO_TOKEN);
                 console.log("token", res.headers.get('Authorization'));
+
 
                 navigate("/", { replace: true });
             } catch (err) {

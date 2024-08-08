@@ -725,7 +725,6 @@ S.LocationModalContent = styled.div`
 
 S.ButtonsContainer = styled.div`
     display: flex;
-    //justify-content: flex;
     margin: 1rem 0; // 버튼과 다른 내용 사이에 여백 추가
 `;
 
@@ -895,6 +894,12 @@ S.UserName = styled.span`
 
 S.StyleButton1 = styled.div`
 `
+export const InvitedUser = styled.span`
+  margin-left: 10px;
+  color: #666;
+  font-size: 0.875rem;
+`;
+
 
 S.CommentSection = styled.div`
   margin-top: 20px;

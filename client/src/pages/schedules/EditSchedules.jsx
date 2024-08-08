@@ -61,6 +61,7 @@ const EditSchedules = () => {
             }
             const data = await response.json();
             setSchedule(data.data);
+            console.log(schedule);
             initializeCardLocations(data.data);
         } catch (err) {
             setError('일정 정보를 불러오는 중 오류가 발생했습니다: ' + err.message);
@@ -189,11 +190,11 @@ const EditSchedules = () => {
 
             const data = await response.json();
             const markerDetails = data.data;
-
+            console.log(markerDetails);
             setSelectedLocation({
                 ...location,
                 cardIndex,
-                markerId: location.markerId,
+                markerId: markerDetails.markerId,
                 content: markerDetails.content,
                 images: markerDetails.images,
                 name: markerDetails.name
@@ -229,7 +230,7 @@ const EditSchedules = () => {
 
     const handleLocationDelete = async (cardIndex, locIndex) => {
         const locationToDelete = cardLocations[cardIndex][locIndex];
-        console.log(locationToDelete);
+
         const markerToRemove = markers.find(m =>
             m.getPosition().getLat() === parseFloat(locationToDelete.y) &&
             m.getPosition().getLng() === parseFloat(locationToDelete.x)
@@ -237,7 +238,6 @@ const EditSchedules = () => {
 
         if (markerToRemove) {
             markerToRemove.setMap(null);
-            setMarkers(prevMarkers => prevMarkers.filter(m => m !== markerToRemove));
         }
 
         const accessToken = localStorage.getItem('token')?.substring(7);
@@ -248,8 +248,7 @@ const EditSchedules = () => {
         }
 
         try {
-            const dailyPlan = schedule.dailyPlanList[cardIndex];
-            const response = await fetch(`http://localhost:8081/api/daily-plans/${dailyPlan.dailyPlanId}/markers/${locationToDelete.markerId}`, {
+            const response = await fetch(`http://localhost:8081/api/daily-plans/markers/${locationToDelete.markerId}`, {
                 method: "DELETE",
                 headers: {
                     "Authorization": `Bearer ${accessToken}`,
@@ -261,6 +260,7 @@ const EditSchedules = () => {
                 throw new Error('마커 삭제에 실패했습니다.');
             }
 
+            setMarkers(prevMarkers => prevMarkers.filter(m => m !== markerToRemove));
             setCardLocations(prevLocations => {
                 const newLocations = { ...prevLocations };
                 newLocations[cardIndex].splice(locIndex, 1);
@@ -271,6 +271,10 @@ const EditSchedules = () => {
             });
 
             alert('마커가 성공적으로 삭제되었습니다.');
+
+            // 서버에서 최신 데이터를 가져와 동기화
+            await fetchScheduleDetails();
+
         } catch (err) {
             setError('마커 삭제 중 오류가 발생했습니다: ' + err.message);
         }

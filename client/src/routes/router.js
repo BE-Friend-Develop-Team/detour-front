@@ -13,6 +13,7 @@ import Trip from "../pages/trip/Trip";
 import SchedulesDetail from "../pages/schedules/SchedulesDetail";
 import EditSchedules from "../pages/schedules/EditSchedules";
 import KakaoCallback from "../pages/login/KakaoCallback";
+import Review from "../pages/review/Review";
 
 const router = createBrowserRouter([
     {
@@ -54,6 +55,10 @@ const router = createBrowserRouter([
             {
                 path: "/schedules/:scheduleId/edit",
                 element: <EditSchedules />,
+            },
+            {
+                path: "/review",
+                element: <Review />,
             },
         ],
     },

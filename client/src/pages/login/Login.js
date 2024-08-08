@@ -68,6 +68,10 @@ const Login = () => {
             dispatch(setUserStatus(true));
             localStorage.setItem('nickname', result.data.nickname);
             localStorage.setItem("token", authHeader);
+            localStorage.setItem('userId', result.data.userId);
+
+            dispatch(setUser(result.data));
+            dispatch(setUserStatus(true));
             //navigate("/", { replace: true });
         } catch (error) {
             console.error("Error during login:", error);
@@ -88,7 +92,7 @@ const Login = () => {
     };
 
     function onClickKakaoSignUp() {
-        const KAKAO_AUTH_URL = `http://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_KAKAO_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_KAKAO_REDIRECT_URI}&response_type=code`;
+        const KAKAO_AUTH_URL = `http://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_KAKAO_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_KAKAO_REDIRECT_URI}&response_type=code&prompt=login`;
         window.location.href = KAKAO_AUTH_URL;
     }
 

@@ -190,15 +190,7 @@ const MyTripList = ({ search }) => {
 
     return (
         <div>
-            <S.SortSection>
-                <label htmlFor="sortBy">
-                    정렬 기준:
-                </label>
-                <select id="sortBy" value={sortBy} onChange={handleSortChange}>
-                    <option value="최신">최신순</option>
-                    <option value="좋아요">좋아요순</option>
-                </select>
-            </S.SortSection>
+
             <S.TripSection>
                 {trips ? (
                     trips.map((trip) => (
@@ -217,7 +209,7 @@ const MyTripList = ({ search }) => {
                             <S.TripImageWrapper>
                                 <S.TripImage src={trip.imageUrl} alt={trip.title} />
                                 <S.EditImageButton onClick={(e) => { e.stopPropagation(); handleImageEdit(trip.scheduleId); }}>
-                                    <img src="/images/modal/edit-icon.png" alt="Edit" />
+                                    <img src="/images/modal/사진수정4.png" alt="Edit" />
                                 </S.EditImageButton>
                             </S.TripImageWrapper>
                             <S.TripFooter>

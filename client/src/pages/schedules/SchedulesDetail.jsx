@@ -3,6 +3,7 @@ import S from "./style";
 import { useParams, useNavigate } from "react-router-dom";
 import { Button, StyledImg, ButtonText, InputField, ModalContent1 } from "../../components/button/ButtonStyled";
 import LocationPlaceModal from './LocationPlaceModal';
+import { useSelector } from "react-redux";
 
 const { kakao } = window;
 
@@ -24,9 +25,11 @@ const SchedulesDetail = () => {
     const [editingCommentId, setEditingCommentId] = useState(null);
     const [editedCommentContent, setEditedCommentContent] = useState("");
     const currentNickname = localStorage.getItem("nickname");
+    const [invitedUsers, setInvitedUsers] = useState([]);
+    const currentUser = useSelector((state) => state.login.currentUser);
 
     const fetchScheduleDetail = async () => {
-        const accessToken = localStorage.getItem("token").substring(7);
+        const accessToken = localStorage.getItem("token")?.substring(7);
         if (!accessToken) {
             setError("로그인이 필요합니다.");
             navigate('/login');
@@ -74,9 +77,40 @@ const SchedulesDetail = () => {
         }
     };
 
+    const fetchInvitedUsers = async () => {
+        const accessToken = localStorage.getItem("token")?.substring(7);
+        if (!accessToken) {
+            setError("로그인이 필요합니다.");
+            navigate('/login');
+            return;
+        }
+
+        try {
+            const response = await fetch(`http://localhost:8081/api/schedules/${scheduleId}/invitation/users`, {
+                method: "GET",
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            });
+            if (!response.ok) {
+                throw new Error("Failed to fetch invited users");
+            }
+            const result = await response.json();
+            console.log("초대한 사용자 목록:", result.data); // 디버깅용 콘솔 로그
+            setInvitedUsers(result.data);
+        } catch (error) {
+            console.error("Failed to fetch invited users:", error);
+        }
+    };
+
     useEffect(() => {
         fetchScheduleDetail();
+        fetchInvitedUsers();
     }, [scheduleId]);
+
+    useEffect(() => {
+        console.log("Invited Users Updated:", invitedUsers);
+    }, [invitedUsers]);
 
     useEffect(() => {
         if (schedule && schedule.dailyPlanList) {
@@ -244,7 +278,8 @@ const SchedulesDetail = () => {
         navigate(`/schedules/${scheduleId}/edit`);
     };
 
-    const handleInviteClick = () => {
+    const handleInviteClick = async () => {
+        await fetchInvitedUsers(); // 모달 열 때 초대한 사용자 목록을 가져옵니다
         setIsModalOpen(true);
     };
 
@@ -265,14 +300,25 @@ const SchedulesDetail = () => {
                 body: JSON.stringify({ nickname: inviteUserId }),
             });
             if (!response.ok) {
-                throw new Error("Invitation failed");
+                const errorData = await response.json();
+                if (errorData.message === "이미 해당 일정에 초대된 사용자입니다.") {
+                    throw new Error("이미 초대된 사용자입니다.");
+                } else {
+                    throw new Error(errorData.message || "Invitation failed");
+                }
             }
             alert("초대가 성공적으로 전송되었습니다.");
+            await fetchInvitedUsers();
+            setInvitedUsers((prevUsers) => [...prevUsers, { nickname: inviteUserId }]); // 초대한 사용자 목록에 추가
             setIsModalOpen(false);
             setInviteUserId("");
         } catch (error) {
             console.error("Failed to invite user:", error);
-            alert("초대 중 오류가 발생했습니다.");
+            if (error.message === "이미 해당 일정에 초대된 사용자입니다.") {
+                alert("이미 초대된 사용자입니다.");
+            } else {
+                alert(`초대 중 오류가 발생했습니다: ${error.message}`);
+            }
         }
     };
 
@@ -292,7 +338,6 @@ const SchedulesDetail = () => {
                     "Authorization": `Bearer ${accessToken}`,
                 },
             });
-            console.log("응답 상태:", response.status);
             if (!response.ok) {
                 throw new Error("마커 정보를 불러오는데 실패했습니다.");
             }
@@ -301,11 +346,11 @@ const SchedulesDetail = () => {
             setSelectedLocation({
                 ...location,
                 cardIndex,
-                markerId: markerDetails.markerId,
+                markerId: data.data.markerId,
                 content: location.content,
-                images: markerDetails.images,
+                images: data.data.images,
                 name: schedule.name,
-                title: markerDetails.name
+                title: data.data.name
             });
             setSelectedUserName(schedule.nickname);
             setDepartureDate(schedule.departureDate);
@@ -313,6 +358,54 @@ const SchedulesDetail = () => {
             setError('마커 정보를 불러오는 중 오류가 발생했습니다: ' + err.message);
         }
     };
+
+    const handleCancelInvitation = async (nickname) => {
+        const accessToken = localStorage.getItem("token")?.substring(7);
+        if (!accessToken) {
+            setError("로그인이 필요합니다.");
+            navigate('/login');
+            return;
+        }
+        try {
+            const response = await fetch(`http://localhost:8081/api/schedules/${scheduleId}/invitation`, {
+                method: "DELETE",
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ nickname }),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || "초대 취소 실패");
+            }
+
+            setInvitedUsers((prevUsers) => prevUsers.filter(user => user !== nickname));
+            alert("초대가 성공적으로 취소되었습니다.");
+        } catch (error) {
+            console.error("Failed to cancel invitation:", error);
+            alert(`초대 취소 중 오류가 발생했습니다: ${error.message}`);
+        }
+    };
+
+// 예시: X 버튼 클릭 시 호출되는 함수
+    const handleCancelClick = (nickname) => {
+        handleCancelInvitation(nickname);
+    };
+
+    // const isInvited = invitedUsers.some(user => user.nickname === currentNickname) || currentNickname === schedule?.nickname;
+  //  const isInvited = invitedUsers.includes(currentNickname);
+    const isInvited = invitedUsers.some(user => user === currentNickname) || currentNickname === schedule?.nickname;
+
+    console.log("Current Nickname:", currentNickname);
+    console.log("Invited Users:", invitedUsers);
+    console.log("Is Invited:", isInvited);
+    console.log("Is Invited Check:", invitedUsers.some(user => user.nickname === currentNickname), "OR", currentNickname === schedule?.nickname);
+
+    //  const isInvited = currentNickname === schedule?.nickname; // 게시글 작성자와 현재 로그인한 사용자의 닉네임 비교
+    // const isInvited = invitedUsers.includes(currentNickname);
+
 
     return (
         <S.SchedulesWrapper>
@@ -331,14 +424,16 @@ const SchedulesDetail = () => {
                             <S.SchedulesCommentss>댓글 : {comments.length || 0}</S.SchedulesCommentss>
                         </S.SchedulesLikesTravelersContainer>
                     </S.SchedulesInformationContainer>
-                    <S.ButtonsContainer>
-                        <Button style={{ marginRight: '15px' }} onClick={handleEditClick}>
-                            <StyledImg src="/images/schedule/수정3.png" alt="수정" />
-                        </Button>
-                        <Button onClick={handleInviteClick}>
-                            <StyledImg src="/images/schedule/초대5.png" alt="초대" />
-                        </Button>
-                    </S.ButtonsContainer>
+                    {isInvited && (
+                        <S.ButtonsContainer>
+                            <Button style={{ marginRight: '15px' }} onClick={handleEditClick}>
+                                <StyledImg src="/images/schedule/수정3.png" alt="수정" />
+                            </Button>
+                            <Button onClick={handleInviteClick}>
+                                <StyledImg src="/images/schedule/초대5.png" alt="초대" />
+                            </Button>
+                        </S.ButtonsContainer>
+                    )}
                     <S.PlanWrapper>
                         <S.MapWrapper>
                             <div id="map"></div>
@@ -448,6 +543,76 @@ const SchedulesDetail = () => {
                                 닫기
                             </ButtonText>
                         </div>
+                        {invitedUsers.length > 0 && (
+                            <div style={{
+                                marginTop: '20px',
+                                backgroundColor: '#f9f9f9',
+                                borderRadius: '8px',
+                                boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+                                maxWidth: '600px',
+                                margin: '0 auto',
+                                padding: '30px'
+                            }}>
+                                <h5 style={{
+                                    fontSize: '1.25rem',
+                                    color: '#333',
+                                    marginBottom: '15px',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    fontFamily: '"Arial", sans-serif'
+                                }}>
+                                    👫 초대된 친구들
+                                </h5>
+                                <div>
+                                    <ul style={{
+                                        listStyleType: 'none',
+                                        padding: '0',
+                                        margin: '0'
+                                    }}>
+                                        {invitedUsers.map((user, index) => (
+                                            <li key={index} style={{
+                                                backgroundColor: '#ffffff',
+                                                border: '1px solid #e0e0e0',
+                                                borderRadius: '6px',
+                                                padding: '10px',
+                                                marginBottom: '8px',
+                                                boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                fontSize: '1rem',
+                                                color: '#555',
+                                                position: 'relative',
+                                                fontFamily: '"Arial", sans-serif'
+                                            }}>
+                                                <span style={{
+                                                    flexGrow: 1
+                                                }}>
+                                                    👤 {user}
+                                                </span>
+                                                <button
+                                                    onClick={() => handleCancelClick(user)}
+                                                    style={{
+                                                        background: 'none',
+                                                        border: 'none',
+                                                        cursor: 'pointer',
+                                                        color: '#ff4d4d',
+                                                        fontSize: '1.2rem',
+                                                        transition: 'color 0.3s',
+                                                        position: 'absolute',
+                                                        right: '-30px',
+                                                        top: '50%',
+                                                        transform: 'translateY(-50%)'
+                                                    }}
+                                                    title="Remove"
+                                                >
+                                                    &times;
+                                                </button>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            </div>
+                        )}
                     </ModalContent1>
                 </S.Modal1>
             )}
@@ -455,9 +620,8 @@ const SchedulesDetail = () => {
                 <LocationPlaceModal
                     isOpen={isModalPlaceOpen}
                     onClose={() => setIsModalPlaceOpen(false)}
-                    location={selectedLocation} // 올바른 location을 전달
+                    location={selectedLocation}
                     onSave={(updatedLocation) => {
-                        // 위치 업데이트 처리
                         setSelectedLocation(updatedLocation);
                     }}
                     userName={selectedUserName}
