@@ -1,8 +1,59 @@
 import React, { useEffect, useState } from 'react';
-import S from './style'; // 스타일 파일 import
+import S from './style';
 import { useNavigate } from 'react-router-dom';
-import Modal from '../../components/modal/Modal'; // 상대 경로
-import { ModalButton } from './style'; // 새로운 스타일 import
+import Modal from '../../components/modal/Modal';
+import { ModalButton } from './style';
+
+const TravelEasterEgg = ({ isActive }) => {
+    const [items, setItems] = useState([]);
+
+    useEffect(() => {
+        if (isActive) {
+            const newItems = Array(20).fill().map((_, i) => ({
+                id: i,
+                x: Math.random() * window.innerWidth,
+                y: Math.random() * window.innerHeight,
+                rotation: Math.random() * 360,
+                type: ['✈️', '🧳', '📷', '☂️', '🌴'][Math.floor(Math.random() * 5)]
+            }));
+            setItems(newItems);
+
+            const interval = setInterval(() => {
+                setItems(prevItems => prevItems.map(item => ({
+                    ...item,
+                    x: (item.x + Math.random() * 10 - 5 + window.innerWidth) % window.innerWidth,
+                    y: (item.y + Math.random() * 10 - 5 + window.innerHeight) % window.innerHeight,
+                    rotation: (item.rotation + 5) % 360
+                })));
+            }, 50);
+
+            return () => clearInterval(interval);
+        }
+    }, [isActive]);
+
+    if (!isActive) return null;
+
+    return (
+        <div className="fixed inset-0 pointer-events-none z-50">
+            {items.map(item => (
+                <div
+                    key={item.id}
+                    className="absolute transition-all duration-300 ease-in-out text-4xl"
+                    style={{
+                        left: `${item.x}px`,
+                        top: `${item.y}px`,
+                        transform: `rotate(${item.rotation}deg)`
+                    }}
+                >
+                    {item.type}
+                </div>
+            ))}
+            <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-white p-2 rounded shadow text-xl font-bold text-blue-600">
+                🌟 여행의 마법이 시작됐어요! 🌟
+            </div>
+        </div>
+    );
+};
 
 const TripList = ({ search }) => {
     const [trips, setTrips] = useState(null);
@@ -13,6 +64,8 @@ const TripList = ({ search }) => {
     const [modalOpen, setModalOpen] = useState(false); // 모달 상태 추가
     const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태 추가
     const [totalPages, setTotalPages] = useState(1); // 총 페이지 상태 추가
+    const [easterEggActive, setEasterEggActive] = useState(false);
+    const [clickCount, setClickCount] = useState(0);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -198,9 +251,21 @@ const TripList = ({ search }) => {
         navigate(`/schedules/${scheduleId}`);
     };
 
+        const activateEasterEgg = () => {
+        setClickCount(prev => {
+            if (prev + 1 >= 10) {
+                setEasterEggActive(true);
+                setTimeout(() => setEasterEggActive(false), 4000);
+                return 0;
+            }
+            return prev + 1;
+        });
+    };
+
     return (
         <div>
-            <S.SortSection>
+            <TravelEasterEgg isActive={easterEggActive} />
+            <S.SortSection onClick={activateEasterEgg}>
                 <label htmlFor="sortBy"></label>
                 <select id="sortBy" value={sortBy} onChange={handleSortChange}>
                     <option value="최신">최신순</option>
@@ -225,7 +290,7 @@ const TripList = ({ search }) => {
                             <S.TripImageWrapper>
                                 <S.TripImage src={trip.imageUrl} alt={trip.title} />
                                 <S.EditImageButton onClick={(e) => { e.stopPropagation(); handleImageEdit(trip.scheduleId); }}>
-                                    <img src="/images/modal/edit-icon.png" alt="Edit" />
+                                    <img src="/images/modal/사진수정4.png" alt="Edit" />
                                 </S.EditImageButton>
                             </S.TripImageWrapper>
                             <S.TripFooter>
@@ -261,7 +326,7 @@ const TripList = ({ search }) => {
 
             {/* 모달 컴포넌트 추가 */}
             <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
-                <h2></h2>
+                <h2>이미지 업로드</h2>
                 <input
                     type="file"
                     accept="image/*"
