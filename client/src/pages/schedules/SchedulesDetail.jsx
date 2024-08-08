@@ -20,10 +20,13 @@ const SchedulesDetail = () => {
     const [error, setError] = useState(null);
     const [selectedUserName, setSelectedUserName] = useState('');
     const [departureDate, setDepartureDate] = useState('');
-    const [invitedUsers, setInvitedUsers] = useState([]);
-
-    const currentUser = useSelector((state) => state.login.currentUser);
+    const [comments, setComments] = useState([]);
+    const [newComment, setNewComment] = useState("");
+    const [editingCommentId, setEditingCommentId] = useState(null);
+    const [editedCommentContent, setEditedCommentContent] = useState("");
     const currentNickname = localStorage.getItem("nickname");
+    const [invitedUsers, setInvitedUsers] = useState([]);
+    const currentUser = useSelector((state) => state.login.currentUser);
 
     const fetchScheduleDetail = async () => {
         const accessToken = localStorage.getItem("token")?.substring(7);
@@ -38,12 +41,14 @@ const SchedulesDetail = () => {
                 method: "GET",
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
+                    "Content-Type": "application/json",
                 },
             });
             if (!response.ok) {
                 throw new Error("Network response was not ok");
             }
             const result = await response.json();
+
             const departureDate = new Date(result.data.departureDate);
             const arrivalDate = new Date(result.data.arrivalDate);
 
@@ -141,6 +146,134 @@ const SchedulesDetail = () => {
         }
     }, [schedule]);
 
+    useEffect(() => {
+        if (scheduleId) {
+            fetchComments();
+        }
+    }, [scheduleId]);
+
+    const fetchComments = async () => {
+        const accessToken = localStorage.getItem("token")?.substring(7);
+        if (!accessToken) {
+            setError("로그인이 필요합니다.");
+            navigate('/login');
+            return;
+        }
+        try {
+            const response = await fetch(`http://localhost:8081/api/schedules/${scheduleId}/comments`, {
+                method: "GET",
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                    "Content-Type": "application/json",
+                },
+            });
+            if (!response.ok) {
+                throw new Error("댓글을 불러오는데 실패했습니다.");
+            }
+            const data = await response.json();
+            setComments(data.data.map(comment => ({
+                id: comment.commentId,
+                content: comment.content,
+                nickname: comment.nickname
+            })));
+        } catch (error) {
+            console.error("Failed to fetch comments:", error);
+        }
+    };
+
+    const handleCommentSubmit = async (e) => {
+        e.preventDefault();
+        const accessToken = localStorage.getItem("token")?.substring(7);
+        if (!accessToken) {
+            setError("로그인이 필요합니다.");
+            navigate('/login');
+            return;
+        }
+        try {
+            const response = await fetch(`http://localhost:8081/api/schedules/${scheduleId}/comments`, {
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ content: newComment }),
+            });
+            if (!response.ok) {
+                throw new Error("댓글 작성에 실패했습니다.");
+            }
+            const data = await response.json();
+            setComments([data.data, ...comments]);
+            setNewComment("");
+        } catch (error) {
+            console.error("Failed to submit comment:", error);
+        }
+    };
+
+    const handleEditComment = (commentId, content) => {
+        setEditingCommentId(commentId);
+        setEditedCommentContent(content);
+    };
+
+    const handleUpdateComment = async (commentId) => {
+        const accessToken = localStorage.getItem('token');
+        if (!accessToken) {
+            console.log("accessToken not set");
+            return;
+        }
+
+        try {
+            const response = await fetch(`http://localhost:8081/api/schedules/comments/${commentId}`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": accessToken
+                },
+                body: JSON.stringify({
+                    content: editedCommentContent
+                }),
+            });
+            if (!response.ok) {
+                throw new Error("댓글 수정에 실패했습니다.");
+            }
+            const data = await response.json();
+            setComments(comments.map(comment =>
+                comments.id === commentId ? {...comment, content: editedCommentContent} : comment
+            ));
+            setEditingCommentId(null);
+            // 수정 후 수정한 댓글이 보이도록 새로고침
+            await fetchComments();
+        } catch (error) {
+            console.error("Failed to update comment:", error);
+        }
+    };
+
+    const handleDeleteComment = async (commentId) => {
+        const accessToken = localStorage.getItem("token");
+        if (!accessToken) {
+            setError("로그인이 필요합니다.");
+            navigate('/login');
+            return;
+        }
+        if (!window.confirm("정말로 이 댓글을 삭제하시겠습니까?")) {
+            return;
+        }
+        try {
+            const response = await fetch(`http://localhost:8081/api/schedules/comments/${commentId}`, {
+                method: "DELETE",
+                headers: {
+                    Authorization: accessToken,
+                    "Content-Type": "application/json",
+                },
+            });
+            if (!response.ok) {
+                throw new Error("댓글 삭제에 실패했습니다.");
+            }
+            setComments(comments.filter(comment => comment.id !== commentId));
+        } catch (error) {
+            console.error("Failed to delete comment:", error);
+        }
+    };
+
     const handleEditClick = () => {
         navigate(`/schedules/${scheduleId}/edit`);
     };
@@ -209,6 +342,7 @@ const SchedulesDetail = () => {
                 throw new Error("마커 정보를 불러오는데 실패했습니다.");
             }
             const data = await response.json();
+            const markerDetails = data.data;
             setSelectedLocation({
                 ...location,
                 cardIndex,
@@ -287,6 +421,7 @@ const SchedulesDetail = () => {
                         <S.SchedulesLikesTravelersContainer>
                             <S.SchedulesLike>좋아요 : {schedule.likeCount || 0}</S.SchedulesLike>
                             <S.SchedulesTravlers>조회수 : {schedule.hits || 0}</S.SchedulesTravlers>
+                            <S.SchedulesCommentss>댓글 : {comments.length || 0}</S.SchedulesCommentss>
                         </S.SchedulesLikesTravelersContainer>
                     </S.SchedulesInformationContainer>
                     {isInvited && (
@@ -334,6 +469,54 @@ const SchedulesDetail = () => {
                                 ))}
                             </S.CardsContainer>
                         </S.CardsWrapper>
+                        {/*==== 여기 댓글 여기 ====*/}
+                        <S.CommentSection>
+                            <S.CommentForm onSubmit={handleCommentSubmit}>
+                                <S.CommentInput
+                                    value={newComment}
+                                    onChange={(e) => setNewComment(e.target.value)}
+                                    placeholder="댓글을 입력하세요"
+                                />
+                                <S.CommentSubmitButton type="submit">댓글 작성</S.CommentSubmitButton>
+                            </S.CommentForm>
+                        </S.CommentSection>
+                        <S.CommentList>
+                            {comments.map((comment) => (
+                                <S.CommentItem key={comment.id}>
+                                    <S.CommentAuthor>👤 {comment.nickname}</S.CommentAuthor>
+                                    {editingCommentId === comment.id ? (
+                                        <S.CommentEditForm onSubmit={(e) => {
+                                            e.preventDefault();
+                                            handleUpdateComment(comment.id);
+                                        }}>
+                                            <S.CommentEditInput
+                                                value={editedCommentContent}
+                                                onChange={(e) => setEditedCommentContent(e.target.value)}
+                                            />
+                                            <S.CommentEditButton type="submit">저장</S.CommentEditButton>
+                                            <S.CommentEditButton onClick={() => setEditingCommentId(null)}>취소</S.CommentEditButton>
+                                        </S.CommentEditForm>
+                                    ) : (
+                                        <>
+                                            <S.CommentContent>{comment.content}</S.CommentContent>
+                                            <S.CommentDate>{new Date(comment.createdAt).toLocaleString()}</S.CommentDate>
+                                            {currentNickname === comment.nickname && (
+                                                <S.CommentActions>
+                                                        <S.CommentActionButton onClick={() => {
+                                                            handleEditComment(comment.id, comment.content);
+                                                        }}>
+                                                            <img src="/images/schedule/댓글 수정.png" alt="수정" width="20" height="20" />
+                                                        </S.CommentActionButton>
+                                                        <S.CommentActionButton onClick={() => handleDeleteComment(comment.id)}>
+                                                            <img src="/images/schedule/댓글 삭제.png" alt="삭제" width="20" height="20" />
+                                                        </S.CommentActionButton>
+                                                </S.CommentActions>
+                                            )}
+                                        </>
+                                    )}
+                                </S.CommentItem>
+                            ))}
+                        </S.CommentList>
                     </S.PlanWrapper>
                 </S.SchedulesContainer>
             ) : (
@@ -449,4 +632,5 @@ const SchedulesDetail = () => {
         </S.SchedulesWrapper>
     );
 };
+
 export default SchedulesDetail;
