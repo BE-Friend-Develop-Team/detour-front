@@ -23,6 +23,7 @@ const SchedulesDetail = () => {
     const [newComment, setNewComment] = useState("");
     const [editingCommentId, setEditingCommentId] = useState(null);
     const [editedCommentContent, setEditedCommentContent] = useState("");
+    const currentNickname = localStorage.getItem("nickname");
 
     const fetchScheduleDetail = async () => {
         const accessToken = localStorage.getItem("token").substring(7);
@@ -168,7 +169,7 @@ const SchedulesDetail = () => {
             }
             const data = await response.json();
             setComments([data.data, ...comments]);
-            // setNewComment("");
+            setNewComment("");
         } catch (error) {
             console.error("Failed to submit comment:", error);
         }
@@ -387,7 +388,7 @@ const SchedulesDetail = () => {
                         <S.CommentList>
                             {comments.map((comment) => (
                                 <S.CommentItem key={comment.id}>
-                                    <S.CommentAuthor>👤 {comment.id}</S.CommentAuthor>
+                                    <S.CommentAuthor>👤 {comment.nickname}</S.CommentAuthor>
                                     {editingCommentId === comment.id ? (
                                         <S.CommentEditForm onSubmit={(e) => {
                                             e.preventDefault();
@@ -404,16 +405,18 @@ const SchedulesDetail = () => {
                                         <>
                                             <S.CommentContent>{comment.content}</S.CommentContent>
                                             <S.CommentDate>{new Date(comment.createdAt).toLocaleString()}</S.CommentDate>
-                                            <S.CommentActions>
-                                                <S.CommentActionButton onClick={() => {
-                                                    handleEditComment(comment.id, comment.content);
-                                                }}>
-                                                    <img src="/images/schedule/댓글 수정.png" alt="수정" width="20" height="20" />
-                                                </S.CommentActionButton>
-                                                <S.CommentActionButton onClick={() => handleDeleteComment(comment.id)}>
-                                                    <img src="/images/schedule/댓글 삭제.png" alt="삭제" width="20" height="20" />
-                                                </S.CommentActionButton>
-                                            </S.CommentActions>
+                                            {currentNickname === comment.nickname && (
+                                                <S.CommentActions>
+                                                        <S.CommentActionButton onClick={() => {
+                                                            handleEditComment(comment.id, comment.content);
+                                                        }}>
+                                                            <img src="/images/schedule/댓글 수정.png" alt="수정" width="20" height="20" />
+                                                        </S.CommentActionButton>
+                                                        <S.CommentActionButton onClick={() => handleDeleteComment(comment.id)}>
+                                                            <img src="/images/schedule/댓글 삭제.png" alt="삭제" width="20" height="20" />
+                                                        </S.CommentActionButton>
+                                                </S.CommentActions>
+                                            )}
                                         </>
                                     )}
                                 </S.CommentItem>
