@@ -467,6 +467,13 @@ S.SchedulesTravlers = styled.div`
     margin-top: 2rem;
 `;
 
+S.SchedulesCommentss = styled.div`
+    display: flex;
+    font-size: 1rem;
+    font-weight: 500;
+    margin-top: 0.5rem;
+`;
+
 // SchedulesDetail
 S.SchedulesWrapper = styled.div`
     flex: 1;
@@ -718,7 +725,7 @@ S.LocationModalContent = styled.div`
 
 S.ButtonsContainer = styled.div`
     display: flex;
-    justify-content: flex;
+    //justify-content: flex;
     margin: 1rem 0; // 버튼과 다른 내용 사이에 여백 추가
 `;
 
@@ -888,5 +895,100 @@ S.UserName = styled.span`
 
 S.StyleButton1 = styled.div`
 `
+
+S.CommentSection = styled.div`
+  margin-top: 20px;
+  border-top: 1px solid #e0e0e0;
+  padding-top: 20px;
+`;
+
+S.CommentForm = styled.form`
+  display: flex;
+  margin-bottom: 20px;
+`;
+
+S.CommentInput = styled.input`
+  flex-grow: 1;
+  padding: 10px;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  margin-right: 10px;
+`;
+
+S.CommentSubmitButton = styled.button`
+  padding: 10px 20px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #45a049;
+  }
+`;
+
+S.CommentList = styled.ul`
+  list-style-type: none;
+  padding: 0;
+`;
+
+S.CommentItem = styled.li`
+  border-bottom: 1px solid #e0e0e0;
+  padding: 10px 0;
+`;
+
+S.CommentAuthor = styled.p`
+  font-weight: bold;
+  margin-bottom: 5px;
+    color: dimgray;
+`;
+
+S.CommentContent = styled.p`
+  margin-bottom: 5px;
+`;
+
+S.CommentDate = styled.p`
+  font-size: 0.8em;
+  color: #888;
+`;
+
+S.CommentEditForm = styled.form`
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+`;
+
+S.CommentEditInput = styled.input`
+    flex: 1;
+    padding: 5px;
+    margin-right: 10px;
+`;
+
+S.CommentEditButton = styled.button`
+    padding: 5px 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    margin-right: 5px;
+
+    &:hover {
+        background-color: #45a049;
+    }
+`;
+
+S.CommentActions = styled.div`
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 5px;
+`;
+
+S.CommentActionButton = styled.button`
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-left: 10px;
+`;
 
 export default S;
