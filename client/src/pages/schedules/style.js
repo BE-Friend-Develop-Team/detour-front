@@ -246,6 +246,7 @@ S.AddScheduleCards = styled.div`
     padding: 1rem;
     background-color: ${theme.PALETTE.background.main};
     border-radius: 4px;
+    
 `;
 
 S.CardsWrapper = styled.div`
@@ -892,6 +893,8 @@ S.UserName = styled.span`
     font-weight: bold;
 `;
 
+
+
 S.StyleButton1 = styled.div`
 `
 export const InvitedUser = styled.span`
@@ -983,6 +986,7 @@ S.CommentEditButton = styled.button`
     }
 `;
 
+
 S.CommentActions = styled.div`
     display: flex;
     justify-content: flex-end;
@@ -995,5 +999,16 @@ S.CommentActionButton = styled.button`
     cursor: pointer;
     margin-left: 10px;
 `;
+
+S.DayText = styled.div`
+    font-size: 0.875rem;
+    font-weight: normal;
+    color: #919191;
+    margin-bottom: 10px;
+    text-align: center;
+    padding: 10px;
+    border-radius: 5px;
+`;
+
 
 export default S;

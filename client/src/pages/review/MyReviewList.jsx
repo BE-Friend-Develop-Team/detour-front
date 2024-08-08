@@ -122,7 +122,7 @@ const MyReviewList = ({ search, refetch }) => {
                                     {renderStars(review.star)}
                                 </S.ReviewStars>
                                 <S.ReviewText>
-                                    {review.content.length > 100 ? review.content.substring(0, 47) + '...' : review.content}
+                                    {review.content ? review.content.substring(0, 47) + '...' : review.content}
                                 </S.ReviewText>
                             </S.ReviewContent>
                         </S.ReviewItem>

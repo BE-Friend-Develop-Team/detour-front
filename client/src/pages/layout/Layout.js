@@ -125,7 +125,7 @@ const Layout = () => {
                             <a href="/"><img src={process.env.PUBLIC_URL + "/images/layout/Logo.png"} alt="Logo" /></a>
                         </S.MainLogo>
                         <S.SearchBarTop>
-                            <input type="text" placeholder="🔍 내용을 입력해 주세요" onClick={handleInputClick} />
+                            <input type="text" placeholder="💬" onClick={handleInputClick} />
                         </S.SearchBarTop>
                         <S.UserContainer>
                             <span className="welcome-name">{storedUser}</span>님 환영합니다💕

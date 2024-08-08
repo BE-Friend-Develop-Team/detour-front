@@ -591,6 +591,9 @@ const EditSchedules = () => {
                         {/*    </S.CardsContainer>*/}
                         {/*</S.CardsWrapper>*/}
                     </S.PlanWrapper>
+                    <S.DayText>
+                        {`여행 코스를 자유롭게 조정하세요. 장소 이름을 드래그하여 순서를 바꿀 수 있습니다.`}
+                    </S.DayText>
                     <DragDropContext onDragEnd={onDragEnd}>
                         <S.CardsContainer>
                             {schedule.dailyPlanList.map((dailyPlan, index) => (

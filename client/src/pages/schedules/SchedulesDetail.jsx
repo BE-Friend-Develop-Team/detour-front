@@ -52,6 +52,10 @@ const SchedulesDetail = () => {
             const departureDate = new Date(result.data.departureDate);
             const arrivalDate = new Date(result.data.arrivalDate);
 
+            if (isNaN(departureDate.getTime()) || isNaN(arrivalDate.getTime())) {
+                throw new Error("Invalid date format received from server");
+            }
+
             const departureDateUTC = new Date(Date.UTC(departureDate.getFullYear(), departureDate.getMonth(), departureDate.getDate()));
             const arrivalDateUTC = new Date(Date.UTC(arrivalDate.getFullYear(), arrivalDate.getMonth(), arrivalDate.getDate()));
 
@@ -72,6 +76,7 @@ const SchedulesDetail = () => {
                 arrivalDate: arrivalDateUTC.toISOString().substring(0, 10),
                 dailyPlanList: dailyPlanListWithDates,
             });
+
         } catch (error) {
             console.error("Failed to fetch schedule detail:", error);
         }
@@ -207,6 +212,7 @@ const SchedulesDetail = () => {
         } catch (error) {
             console.error("Failed to submit comment:", error);
         }
+        await fetchComments();
     };
 
     const handleEditComment = (commentId, content) => {
@@ -238,10 +244,12 @@ const SchedulesDetail = () => {
             const data = await response.json();
             setComments(comments.map(comment =>
                 comments.id === commentId ? {...comment, content: editedCommentContent} : comment
+
             ));
             setEditingCommentId(null);
             // 수정 후 수정한 댓글이 보이도록 새로고침
             await fetchComments();
+
         } catch (error) {
             console.error("Failed to update comment:", error);
         }
@@ -389,6 +397,35 @@ const SchedulesDetail = () => {
         }
     };
 
+    const handleDeleteSchedule = async() => {
+        const accessToken = localStorage.getItem("token");
+        if (!accessToken) {
+            setError("로그인이 필요합니다.");
+            navigate('/login');
+            return;
+        }
+        if (!window.confirm("정말로 이 일정을 삭제하시겠습니까?")) {
+            return;
+        }
+        console.log("scheduleId", scheduleId);
+
+        try {
+            const response = await fetch(`http://localhost:8081/api/schedules/${scheduleId}`, {
+                method: "DELETE",
+                headers: {
+                    Authorization: accessToken,
+                    "Content-Type": "application/json",
+                },
+            });
+            if (!response.ok) {
+                throw new Error("일정 삭제에 실패했습니다.");
+            }
+        } catch (error) {
+            console.error("Failed to delete schedule:", error);
+        }
+        navigate('/mytrip');
+    };
+
 // 예시: X 버튼 클릭 시 호출되는 함수
     const handleCancelClick = (nickname) => {
         handleCancelInvitation(nickname);
@@ -426,20 +463,40 @@ const SchedulesDetail = () => {
                     </S.SchedulesInformationContainer>
                     {isInvited && (
                         <S.ButtonsContainer>
-                            <Button style={{ marginRight: '15px' }} onClick={handleEditClick}>
-                                <StyledImg src="/images/schedule/수정3.png" alt="수정" />
-                            </Button>
-                            <Button onClick={handleInviteClick}>
-                                <StyledImg src="/images/schedule/초대5.png" alt="초대" />
-                            </Button>
+                            <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+                                <Button style={{marginRight: '15px'}} onClick={handleEditClick}>
+                                    <StyledImg src="/images/schedule/수정3.png" alt="수정"/>
+                                </Button>
+                                <span style={{color: '#c9c8c8', fontSize: '0.76rem'}}>수정</span>
+                            </div>
+                            <div style={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                                marginRight: '12px'
+                            }}>
+                                <Button onClick={handleInviteClick}>
+                                    <StyledImg src="/images/schedule/초대5.png" alt="초대"/>
+                                </Button>
+                                <span style={{color: '#c9c8c8', fontSize: '0.76rem'}}>초대</span>
+                            </div>
+                            <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+                                <Button onClick={handleDeleteSchedule}>
+                                    <StyledImg src="/images/schedule/삭제3.png" alt="삭제"/>
+                                </Button>
+                                <span style={{color: '#c9c8c8', fontSize: '0.76rem'}}>삭제</span>
+                            </div>
                         </S.ButtonsContainer>
                     )}
                     <S.PlanWrapper>
                         <S.MapWrapper>
                             <div id="map"></div>
                         </S.MapWrapper>
-                        <S.DividerLine />
+                        <S.DividerLine/>
                         <S.CardsWrapper>
+                            <S.DayText>
+                                {`장소 이름을 클릭하여 여행 기록을 확인해보세요.`}
+                            </S.DayText>
                             <S.CardsContainer>
                                 {schedule.dailyPlanList.map((dayPlan, index) => (
                                     <S.Cards key={index}>
@@ -499,8 +556,11 @@ const SchedulesDetail = () => {
                                     ) : (
                                         <>
                                             <S.CommentContent>{comment.content}</S.CommentContent>
-                                            <S.CommentDate>{new Date(comment.createdAt).toLocaleString()}</S.CommentDate>
-                                            {currentNickname === comment.nickname && (
+                                            <S.CommentDate>
+                                                {comment.createdAt && !isNaN(Date.parse(comment.createdAt))
+                                                    ? new Date(comment.createdAt).toLocaleString()
+                                                    : '날짜 표시 안됨'}
+                                            </S.CommentDate>                                      {currentNickname === comment.nickname && (
                                                 <S.CommentActions>
                                                         <S.CommentActionButton onClick={() => {
                                                             handleEditComment(comment.id, comment.content);

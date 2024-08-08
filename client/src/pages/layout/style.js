@@ -1,5 +1,6 @@
+// Styled components for your layout
+
 import styled from "styled-components";
-import theme from "../../global/theme";
 
 const S = {};
 
@@ -20,26 +21,39 @@ S.Wrapper = styled.div`
 `;
 
 S.Header = styled.header`
-    background-color: white;
+    background-color: #fff; /* 배경색 */
     padding: 20px;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
-    border-bottom: 1px solid gray;
+    position: relative;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 부드러운 그림자 */
+    border-radius: 10px; /* 모서리 둥글게 */
+
+    &::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(to right, #fdf9f3, #fa9704); /* 그라디언트 색상 */
+        border-radius: 0 0 10px 10px; /* 모서리 둥글게 */
+    }
 
     .header-top {
         display: flex;
         width: 100%;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 30px;
+        margin-bottom: 15px; /* 마진 조정 */
     }
 `;
 
 S.MainLogo = styled.div`
-    height: 50px;
-    width: 180px;
+    height: 60px; /* 로고 크기 조정 */
+    width: auto;
     & img {
         width: 100%;
         height: 100%;
@@ -50,16 +64,22 @@ S.MainLogo = styled.div`
 S.SearchBarTop = styled.div`
     display: flex;
     align-items: center;
-    margin-left: 20px;
+    margin-left: 10px;
     margin-right: auto;
 
     & input {
-        padding: 5px;
-        font-size: 0.9em;
-        border: 1px solid #ddd;
-        border-radius: 15px;
-        height: 25px;
-        width: 220px;
+        padding: 8px;
+        font-size: 1em;
+        border: none; /* 테두리 색상 */
+        outline: none;
+        border-radius: 20px;
+        height: 35px;
+        width: 200px;
+        transition: border-color 0.3s; /* 테두리 색상 변화 */
+
+        &:focus {
+            border-color: #f57c00; /* 포커스 시 테두리 색상 */
+        }
     }
 `;
 
@@ -68,13 +88,19 @@ S.UserContainer = styled.div`
     align-items: center;
 
     & a {
-        margin-left: 40px;
+        margin-left: 20px;
         text-decoration: none;
-        color: #333;
+        color: #000000; /* 링크 색상 */
+        transition: color 0.1s;
+
+        &:hover {
+            color: #7e7e7e; /* 링크 호버 색상 */
+        }
     }
 
     .welcome-name {
-        color: blue;
+        color: #009688; /* 환영 메시지 색상 */
+        font-weight: bold;
     }
 `;
 
