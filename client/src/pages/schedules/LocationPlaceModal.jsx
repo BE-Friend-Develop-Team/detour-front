@@ -48,7 +48,7 @@ const LocationPlaceModal = ({ isOpen, onClose, location, onSave, userName, depar
                     <S.DescriptionInput
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
-                        placeholder="해당 장소 방문 후 후기를 적어주세요."
+                        placeholder="아직 작성한 후기가 없습니다."
                     />
                 </S.ModalBody>
                 {error && <S.ErrorMessage>{error}</S.ErrorMessage>}

@@ -6,7 +6,7 @@ import AddSchedules from "./AddSchedules";
 
 const GenerateSchedules = () => {
     const [isInput, setIsInput] = useState(false);
-    const [title, setTitle] = useState("여행 이름");
+    const [title, setTitle] = useState("제목을 입력하세요");
     const [period, setPeriod] = useState("여행 기간을 선택하세요");
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);

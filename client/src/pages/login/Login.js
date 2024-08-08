@@ -68,6 +68,10 @@ const Login = () => {
             dispatch(setUserStatus(true));
             localStorage.setItem('nickname', result.data.nickname);
             localStorage.setItem("token", authHeader);
+            localStorage.setItem('userId', result.data.userId);
+
+            dispatch(setUser(result.data));
+            dispatch(setUserStatus(true));
             //navigate("/", { replace: true });
         } catch (error) {
             console.error("Error during login:", error);
