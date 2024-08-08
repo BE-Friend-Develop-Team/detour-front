@@ -104,6 +104,10 @@ const SchedulesDetail = () => {
     }, [scheduleId]);
 
     useEffect(() => {
+        console.log("Invited Users Updated:", invitedUsers);
+    }, [invitedUsers]);
+
+    useEffect(() => {
         if (schedule && schedule.dailyPlanList) {
             const container = document.getElementById("map");
             const options = {
@@ -163,7 +167,12 @@ const SchedulesDetail = () => {
                 body: JSON.stringify({ nickname: inviteUserId }),
             });
             if (!response.ok) {
-                throw new Error("Invitation failed");
+                const errorData = await response.json();
+                if (errorData.message === "이미 해당 일정에 초대된 사용자입니다.") {
+                    throw new Error("이미 초대된 사용자입니다.");
+                } else {
+                    throw new Error(errorData.message || "Invitation failed");
+                }
             }
             alert("초대가 성공적으로 전송되었습니다.");
             await fetchInvitedUsers();
@@ -172,7 +181,11 @@ const SchedulesDetail = () => {
             setInviteUserId("");
         } catch (error) {
             console.error("Failed to invite user:", error);
-            alert("초대 중 오류가 발생했습니다.");
+            if (error.message === "이미 해당 일정에 초대된 사용자입니다.") {
+                alert("이미 초대된 사용자입니다.");
+            } else {
+                alert(`초대 중 오류가 발생했습니다: ${error.message}`);
+            }
         }
     };
 
