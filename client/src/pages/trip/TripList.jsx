@@ -1,59 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import S from './style';
+import S from './style'; // 스타일 파일 import
 import { useNavigate } from 'react-router-dom';
-import Modal from '../../components/modal/Modal';
-import { ModalButton } from './style';
-
-const TravelEasterEgg = ({ isActive }) => {
-    const [items, setItems] = useState([]);
-
-    useEffect(() => {
-        if (isActive) {
-            const newItems = Array(20).fill().map((_, i) => ({
-                id: i,
-                x: Math.random() * window.innerWidth,
-                y: Math.random() * window.innerHeight,
-                rotation: Math.random() * 360,
-                type: ['✈️', '🧳', '📷', '☂️', '🌴'][Math.floor(Math.random() * 5)]
-            }));
-            setItems(newItems);
-
-            const interval = setInterval(() => {
-                setItems(prevItems => prevItems.map(item => ({
-                    ...item,
-                    x: (item.x + Math.random() * 10 - 5 + window.innerWidth) % window.innerWidth,
-                    y: (item.y + Math.random() * 10 - 5 + window.innerHeight) % window.innerHeight,
-                    rotation: (item.rotation + 5) % 360
-                })));
-            }, 50);
-
-            return () => clearInterval(interval);
-        }
-    }, [isActive]);
-
-    if (!isActive) return null;
-
-    return (
-        <div className="fixed inset-0 pointer-events-none z-50">
-            {items.map(item => (
-                <div
-                    key={item.id}
-                    className="absolute transition-all duration-300 ease-in-out text-4xl"
-                    style={{
-                        left: `${item.x}px`,
-                        top: `${item.y}px`,
-                        transform: `rotate(${item.rotation}deg)`
-                    }}
-                >
-                    {item.type}
-                </div>
-            ))}
-            <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-white p-2 rounded shadow text-xl font-bold text-blue-600">
-                🌟 여행의 마법이 시작됐어요! 🌟
-            </div>
-        </div>
-    );
-};
+import Modal from '../../components/modal/Modal'; // 상대 경로
+import { ModalButton } from './style'; // 새로운 스타일 import
 
 const TripList = ({ search }) => {
     const [trips, setTrips] = useState(null);
@@ -61,14 +10,21 @@ const TripList = ({ search }) => {
     const [error, setError] = useState(null);
     const [editingImage, setEditingImage] = useState(null);
     const [newImageFile, setNewImageFile] = useState(null);
-    const [modalOpen, setModalOpen] = useState(false);
-    const [easterEggActive, setEasterEggActive] = useState(false);
-    const [clickCount, setClickCount] = useState(0);
+    const [modalOpen, setModalOpen] = useState(false); // 모달 상태 추가
+    const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태 추가
+    const [totalPages, setTotalPages] = useState(1); // 총 페이지 상태 추가
     const navigate = useNavigate();
 
     useEffect(() => {
         fetchTrips();
-    }, [sortBy, search]);
+    }, [sortBy, search, currentPage]);
+
+
+    const handlePageChange = (pageNumber) => {
+
+        setCurrentPage(pageNumber);
+
+    };
 
     const fetchTrips = async () => {
         console.log('fetchTrips called with search:', search);
@@ -80,7 +36,7 @@ const TripList = ({ search }) => {
         }
 
         try {
-            const response = await fetch(`http://localhost:8081/api/schedules?page=1&sortBy=${sortBy}&search=${encodeURIComponent(search)}`, {
+            const response = await fetch(`http://localhost:8081/api/schedules?page=${currentPage}&sortBy=${sortBy}&search=${encodeURIComponent(search)}`, {
                 method: "GET",
                 headers: {
                     "Authorization": `Bearer ${accessToken}`,
@@ -95,7 +51,9 @@ const TripList = ({ search }) => {
 
             const result = await response.json();
             console.log("data:", JSON.stringify(result, null, 2));
-            setTrips(result.data);
+            setTrips(result.data.content);
+
+            setTotalPages(result.data.totalPages);
         } catch (error) {
             console.error('Error fetching trips:', error);
             setError(error.message);
@@ -178,8 +136,8 @@ const TripList = ({ search }) => {
 
     const handleImageEdit = (scheduleId) => {
         setEditingImage(scheduleId);
-        setNewImageFile(null);
-        setModalOpen(true);
+        setNewImageFile(null); // 파일 선택 상태 초기화
+        setModalOpen(true); // 모달 열기
     };
 
     const submitNewImage = async () => {
@@ -197,9 +155,9 @@ const TripList = ({ search }) => {
 
         try {
             const formData = new FormData();
-            formData.append('file', newImageFile);
+            formData.append('file', newImageFile); // key를 'file'로 수정
 
-            const response = await fetch(`http://localhost:8081/api/schedules/${editingImage}/files`, {
+            const response = await fetch(`http://localhost:8081/api/schedules/${editingImage}/files`, { // URL 수정
                 method: "PATCH",
                 headers: {
                     "Authorization": `Bearer ${accessToken}`
@@ -229,7 +187,7 @@ const TripList = ({ search }) => {
             );
 
             setEditingImage(null);
-            setModalOpen(false);
+            setModalOpen(false); // 모달 닫기
         } catch (error) {
             console.error('Error updating image:', error);
             alert("업로드 가능 이미지 용량 크기를 초과했습니다.");
@@ -240,21 +198,9 @@ const TripList = ({ search }) => {
         navigate(`/schedules/${scheduleId}`);
     };
 
-    const activateEasterEgg = () => {
-        setClickCount(prev => {
-            if (prev + 1 >= 10) {
-                setEasterEggActive(true);
-                setTimeout(() => setEasterEggActive(false), 4000);
-                return 0;
-            }
-            return prev + 1;
-        });
-    };
-
     return (
         <div>
-            <TravelEasterEgg isActive={easterEggActive} />
-            <S.SortSection onClick={activateEasterEgg}>
+            <S.SortSection>
                 <label htmlFor="sortBy"></label>
                 <select id="sortBy" value={sortBy} onChange={handleSortChange}>
                     <option value="최신">최신순</option>
@@ -279,7 +225,7 @@ const TripList = ({ search }) => {
                             <S.TripImageWrapper>
                                 <S.TripImage src={trip.imageUrl} alt={trip.title} />
                                 <S.EditImageButton onClick={(e) => { e.stopPropagation(); handleImageEdit(trip.scheduleId); }}>
-                                    <img src="/images/modal/사진수정4.png" alt="Edit" />
+                                    <img src="/images/modal/edit-icon.png" alt="Edit" />
                                 </S.EditImageButton>
                             </S.TripImageWrapper>
                             <S.TripFooter>
@@ -301,9 +247,21 @@ const TripList = ({ search }) => {
                     <p>Loading...</p>
                 )}
             </S.TripSection>
+            <S.Pagination>
+                {Array.from({length:totalPages}, (_, index) => (
+                    <button
+                        key = {index+1}
+                        onClick={() => handlePageChange(index+1)}
+                        disabled={index+1 === currentPage}
+                    >
+                        {index+1}
+                    </button>
+                ))}
+            </S.Pagination>
 
+            {/* 모달 컴포넌트 추가 */}
             <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
-                <h2>이미지 업로드</h2>
+                <h2></h2>
                 <input
                     type="file"
                     accept="image/*"

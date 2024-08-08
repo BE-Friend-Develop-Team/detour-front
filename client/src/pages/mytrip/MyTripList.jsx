@@ -11,11 +11,20 @@ const MyTripList = ({ search }) => {
     const [editingImage, setEditingImage] = useState(null);
     const [newImageFile, setNewImageFile] = useState(null);
     const [modalOpen, setModalOpen] = useState(false); // 모달 상태 추가
+    const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태 추가
+    const [totalPages, setTotalPages] = useState(1); // 총 페이지 상태 추가
     const navigate = useNavigate();
 
     useEffect(() => {
         fetchTrips();
-    }, [sortBy, search]);
+    }, [sortBy, search, currentPage]);
+
+
+    const handlePageChange = (pageNumber) => {
+
+        setCurrentPage(pageNumber);
+
+    };
 
     const fetchTrips = async () => {
         console.log('fetchTrips called with search:', search);
@@ -27,7 +36,7 @@ const MyTripList = ({ search }) => {
         }
 
         try {
-            const response = await fetch(`http://localhost:8081/api/schedules/users?page=1&sortBy=${sortBy}&search=${encodeURIComponent(search)}`, {
+            const response = await fetch(`http://localhost:8081/api/schedules/users?page=${currentPage}&sortBy=${sortBy}&search=${encodeURIComponent(search)}`, {
                 method: "GET",
                 headers: {
                     "Authorization": `Bearer ${accessToken}`,
@@ -42,7 +51,8 @@ const MyTripList = ({ search }) => {
 
             const result = await response.json();
             console.log("data:", JSON.stringify(result, null, 2));
-            setTrips(result.data);
+            setTrips(result.data.content);
+            setTotalPages(result.data.totalPages);
         } catch (error) {
             console.error('Error fetching trips:', error);
             setError(error.message);
@@ -231,6 +241,19 @@ const MyTripList = ({ search }) => {
                     <p>Loading...</p>
                 )}
             </S.TripSection>
+
+            <S.Pagination>
+                {Array.from({length:totalPages}, (_, index) => (
+                    <button
+                        key = {index+1}
+                        onClick={() => handlePageChange(index+1)}
+                        disabled={index+1 === currentPage}
+                    >
+                        {index+1}
+                    </button>
+                ))}
+            </S.Pagination>
+
 
             {/* 모달 컴포넌트 추가 */}
             <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
