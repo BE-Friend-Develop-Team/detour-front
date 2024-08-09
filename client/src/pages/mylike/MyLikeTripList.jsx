@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import S from './style'; // 스타일 파일 import
-import { useNavigate } from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 import Modal from '../../components/modal/Modal'; // 모달 컴포넌트 import
-import { ModalButton } from './style'; // 새로운 스타일 import
+import {ModalButton} from './style'; // 새로운 스타일 import
 
-const MyLikeTripList = ({ search }) => {
+const MyLikeTripList = ({search}) => {
     const [trips, setTrips] = useState(null);
     const [sortBy, setSortBy] = useState('최신');
     const [error, setError] = useState(null);
@@ -180,7 +180,7 @@ const MyLikeTripList = ({ search }) => {
             setTrips(prevTrips =>
                 prevTrips.map(trip =>
                     trip.scheduleId === editingImage
-                        ? { ...trip, imageUrl: responseData.data.imageUrl }
+                        ? {...trip, imageUrl: responseData.data.imageUrl}
                         : trip
                 )
             );
@@ -200,7 +200,6 @@ const MyLikeTripList = ({ search }) => {
 
     return (
         <div>
-
             <S.TripSection>
                 {trips ? (
                     trips.map((trip) => (
@@ -214,22 +213,35 @@ const MyLikeTripList = ({ search }) => {
                                     <S.Nickname>{trip.nickname}</S.Nickname>
                                     <S.ScheduleText>님의 일정</S.ScheduleText>
                                 </h5>
-                                <h4>{trip.departureDate}</h4>
+                                <h4>{new Date(trip.createdAt).toLocaleString('ko-KR', {
+                                    year: 'numeric',
+                                    month: 'long',
+                                    day: 'numeric',
+                                    hour: '2-digit',
+                                    minute: '2-digit',
+                                    second: '2-digit',
+                                })}</h4>
                             </S.TripHeader>
                             <S.TripImageWrapper>
-                                <S.TripImage src={trip.imageUrl} alt={trip.title} />
-                                <S.EditImageButton onClick={(e) => { e.stopPropagation(); handleImageEdit(trip.scheduleId); }}>
-                                    <img src="/images/modal/사진수정4.png" alt="Edit" />
+                                <S.TripImage src={trip.imageUrl} alt={trip.title}/>
+                                <S.EditImageButton onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleImageEdit(trip.scheduleId);
+                                }}>
+                                    <img src="/images/modal/사진수정4.png" alt="Edit"/>
                                 </S.EditImageButton>
                             </S.TripImageWrapper>
                             <S.TripFooter>
                                 <S.LikeButton
-                                    onClick={(e) => { e.stopPropagation(); toggleLike(trip.scheduleId, trip.liked, trip.likeId); }}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        toggleLike(trip.scheduleId, trip.liked, trip.likeId);
+                                    }}
                                 >
                                     <img
                                         src={trip.liked ? '/images/trip/heart.png' : '/images/trip/noheart.png'}
                                         alt="Like"
-                                        style={{ width: '24px', height: '24px' }}
+                                        style={{width: '24px', height: '24px'}}
                                     />
                                     <S.LikeCount>{trip.likeCount || 0}</S.LikeCount>
                                 </S.LikeButton>
@@ -243,13 +255,13 @@ const MyLikeTripList = ({ search }) => {
             </S.TripSection>
 
             <S.Pagination>
-                {Array.from({length:totalPages}, (_, index) => (
+                {Array.from({length: totalPages}, (_, index) => (
                     <button
-                        key = {index+1}
-                        onClick={() => handlePageChange(index+1)}
-                        disabled={index+1 === currentPage}
+                        key={index + 1}
+                        onClick={() => handlePageChange(index + 1)}
+                        disabled={index + 1 === currentPage}
                     >
-                        {index+1}
+                        {index + 1}
                     </button>
                 ))}
             </S.Pagination>

@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import S from './style';
-import { useNavigate } from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 import Modal from '../../components/modal/Modal';
-import { ModalButton } from './style';
+import {ModalButton} from './style';
 
-const TravelEasterEgg = ({ isActive }) => {
+const TravelEasterEgg = ({isActive}) => {
     const [items, setItems] = useState([]);
 
     useEffect(() => {
@@ -48,14 +48,15 @@ const TravelEasterEgg = ({ isActive }) => {
                     {item.type}
                 </div>
             ))}
-            <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-white p-2 rounded shadow text-xl font-bold text-blue-600">
+            <div
+                className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-white p-2 rounded shadow text-xl font-bold text-blue-600">
                 🌟 여행의 마법이 시작됐어요! 🌟
             </div>
         </div>
     );
 };
 
-const TripList = ({ search }) => {
+const TripList = ({search}) => {
     const [trips, setTrips] = useState(null);
     const [sortBy, setSortBy] = useState('최신');
     const [error, setError] = useState(null);
@@ -234,7 +235,7 @@ const TripList = ({ search }) => {
             setTrips(prevTrips =>
                 prevTrips.map(trip =>
                     trip.scheduleId === editingImage
-                        ? { ...trip, imageUrl: responseData.data.imageUrl }
+                        ? {...trip, imageUrl: responseData.data.imageUrl}
                         : trip
                 )
             );
@@ -251,7 +252,7 @@ const TripList = ({ search }) => {
         navigate(`/schedules/${scheduleId}`);
     };
 
-        const activateEasterEgg = () => {
+    const activateEasterEgg = () => {
         setClickCount(prev => {
             if (prev + 1 >= 10) {
                 setEasterEggActive(true);
@@ -264,7 +265,7 @@ const TripList = ({ search }) => {
 
     return (
         <div>
-            <TravelEasterEgg isActive={easterEggActive} />
+            <TravelEasterEgg isActive={easterEggActive}/>
             <S.SortSection onClick={activateEasterEgg}>
                 <label htmlFor="sortBy"></label>
                 <select id="sortBy" value={sortBy} onChange={handleSortChange}>
@@ -285,22 +286,35 @@ const TripList = ({ search }) => {
                                     <S.Nickname>{trip.nickname}</S.Nickname>
                                     <S.ScheduleText>님의 일정</S.ScheduleText>
                                 </h5>
-                                <h4>{trip.departureDate}</h4>
+                                <h4>{new Date(trip.createdAt).toLocaleString('ko-KR', {
+                                    year: 'numeric',
+                                    month: 'long',
+                                    day: 'numeric',
+                                    hour: '2-digit',
+                                    minute: '2-digit',
+                                    second: '2-digit',
+                                })}</h4>
                             </S.TripHeader>
                             <S.TripImageWrapper>
-                                <S.TripImage src={trip.imageUrl} alt={trip.title} />
-                                <S.EditImageButton onClick={(e) => { e.stopPropagation(); handleImageEdit(trip.scheduleId); }}>
-                                    <img src="/images/modal/사진수정4.png" alt="Edit" />
+                                <S.TripImage src={trip.imageUrl} alt={trip.title}/>
+                                <S.EditImageButton onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleImageEdit(trip.scheduleId);
+                                }}>
+                                    <img src="/images/modal/사진수정4.png" alt="Edit"/>
                                 </S.EditImageButton>
                             </S.TripImageWrapper>
                             <S.TripFooter>
                                 <S.LikeButton
-                                    onClick={(e) => { e.stopPropagation(); toggleLike(trip.scheduleId, trip.liked, trip.likeId); }}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        toggleLike(trip.scheduleId, trip.liked, trip.likeId);
+                                    }}
                                 >
                                     <img
                                         src={trip.liked ? '/images/trip/heart.png' : '/images/trip/noheart.png'}
                                         alt="Like"
-                                        style={{ width: '24px', height: '24px' }}
+                                        style={{width: '24px', height: '24px'}}
                                     />
                                     <S.LikeCount>{trip.likeCount || 0}</S.LikeCount>
                                 </S.LikeButton>
@@ -313,13 +327,13 @@ const TripList = ({ search }) => {
                 )}
             </S.TripSection>
             <S.Pagination>
-                {Array.from({length:totalPages}, (_, index) => (
+                {Array.from({length: totalPages}, (_, index) => (
                     <button
-                        key = {index+1}
-                        onClick={() => handlePageChange(index+1)}
-                        disabled={index+1 === currentPage}
+                        key={index + 1}
+                        onClick={() => handlePageChange(index + 1)}
+                        disabled={index + 1 === currentPage}
                     >
-                        {index+1}
+                        {index + 1}
                     </button>
                 ))}
             </S.Pagination>

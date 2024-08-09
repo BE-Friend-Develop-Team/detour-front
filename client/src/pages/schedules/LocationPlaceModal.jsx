@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import S from "./style";
 
-const LocationPlaceModal = ({ isOpen, onClose, location, onSave, userName, departureDate, title }) => {
+const LocationPlaceModal = ({ isOpen, onClose, location, onSave, userName, departureDate, title, createdAt }) => {
     const [description, setDescription] = useState("");
     const [images, setImages] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
@@ -21,13 +21,19 @@ const LocationPlaceModal = ({ isOpen, onClose, location, onSave, userName, depar
         <S.ModalOverlay>
             <S.ModalContent>
                 <S.ModalHeader>
-                    <h3>{title || '장소 제목'}</h3> {/* 제목을 여기에 표시 */}
+                    <h3>{title || '장소 제목'}</h3>
                     <button className="close-button" onClick={onClose}>
                         <S.CloseButtonImage src="/images/modal/close.png" alt="Close"/>
                     </button>
                 </S.ModalHeader>
                 <S.ModalBody>
-                    <h4>{departureDate}</h4>
+                    <h4>{new Date(createdAt).toLocaleString('ko-KR', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    })}</h4>
                     <h5>
                         {userName && <S.UserName>{userName}</S.UserName>}
                         <S.ScheduleText>님의 일정</S.ScheduleText>
@@ -37,7 +43,7 @@ const LocationPlaceModal = ({ isOpen, onClose, location, onSave, userName, depar
                             {images.length > 0 ? (
                                 images.map((img, index) => (
                                     <S.ImagePreviewWrapper key={index}>
-                                        <S.ImagePreview src={img} alt={`img-${index}`} />
+                                        <S.ImagePreview src={img} alt={`img-${index}`}/>
                                     </S.ImagePreviewWrapper>
                                 ))
                             ) : (

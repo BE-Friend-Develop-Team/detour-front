@@ -471,9 +471,9 @@ const EditSchedules = () => {
     };
 
     const getDateForDay = (day) => {
-        if (!schedule || !schedule.departureDate) return '';
+        if (!schedule || !schedule.createdAt) return '';
 
-        const startDate = new Date(schedule.departureDate);
+        const startDate = new Date(schedule.createdAt);
         const date = new Date(startDate);
         date.setDate(startDate.getDate() + day - 1);
         return getDateString(date);
@@ -660,7 +660,7 @@ const EditSchedules = () => {
                     location={selectedLocation}
                     onSave={handleSaveLocation}
                     userName={schedule.nickname}
-                    departureDate = {schedule.departureDate}
+                    departureDate = {schedule.createdAt}
                 />
             )}
         </S.SchedulesWrapper>

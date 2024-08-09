@@ -20,6 +20,7 @@ const SchedulesDetail = () => {
     const [error, setError] = useState(null);
     const [selectedUserName, setSelectedUserName] = useState('');
     const [departureDate, setDepartureDate] = useState('');
+    const [createdAt, setCreatedAt] = useState('');
     const [comments, setComments] = useState([]);
     const [newComment, setNewComment] = useState("");
     const [editingCommentId, setEditingCommentId] = useState(null);
@@ -180,7 +181,8 @@ const SchedulesDetail = () => {
                 id: comment.commentId,
                 content: comment.content,
                 nickname: comment.nickname,
-                createAt: comment.createdAt
+                createdAt: comment.createdAt,
+                modifiedAt: comment.modifiedAt
             })));
         } catch (error) {
             console.error("Failed to fetch comments:", error);
@@ -362,6 +364,7 @@ const SchedulesDetail = () => {
             });
             setSelectedUserName(schedule.nickname);
             setDepartureDate(schedule.departureDate);
+            setCreatedAt(schedule.createdAt);
         } catch (err) {
             setError('마커 정보를 불러오는 중 오류가 발생했습니다: ' + err.message);
         }
@@ -426,23 +429,22 @@ const SchedulesDetail = () => {
         navigate('/mytrip');
     };
 
-// 예시: X 버튼 클릭 시 호출되는 함수
+    // 예시: X 버튼 클릭 시 호출되는 함수
     const handleCancelClick = (nickname) => {
         handleCancelInvitation(nickname);
     };
 
-    // const isInvited = invitedUsers.some(user => user.nickname === currentNickname) || currentNickname === schedule?.nickname;
-    //  const isInvited = invitedUsers.includes(currentNickname);
     const isInvited = invitedUsers.some(user => user === currentNickname) || currentNickname === schedule?.nickname;
 
-    // console.log("Current Nickname:", currentNickname);
-    // console.log("Invited Users:", invitedUsers);
-    // console.log("Is Invited:", isInvited);
-    // console.log("Is Invited Check:", invitedUsers.some(user => user.nickname === currentNickname), "OR", currentNickname === schedule?.nickname);
-
-    //  const isInvited = currentNickname === schedule?.nickname; // 게시글 작성자와 현재 로그인한 사용자의 닉네임 비교
-    // const isInvited = invitedUsers.includes(currentNickname);
-
+    function formatDate(dateString) {
+        const date = new Date(dateString);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hour = String(date.getHours()).padStart(2, '0');
+        const minute = String(date.getMinutes()).padStart(2, '0');
+        return `${year}.${month}.${day}. ${hour}:${minute}`;
+    }
 
     return (
         <S.SchedulesWrapper>
@@ -558,7 +560,9 @@ const SchedulesDetail = () => {
                                             <>
                                                 <S.CommentContent>{comment.content}</S.CommentContent>
                                                 <S.CommentDate>
-                                                    {comment.createAt}
+                                                    {comment.modifiedAt && !isNaN(Date.parse(comment.modifiedAt))
+                                                        ? formatDate(comment.modifiedAt)
+                                                        : '날짜 표시 안됨'}
                                                 </S.CommentDate> {currentNickname === comment.nickname && (
                                                 <S.CommentActions>
                                                     <S.CommentActionButton onClick={() => {
@@ -690,6 +694,7 @@ const SchedulesDetail = () => {
                     userName={selectedUserName}
                     departureDate={departureDate}
                     title={selectedLocation?.title}
+                    createdAt={createdAt}
                 />
             )}
         </S.SchedulesWrapper>

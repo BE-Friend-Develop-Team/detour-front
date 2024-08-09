@@ -137,7 +137,14 @@ const LocationModal = ({ isOpen, onClose, location, onSave, userName, departureD
                     </button>
                 </S.ModalHeader>
                 <S.ModalBody>
-                    <h4>{departureDate}</h4>
+                    <h4>{new Date(departureDate).toLocaleString('ko-KR', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit',
+                    })}</h4>
                     <h5>
                         {userName && <S.UserName>{userName}</S.UserName>}
                         <S.ScheduleText>님의 일정</S.ScheduleText>
@@ -156,7 +163,7 @@ const LocationModal = ({ isOpen, onClose, location, onSave, userName, departureD
                         <div className="image-container">
                             {images.map((img, index) => (
                                 <S.ImagePreviewWrapper key={index}>
-                                    <S.ImagePreview src={img} alt={`Uploaded ${index}`} />
+                                    <S.ImagePreview src={img} alt={`Uploaded ${index}`}/>
                                     <S.DeleteButtonImage
                                         src="/images/schedule/휴지통.png"
                                         alt="삭제"
