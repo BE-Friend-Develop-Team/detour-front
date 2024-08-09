@@ -228,7 +228,7 @@ const SignUp = () => {
                             <S.ErrorMessageWrapper>
                                 {errors?.password?.type === "pattern" && (
                                     <S.ErrorMessage>
-                                        비밀번호는 영어 대문자, 소문자, 숫자, 특수문자가 모두 포함되고, 8자에서 15자 사이여야 합니다
+                                        비밀번호는 영어 대문자, 소문자, 숫자, 특수문자가 모두 포함되고, 10자에서 15자 사이여야 합니다
                                     </S.ErrorMessage>
                                 )}
                                 {errors?.password?.type === "required" && <S.ErrorMessage>비밀번호를 입력해주세요</S.ErrorMessage>}
