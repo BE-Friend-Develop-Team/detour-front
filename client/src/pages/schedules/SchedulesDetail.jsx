@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useState} from "react";
 import S from "./style";
-import { useParams, useNavigate } from "react-router-dom";
-import { Button, StyledImg, ButtonText, InputField, ModalContent1 } from "../../components/button/ButtonStyled";
+import {useParams, useNavigate} from "react-router-dom";
+import {Button, StyledImg, ButtonText, InputField, ModalContent1} from "../../components/button/ButtonStyled";
 import LocationPlaceModal from './LocationPlaceModal';
-import { useSelector } from "react-redux";
+import {useSelector} from "react-redux";
 
-const { kakao } = window;
+const {kakao} = window;
 
 const SchedulesDetail = () => {
-    const { scheduleId } = useParams();
+    const {scheduleId} = useParams();
     const navigate = useNavigate();
     const [schedule, setSchedule] = useState(null);
     const [map, setMap] = useState(null);
@@ -179,7 +179,8 @@ const SchedulesDetail = () => {
             setComments(data.data.map(comment => ({
                 id: comment.commentId,
                 content: comment.content,
-                nickname: comment.nickname
+                nickname: comment.nickname,
+                createAt: comment.createdAt
             })));
         } catch (error) {
             console.error("Failed to fetch comments:", error);
@@ -201,7 +202,7 @@ const SchedulesDetail = () => {
                     Authorization: `Bearer ${accessToken}`,
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ content: newComment }),
+                body: JSON.stringify({content: newComment}),
             });
             if (!response.ok) {
                 throw new Error("댓글 작성에 실패했습니다.");
@@ -244,7 +245,6 @@ const SchedulesDetail = () => {
             const data = await response.json();
             setComments(comments.map(comment =>
                 comments.id === commentId ? {...comment, content: editedCommentContent} : comment
-
             ));
             setEditingCommentId(null);
             // 수정 후 수정한 댓글이 보이도록 새로고침
@@ -305,7 +305,7 @@ const SchedulesDetail = () => {
                     Authorization: `Bearer ${accessToken}`,
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ nickname: inviteUserId }),
+                body: JSON.stringify({nickname: inviteUserId}),
             });
             if (!response.ok) {
                 const errorData = await response.json();
@@ -317,7 +317,7 @@ const SchedulesDetail = () => {
             }
             alert("초대가 성공적으로 전송되었습니다.");
             await fetchInvitedUsers();
-            setInvitedUsers((prevUsers) => [...prevUsers, { nickname: inviteUserId }]); // 초대한 사용자 목록에 추가
+            setInvitedUsers((prevUsers) => [...prevUsers, {nickname: inviteUserId}]); // 초대한 사용자 목록에 추가
             setIsModalOpen(false);
             setInviteUserId("");
         } catch (error) {
@@ -381,7 +381,7 @@ const SchedulesDetail = () => {
                     Authorization: `Bearer ${accessToken}`,
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ nickname }),
+                body: JSON.stringify({nickname}),
             });
 
             if (!response.ok) {
@@ -397,7 +397,7 @@ const SchedulesDetail = () => {
         }
     };
 
-    const handleDeleteSchedule = async() => {
+    const handleDeleteSchedule = async () => {
         const accessToken = localStorage.getItem("token");
         if (!accessToken) {
             setError("로그인이 필요합니다.");
@@ -432,13 +432,13 @@ const SchedulesDetail = () => {
     };
 
     // const isInvited = invitedUsers.some(user => user.nickname === currentNickname) || currentNickname === schedule?.nickname;
-  //  const isInvited = invitedUsers.includes(currentNickname);
+    //  const isInvited = invitedUsers.includes(currentNickname);
     const isInvited = invitedUsers.some(user => user === currentNickname) || currentNickname === schedule?.nickname;
 
-    console.log("Current Nickname:", currentNickname);
-    console.log("Invited Users:", invitedUsers);
-    console.log("Is Invited:", isInvited);
-    console.log("Is Invited Check:", invitedUsers.some(user => user.nickname === currentNickname), "OR", currentNickname === schedule?.nickname);
+    // console.log("Current Nickname:", currentNickname);
+    // console.log("Invited Users:", invitedUsers);
+    // console.log("Is Invited:", isInvited);
+    // console.log("Is Invited Check:", invitedUsers.some(user => user.nickname === currentNickname), "OR", currentNickname === schedule?.nickname);
 
     //  const isInvited = currentNickname === schedule?.nickname; // 게시글 작성자와 현재 로그인한 사용자의 닉네임 비교
     // const isInvited = invitedUsers.includes(currentNickname);
@@ -539,42 +539,45 @@ const SchedulesDetail = () => {
                         </S.CommentSection>
                         <S.CommentList>
                             {comments.map((comment) => (
-                                <S.CommentItem key={comment.id}>
-                                    <S.CommentAuthor>👤 {comment.nickname}</S.CommentAuthor>
-                                    {editingCommentId === comment.id ? (
-                                        <S.CommentEditForm onSubmit={(e) => {
-                                            e.preventDefault();
-                                            handleUpdateComment(comment.id);
-                                        }}>
-                                            <S.CommentEditInput
-                                                value={editedCommentContent}
-                                                onChange={(e) => setEditedCommentContent(e.target.value)}
-                                            />
-                                            <S.CommentEditButton type="submit">저장</S.CommentEditButton>
-                                            <S.CommentEditButton onClick={() => setEditingCommentId(null)}>취소</S.CommentEditButton>
-                                        </S.CommentEditForm>
-                                    ) : (
-                                        <>
-                                            <S.CommentContent>{comment.content}</S.CommentContent>
-                                            <S.CommentDate>
-                                                {comment.createdAt && !isNaN(Date.parse(comment.createdAt))
-                                                    ? new Date(comment.createdAt).toLocaleString()
-                                                    : '날짜 표시 안됨'}
-                                            </S.CommentDate>                                      {currentNickname === comment.nickname && (
+                                    <S.CommentItem key={comment.id}>
+                                        <S.CommentAuthor>👤 {comment.nickname}</S.CommentAuthor>
+                                        {editingCommentId === comment.id ? (
+                                            <S.CommentEditForm onSubmit={(e) => {
+                                                e.preventDefault();
+                                                handleUpdateComment(comment.id);
+                                            }}>
+                                                <S.CommentEditInput
+                                                    value={editedCommentContent}
+                                                    onChange={(e) => setEditedCommentContent(e.target.value)}
+                                                />
+                                                <S.CommentEditButton type="submit">저장</S.CommentEditButton>
+                                                <S.CommentEditButton
+                                                    onClick={() => setEditingCommentId(null)}>취소</S.CommentEditButton>
+                                            </S.CommentEditForm>
+                                        ) : (
+                                            <>
+                                                <S.CommentContent>{comment.content}</S.CommentContent>
+                                                <S.CommentDate>
+                                                    {comment.createAt}
+                                                </S.CommentDate> {currentNickname === comment.nickname && (
                                                 <S.CommentActions>
-                                                        <S.CommentActionButton onClick={() => {
-                                                            handleEditComment(comment.id, comment.content);
-                                                        }}>
-                                                            <img src="/images/schedule/댓글 수정.png" alt="수정" width="20" height="20" />
-                                                        </S.CommentActionButton>
-                                                        <S.CommentActionButton onClick={() => handleDeleteComment(comment.id)}>
-                                                            <img src="/images/schedule/댓글 삭제.png" alt="삭제" width="20" height="20" />
-                                                        </S.CommentActionButton>
+                                                    <S.CommentActionButton onClick={() => {
+                                                        handleEditComment(comment.id, comment.content);
+                                                    }}>
+                                                        <img src="/images/schedule/댓글 수정.png" alt="수정" width="20"
+                                                             height="20"/>
+                                                    </S.CommentActionButton>
+                                                    <S.CommentActionButton
+                                                        onClick={() => handleDeleteComment(comment.id)}>
+                                                        <img src="/images/schedule/댓글 삭제.png" alt="삭제" width="20"
+                                                             height="20"/>
+                                                    </S.CommentActionButton>
                                                 </S.CommentActions>
                                             )}
-                                        </>
-                                    )}
-                                </S.CommentItem>
+                                            </>
+                                        )}
+                                    </S.CommentItem>
+
                             ))}
                         </S.CommentList>
                     </S.PlanWrapper>
@@ -595,7 +598,7 @@ const SchedulesDetail = () => {
                             onChange={(e) => setInviteUserId(e.target.value)}
                             placeholder="사용자 닉네임 입력"
                         />
-                        <div style={{ marginTop: '10px' }}>
+                        <div style={{marginTop: '10px'}}>
                             <ButtonText onClick={handleInviteSubmit}>
                                 초대
                             </ButtonText>
