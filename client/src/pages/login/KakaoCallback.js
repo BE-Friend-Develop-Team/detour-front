@@ -12,7 +12,7 @@ export default function KakaoCallback() {
 
         const kakaoLogin = async (code) => {
             try {
-                const res = await axios.get(`http://localhost:8081/api/users/login/oauth2/code/kakao?code=${code}`);
+                const res = await axios.get(`https://detourofficial.shop/api/users/login/oauth2/code/kakao?code=${code}`);
                 const KAKAO_TOKEN = res.data.data[0];
 
                 localStorage.setItem("Kakao-Token", KAKAO_TOKEN);

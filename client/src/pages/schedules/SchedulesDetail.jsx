@@ -38,7 +38,7 @@ const SchedulesDetail = () => {
         }
 
         try {
-            const response = await fetch(`http://localhost:8081/api/schedules/${scheduleId}/details`, {
+            const response = await fetch(`https://detourofficial.shop/api/schedules/${scheduleId}/details`, {
                 method: "GET",
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
@@ -92,7 +92,7 @@ const SchedulesDetail = () => {
         }
 
         try {
-            const response = await fetch(`http://localhost:8081/api/schedules/${scheduleId}/invitation/users`, {
+            const response = await fetch(`https://detourofficial.shop/api/schedules/${scheduleId}/invitation/users`, {
                 method: "GET",
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
@@ -166,7 +166,7 @@ const SchedulesDetail = () => {
             return;
         }
         try {
-            const response = await fetch(`http://localhost:8081/api/schedules/${scheduleId}/comments`, {
+            const response = await fetch(`https://detourofficial.shop/api/schedules/${scheduleId}/comments`, {
                 method: "GET",
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
@@ -198,7 +198,7 @@ const SchedulesDetail = () => {
             return;
         }
         try {
-            const response = await fetch(`http://localhost:8081/api/schedules/${scheduleId}/comments`, {
+            const response = await fetch(`https://detourofficial.shop/api/schedules/${scheduleId}/comments`, {
                 method: "POST",
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
@@ -231,7 +231,7 @@ const SchedulesDetail = () => {
         }
 
         try {
-            const response = await fetch(`http://localhost:8081/api/schedules/comments/${commentId}`, {
+            const response = await fetch(`https://detourofficial.shop/api/schedules/comments/${commentId}`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",
@@ -268,7 +268,7 @@ const SchedulesDetail = () => {
             return;
         }
         try {
-            const response = await fetch(`http://localhost:8081/api/schedules/comments/${commentId}`, {
+            const response = await fetch(`https://detourofficial.shop/api/schedules/comments/${commentId}`, {
                 method: "DELETE",
                 headers: {
                     Authorization: accessToken,
@@ -301,7 +301,7 @@ const SchedulesDetail = () => {
             return;
         }
         try {
-            const response = await fetch(`http://localhost:8081/api/schedules/${scheduleId}/invitation`, {
+            const response = await fetch(`https://detourofficial.shop/api/schedules/${scheduleId}/invitation`, {
                 method: "POST",
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
@@ -342,7 +342,7 @@ const SchedulesDetail = () => {
         setIsModalPlaceOpen(true);
         try {
             const dailyPlan = schedule.dailyPlanList[cardIndex];
-            const response = await fetch(`http://localhost:8081/api/daily-plans/${dailyPlan.dailyPlanId}/markers/${location.markerId}`, {
+            const response = await fetch(`https://detourofficial.shop/api/daily-plans/${dailyPlan.dailyPlanId}/markers/${location.markerId}`, {
                 method: "GET",
                 headers: {
                     "Authorization": `Bearer ${accessToken}`,
@@ -378,7 +378,7 @@ const SchedulesDetail = () => {
             return;
         }
         try {
-            const response = await fetch(`http://localhost:8081/api/schedules/${scheduleId}/invitation`, {
+            const response = await fetch(`https://detourofficial.shop/api/schedules/${scheduleId}/invitation`, {
                 method: "DELETE",
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
@@ -413,7 +413,7 @@ const SchedulesDetail = () => {
         console.log("scheduleId", scheduleId);
 
         try {
-            const response = await fetch(`http://localhost:8081/api/schedules/${scheduleId}`, {
+            const response = await fetch(`https://detourofficial.shop/api/schedules/${scheduleId}`, {
                 method: "DELETE",
                 headers: {
                     Authorization: accessToken,
@@ -497,7 +497,7 @@ const SchedulesDetail = () => {
                         <S.DividerLine/>
                         <S.CardsWrapper>
                             <S.DayText>
-                                {`장소 이름을 클릭하여 여행 기록을 확인해보세요.`}
+                                {`아래 장소 이름을 클릭하여 여행 기록(사진, 글)을 확인해보세요.`}
                             </S.DayText>
                             <S.CardsContainer>
                                 {schedule.dailyPlanList.map((dayPlan, index) => (

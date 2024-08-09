@@ -117,7 +117,7 @@ const AddSchedules = ({ title, startDate, endDate }) => {
             setIsLoading(true);
 
             // 1. Create schedule
-            const scheduleResponse = await fetch('http://localhost:8081/api/schedules', {
+            const scheduleResponse = await fetch('https://detourofficial.shop/api/schedules', {
                 method: "POST",
                 headers: {
                     "Authorization": accessToken,
@@ -140,7 +140,7 @@ const AddSchedules = ({ title, startDate, endDate }) => {
             const totalDays = (new Date(endDate) - new Date(startDate)) / 86400000 + 1;
 
             for (let day = 1; day <= totalDays; day++) {
-                const dailyPlanResponse = await fetch(`http://localhost:8081/api/schedules/${scheduleId}/dailyplans`, {
+                const dailyPlanResponse = await fetch(`https://detourofficial.shop/api/schedules/${scheduleId}/dailyplans`, {
                     method: "POST",
                     headers: {
                         "Authorization": accessToken,
@@ -157,7 +157,7 @@ const AddSchedules = ({ title, startDate, endDate }) => {
 
                 // 3. Create places and markers for each location
                 for (const location of cardLocations[day - 1] || []) {
-                    const placeResponse = await fetch("http://localhost:8081/api/place", {
+                    const placeResponse = await fetch("https://detourofficial.shop/api/place", {
                         method: "POST",
                         headers: {
                             "Authorization": accessToken,
@@ -176,7 +176,7 @@ const AddSchedules = ({ title, startDate, endDate }) => {
                     const placeData = await placeResponse.json();
                     const placeId = placeData.data.placeId;
 
-                    const markerResponse = await fetch(`http://localhost:8081/api/daily-plans/${dailyPlanId}/place/${placeId}/markers`, {
+                    const markerResponse = await fetch(`https://detourofficial.shop/api/daily-plans/${dailyPlanId}/place/${placeId}/markers`, {
                         method: "POST",
                         headers: {
                             "Authorization": accessToken,

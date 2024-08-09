@@ -36,7 +36,7 @@ const Login = () => {
     // 로그인 눌렀을 시 fetch
     const onSubmit = async (data) => {
         try {
-            const response = await fetch("http://localhost:8081/api/users/login", {
+            const response = await fetch("https://detourofficial.shop/api/users/login", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

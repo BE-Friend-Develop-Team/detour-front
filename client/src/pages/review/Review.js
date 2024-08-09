@@ -28,7 +28,7 @@ const Review = () => {
         }
 
         try {
-            const response = await fetch('http://localhost:8081/api/review', {
+            const response = await fetch('https://detourofficial.shop/api/review', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

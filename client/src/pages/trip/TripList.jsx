@@ -3,6 +3,7 @@ import S from './style';
 import {useNavigate} from 'react-router-dom';
 import Modal from '../../components/modal/Modal';
 import {ModalButton} from './style';
+import heic2any from 'heic2any';
 
 const TravelEasterEgg = ({isActive}) => {
     const [items, setItems] = useState([]);
@@ -90,7 +91,7 @@ const TripList = ({search}) => {
         }
 
         try {
-            const response = await fetch(`http://localhost:8081/api/schedules?page=${currentPage}&sortBy=${sortBy}&search=${encodeURIComponent(search)}`, {
+            const response = await fetch(`https://detourofficial.shop/api/schedules?page=${currentPage}&sortBy=${sortBy}&search=${encodeURIComponent(search)}`, {
                 method: "GET",
                 headers: {
                     "Authorization": `Bearer ${accessToken}`,
@@ -138,7 +139,7 @@ const TripList = ({search}) => {
 
         try {
             if (liked && !likeId) {
-                const response2 = await fetch(`http://localhost:8081/api/schedules/likes/${scheduleId}`, {
+                const response2 = await fetch(`https://detourofficial.shop/api/schedules/likes/${scheduleId}`, {
                     method: "GET",
                     headers: {
                         "Authorization": `Bearer ${accessToken}`
@@ -150,8 +151,8 @@ const TripList = ({search}) => {
             }
 
             const url = liked
-                ? `http://localhost:8081/api/schedules/likes/${likeId}`
-                : `http://localhost:8081/api/schedules/${scheduleId}/likes`;
+                ? `https://detourofficial.shop/api/schedules/likes/${likeId}`
+                : `https://detourofficial.shop/api/schedules/${scheduleId}/likes`;
             const method = liked ? 'DELETE' : 'POST';
 
             const response = await fetch(url, {
@@ -212,10 +213,18 @@ const TripList = ({search}) => {
         }
 
         try {
-            const formData = new FormData();
-            formData.append('file', newImageFile); // key를 'file'로 수정
+            let fileToUpload = newImageFile;
 
-            const response = await fetch(`http://localhost:8081/api/schedules/${editingImage}/files`, { // URL 수정
+            // HEIC 파일 변환
+            if (fileToUpload.type === 'image/heic') {
+                const convertedBlob = await heic2any({ blob: fileToUpload, toType: 'image/jpeg' });
+                fileToUpload = new File([convertedBlob], fileToUpload.name.replace('.heic', '.jpg'), { type: 'image/jpeg' });
+            }
+
+            const formData = new FormData();
+            formData.append('file', fileToUpload); // 'file'이라는 키로 추가
+
+            const response = await fetch(`https://detourofficial.shop/api/schedules/${editingImage}/files`, {
                 method: "PATCH",
                 headers: {
                     "Authorization": `Bearer ${accessToken}`
@@ -239,16 +248,16 @@ const TripList = ({search}) => {
             setTrips(prevTrips =>
                 prevTrips.map(trip =>
                     trip.scheduleId === editingImage
-                        ? {...trip, imageUrl: responseData.data.imageUrl}
+                        ? { ...trip, imageUrl: responseData.data.imageUrl }
                         : trip
                 )
             );
 
             setEditingImage(null);
-            setModalOpen(false); // 모달 닫기
+            setModalOpen(false);
         } catch (error) {
-            console.error('Error updating image:', error);
-            alert("업로드 가능 이미지 용량 크기를 초과했습니다.");
+            console.error('이미지 업데이트 중 오류 발생:', error);
+            alert("업로드 중 오류가 발생했습니다.");
         }
     };
 
@@ -347,7 +356,7 @@ const TripList = ({search}) => {
                 <h2>이미지 업로드</h2>
                 <input
                     type="file"
-                    accept="image/*"
+                    accept="image/heic, image/*"
                     onChange={(e) => setNewImageFile(e.target.files[0])}
                 />
                 <ModalButton onClick={submitNewImage}>제출</ModalButton>

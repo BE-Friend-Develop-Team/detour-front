@@ -50,7 +50,7 @@ const EditSchedules = () => {
         }
 
         try {
-            const response = await fetch(`http://localhost:8081/api/schedules/${scheduleId}/details`, {
+            const response = await fetch(`https://detourofficial.shop/api/schedules/${scheduleId}/details`, {
                 method: "GET",
                 headers: {
                     "Authorization": `Bearer ${accessToken}`,
@@ -177,7 +177,7 @@ const EditSchedules = () => {
 
         try {
             const dailyPlan = schedule.dailyPlanList[cardIndex];
-            const response = await fetch(`http://localhost:8081/api/daily-plans/${dailyPlan.dailyPlanId}/markers/${location.markerId}`, {
+            const response = await fetch(`https://detourofficial.shop/api/daily-plans/${dailyPlan.dailyPlanId}/markers/${location.markerId}`, {
                 method: "GET",
                 headers: {
                     "Authorization": `Bearer ${accessToken}`,
@@ -248,7 +248,7 @@ const EditSchedules = () => {
         }
 
         try {
-            const response = await fetch(`http://localhost:8081/api/daily-plans/markers/${locationToDelete.markerId}`, {
+            const response = await fetch(`https://detourofficial.shop/api/daily-plans/markers/${locationToDelete.markerId}`, {
                 method: "DELETE",
                 headers: {
                     "Authorization": `Bearer ${accessToken}`,
@@ -292,7 +292,7 @@ const EditSchedules = () => {
         try {
             setIsLoading(true);
 
-            const response = await fetch(`http://localhost:8081/api/schedules/${scheduleId}`, {
+            const response = await fetch(`https://detourofficial.shop/api/schedules/${scheduleId}`, {
                 method: "PATCH",
                 headers: {
                     "Authorization": `Bearer ${accessToken}`,
@@ -323,7 +323,7 @@ const EditSchedules = () => {
         try {
             setIsLoading(true);
 
-            const response = await fetch(`http://localhost:8081/api/schedules/${scheduleId}`, {
+            const response = await fetch(`https://detourofficial.shop/api/schedules/${scheduleId}`, {
                 method: "PATCH",
                 headers: {
                     "Authorization": `Bearer ${accessToken}`,
@@ -403,7 +403,7 @@ const EditSchedules = () => {
                             if (existingPlaces.has(location.place_name)) {
                                 placeMap.set(location.place_name, existingPlaces.get(location.place_name));
                             } else {
-                                placeRequests.push(fetch("http://localhost:8081/api/place", {
+                                placeRequests.push(fetch("https://detourofficial.shop/api/place", {
                                     method: "POST",
                                     headers: {
                                         "Authorization": `Bearer ${accessToken}`,
@@ -444,7 +444,7 @@ const EditSchedules = () => {
                         );
 
                         if (!existingMarker) {
-                            const response = await fetch(`http://localhost:8081/api/daily-plans/${dailyPlan.dailyPlanId}/place/${placeId}/markers`, {
+                            const response = await fetch(`https://detourofficial.shop/api/daily-plans/${dailyPlan.dailyPlanId}/place/${placeId}/markers`, {
                                 method: "POST",
                                 headers: {
                                     "Authorization": `Bearer ${accessToken}`,
@@ -492,7 +492,7 @@ const EditSchedules = () => {
 
         try {
             const accessToken = localStorage.getItem('token')?.substring(7);
-            const response = await fetch(`http://localhost:8081/api/daily-plans/${schedule.dailyPlanList[dayIndex].dailyPlanId}/markers/${reorderedItem.markerId}/transfer`, {
+            const response = await fetch(`https://detourofficial.shop/api/daily-plans/${schedule.dailyPlanList[dayIndex].dailyPlanId}/markers/${reorderedItem.markerId}/transfer`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${accessToken}`,
@@ -561,7 +561,10 @@ const EditSchedules = () => {
                         </S.MapWrapper>
                     </S.PlanWrapper>
                     <S.DayText>
-                        {`여행 코스를 자유롭게 조정하세요. 장소 이름을 드래그하여 순서를 바꿀 수 있습니다.`}
+                        {`여행 코스를 자유롭게 조정하세요. 장소 이름을 드래그하여 순서를 바꿀 수 있습니다.\n`}
+                    </S.DayText>
+                    <S.DayText>
+                        {`아래 장소 이름을 클릭하여 사진과 글을 업로드 해보세요🛫`}
                     </S.DayText>
                     <DragDropContext onDragEnd={onDragEnd}>
                         <S.CardsContainer>

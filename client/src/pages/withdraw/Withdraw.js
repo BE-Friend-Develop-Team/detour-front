@@ -29,7 +29,7 @@ const Withdraw = () => {
         }
 
         try {
-            const response = await fetch("http://localhost:8081/api/users/profile", {
+            const response = await fetch("https://detourofficial.shop/api/users/profile", {
                 method: "GET",
                 headers: {
                     "Authorization": accessToken
@@ -76,7 +76,7 @@ const Withdraw = () => {
         }
 
         try {
-            const response = await fetch("http://localhost:8081/api/users/withdrawal", {
+            const response = await fetch("https://detourofficial.shop/api/users/withdrawal", {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",

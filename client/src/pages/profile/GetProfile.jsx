@@ -58,7 +58,7 @@ const GetProfile = () => {
         }
 
         try {
-            const response = await fetch("http://localhost:8081/api/users/profile", {
+            const response = await fetch("https://detourofficial.shop/api/users/profile", {
                 method: "GET",
                 headers: {
                     "Authorization": accessToken
@@ -90,7 +90,7 @@ const GetProfile = () => {
         }
 
         try {
-            const response = await fetch("http://localhost:8081/api/schedules/users?page=1", {
+            const response = await fetch("https://detourofficial.shop/api/schedules/users?page=1", {
                 method: "GET",
                 headers: {
                     "Authorization": accessToken
@@ -126,7 +126,7 @@ const GetProfile = () => {
         }
 
         try {
-            const response = await fetch("http://localhost:8081/api/schedules/users/likes?page=1", {
+            const response = await fetch("https://detourofficial.shop/api/schedules/users/likes?page=1", {
                 method: "GET",
                 headers: {
                     "Authorization": accessToken
@@ -233,7 +233,7 @@ const GetProfile = () => {
         }
 
         try {
-            const response = await fetch(`http://localhost:8081/${endpoint}`, {
+            const response = await fetch(`https://detourofficial.shop/${endpoint}`, {
                 method: method,
                 headers: {
                     "Content-Type": "application/json",
@@ -302,9 +302,6 @@ const GetProfile = () => {
                         </S.ProfileDetailItem>
                         <S.ProfileDetailItem>
                             이메일 <span>{profileData.email}</span>
-                            <DetourButton onClick={handleEditEmail} variant="yellow" shape="small" size="small" color="black" border="gray">
-                                변경
-                            </DetourButton>
                         </S.ProfileDetailItem>
                         <S.ProfileDetailItem>
                             비밀번호 <span>********</span>

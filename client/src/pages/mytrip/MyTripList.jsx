@@ -33,7 +33,7 @@ const MyTripList = ({search}) => {
         }
 
         try {
-            const response = await fetch(`http://localhost:8081/api/schedules/users?page=${currentPage}&sortBy=${sortBy}&search=${encodeURIComponent(search)}`, {
+            const response = await fetch(`https://detourofficial.shop/api/schedules/users?page=${currentPage}&sortBy=${sortBy}&search=${encodeURIComponent(search)}`, {
                 method: "GET",
                 headers: {
                     "Authorization": `Bearer ${accessToken}`,
@@ -77,7 +77,7 @@ const MyTripList = ({search}) => {
 
         try {
             if (liked && !likeId) {
-                const response2 = await fetch(`http://localhost:8081/api/schedules/likes/${scheduleId}`, {
+                const response2 = await fetch(`https://detourofficial.shop/api/schedules/likes/${scheduleId}`, {
                     method: "GET",
                     headers: {
                         "Authorization": `Bearer ${accessToken}`
@@ -89,8 +89,8 @@ const MyTripList = ({search}) => {
             }
 
             const url = liked
-                ? `http://localhost:8081/api/schedules/likes/${likeId}`
-                : `http://localhost:8081/api/schedules/${scheduleId}/likes`;
+                ? `https://detourofficial.shop/api/schedules/likes/${likeId}`
+                : `https://detourofficial.shop/api/schedules/${scheduleId}/likes`;
             const method = liked ? 'DELETE' : 'POST';
 
             const response = await fetch(url, {
@@ -153,7 +153,7 @@ const MyTripList = ({search}) => {
             const formData = new FormData();
             formData.append('file', newImageFile); // key를 'file'로 수정
 
-            const response = await fetch(`http://localhost:8081/api/schedules/${editingImage}/files`, { // URL 수정
+            const response = await fetch(`https://detourofficial.shop/api/schedules/${editingImage}/files`, { // URL 수정
                 method: "PATCH",
                 headers: {
                     "Authorization": `Bearer ${accessToken}`

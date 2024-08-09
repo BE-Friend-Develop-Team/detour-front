@@ -29,7 +29,7 @@ const MyReviewList = ({ search, refetch }) => {
         }
 
         try {
-            const response = await fetch(`http://localhost:8081/api/review?page=${currentPage}&size=${pageSize}`, {
+            const response = await fetch(`https://detourofficial.shop/api/review?page=${currentPage}&size=${pageSize}`, {
                 method: 'GET',
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
@@ -56,7 +56,7 @@ const MyReviewList = ({ search, refetch }) => {
         }
 
         try {
-            const response = await fetch('http://localhost:8081/api/review/average', {
+            const response = await fetch('https://detourofficial.shop/api/review/average', {
                 method: 'GET',
                 headers: {
                     Authorization: `Bearer ${accessToken}`,

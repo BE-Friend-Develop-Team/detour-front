@@ -60,7 +60,7 @@ const Layout = () => {
                 console.log("카카오 로그아웃 로직 실행");
                 await kakaoLogout(kakaoToken);
             }
-            const response = await fetch("http://localhost:8081/api/users/logout", {
+            const response = await fetch("https://detourofficial.shop/api/users/logout", {
                 method: "POST",
                 headers: {
                     "Authorization": accessToken,
