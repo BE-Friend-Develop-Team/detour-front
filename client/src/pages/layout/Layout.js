@@ -50,42 +50,40 @@ const Layout = () => {
         try {
             const accessToken = localStorage.getItem('token');
             const kakaoToken = localStorage.getItem('Kakao-Token');
-
             if (!accessToken) {
-                throw new Error("로그인 상태가 아닙니다.");
+                console.error("로그인 상태가 아닙니다.");
+                navigate('/login');
+                return;
             }
-
-            console.log(kakaoToken);
-
             if (kakaoToken) {
                 console.log("카카오 로그아웃 로직 실행");
-                kakaoLogout(kakaoToken);
+                await kakaoLogout(kakaoToken);
             }
-
-            // 서버에 로그아웃 요청 보내기
             const response = await fetch("http://localhost:8081/api/users/logout", {
                 method: "POST",
                 headers: {
                     "Authorization": accessToken,
-                    "Kakao-Token": kakaoToken,
                     "Content-Type": "application/json"
                 }
             });
-
             if (!response.ok) {
                 throw new Error("로그아웃 요청에 실패했습니다.");
             }
-
             const result = await response.json();
             console.log(result.message);
-
-            // 로컬 스토리지에서 토큰 삭제
             localStorage.removeItem('token');
-
-            // 로그인 페이지로 리디렉션
+            localStorage.removeItem('nickname');
+            localStorage.removeItem('userId');
+            localStorage.removeItem('Kakao-Token');
+            dispatch(setUser(null));
+            dispatch(setUserStatus(false));
             navigate('/login');
         } catch (error) {
             console.error("로그아웃 중 오류 발생:", error);
+            localStorage.clear();
+            dispatch(setUser(null));
+            dispatch(setUserStatus(false));
+            navigate('/login');
         }
     };
 
