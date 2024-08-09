@@ -107,6 +107,9 @@ const TripList = ({search}) => {
             console.log("data:", JSON.stringify(result, null, 2));
             setTrips(result.data.content);
 
+            const createdAtDates = result.data.content.map(item => item.createdAt);
+            console.log("CreatedAt dates:", createdAtDates);
+
             setTotalPages(result.data.totalPages);
         } catch (error) {
             console.error('Error fetching trips:', error);
@@ -182,6 +185,7 @@ const TripList = ({search}) => {
                         : trip
                 )
             );
+
         } catch (error) {
             console.error('Error toggling like:', error);
             alert(error.message);

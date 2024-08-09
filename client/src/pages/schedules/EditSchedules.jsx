@@ -190,7 +190,7 @@ const EditSchedules = () => {
 
             const data = await response.json();
             const markerDetails = data.data;
-            console.log(markerDetails);
+            console.log("테스트"+ markerDetails);
             setSelectedLocation({
                 ...location,
                 cardIndex,
@@ -531,13 +531,15 @@ const EditSchedules = () => {
                         <input
                             type="date"
                             value={startDate}
-                            onChange={(e) => setStartDate(e.target.value)-1}
+                            onClick={() => alert("죄송합니다. 날짜는 변경 불가능합니다.")}
+                            readOnly
                         />
                         <span> ~ </span>
                         <input
                             type="date"
                             value={endDate}
-                            onChange={(e) => setEndDate(e.target.value)-1}
+                            onClick={() => alert("죄송합니다. 날짜는 변경 불가능합니다.")}
+                            readOnly
                         />
                     </S.SchedulesPeriodContainer>
                     <ButtonWrapper>
@@ -557,39 +559,6 @@ const EditSchedules = () => {
                         <S.MapWrapper>
                             <div id="map" style={{ width: '100%', height: '400px' }}></div>
                         </S.MapWrapper>
-                        {/*<S.DividerLine />*/}
-                        {/*<S.CardsWrapper>*/}
-                        {/*    <S.CardsContainer>*/}
-                        {/*        {schedule.dailyPlanList.map((dailyPlan, index) => (*/}
-                        {/*            <S.Cards key={index}>*/}
-                        {/*                <S.CardTitleContainer>*/}
-                        {/*                    <S.CardTitle>DAY {dailyPlan.day}</S.CardTitle>*/}
-                        {/*                    <S.CardDate>{getDateForDay(dailyPlan.day)}</S.CardDate>*/}
-                        {/*                </S.CardTitleContainer>*/}
-                        {/*                <S.LocationContainerWrapper>*/}
-                        {/*                    <S.LocationContainer>*/}
-                        {/*                        {(cardLocations[index] || []).map((location, locIndex) => (*/}
-                        {/*                            <S.LocationWrapper key={locIndex}>*/}
-                        {/*                                <S.Location>*/}
-                        {/*                                    <S.LocationIndex>{locIndex + 1}</S.LocationIndex>*/}
-                        {/*                                    <S.LocationName*/}
-                        {/*                                        onClick={() => handleLocationClick(location, index)}*/}
-                        {/*                                    >*/}
-                        {/*                                        {location.place_name}*/}
-                        {/*                                    </S.LocationName>*/}
-                        {/*                                </S.Location>*/}
-                        {/*                                <S.LocationDelete onClick={() => handleLocationDelete(index, locIndex)}>&times;</S.LocationDelete>*/}
-                        {/*                            </S.LocationWrapper>*/}
-                        {/*                        ))}*/}
-                        {/*                        <S.PlusButtonWrapper>*/}
-                        {/*                            <S.PlusButton onClick={() => onClickAddLocation(index)}>+</S.PlusButton>*/}
-                        {/*                        </S.PlusButtonWrapper>*/}
-                        {/*                    </S.LocationContainer>*/}
-                        {/*                </S.LocationContainerWrapper>*/}
-                        {/*            </S.Cards>*/}
-                        {/*        ))}*/}
-                        {/*    </S.CardsContainer>*/}
-                        {/*</S.CardsWrapper>*/}
                     </S.PlanWrapper>
                     <S.DayText>
                         {`여행 코스를 자유롭게 조정하세요. 장소 이름을 드래그하여 순서를 바꿀 수 있습니다.`}

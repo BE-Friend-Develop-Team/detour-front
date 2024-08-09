@@ -876,27 +876,29 @@ S.CloseButtonImage = styled.img`
     object-fit: cover; // 이미지 비율에 맞게 잘림
     cursor: pointer; // 클릭 가능한 상태로 표시
 `;
+
 S.ImagePreviewWrapper = styled.div`
     position: relative;
     display: inline-block;
 `;
+
 S.DeleteButtonImage = styled.img`
     position: absolute;
-    top: 5px;
+    top: 5px; 
     right: 5px;
-    width: 30px;
+    width: 30px; 
     height: 30px;
     cursor: pointer;
-    background-color: rgba(255, 255, 255, 0.7);
+    background-color: rgba(255, 255, 255, 0.7); 
     border-radius: 50%;
-    padding: 2px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    transition: background-color 0.3s;
+    padding: 2px; 
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); 
+    transition: background-color 0.3s; 
 
     &:hover {
-        background-color: rgba(255, 255, 255, 1);
+        background-color: rgba(255, 255, 255, 1); 
     }
-
+    
 `;
 
 S.ScheduleText = styled.span`
