@@ -46,8 +46,8 @@ const ConfirmModal = ({ onConfirm, onCancel }) => {
             <ModalContent>
                 <h3>한 번 작성한 리뷰는 수정할 수 없습니다</h3>
                 <div>
-                    <ModalButton confirm onClick={onConfirm}>예</ModalButton>
-                    <ModalButton onClick={onCancel}>아니오</ModalButton>
+                    <ModalButton confirm onClick={onConfirm}>등록</ModalButton>
+                    <ModalButton onClick={onCancel}>취소</ModalButton>
                 </div>
             </ModalContent>
         </ModalOverlay>
