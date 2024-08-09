@@ -64,9 +64,11 @@ const SignUp = () => {
     const onSubmit = async (data) => {
         try {
             await signUpUser(data);
+            alert("회원가입이 완료되었습니다.");
             navigate("/login");
         } catch (error) {
             console.error("Error during Sign Up", error);
+            alert(error.message || "회원가입 중 오류가 발생했습니다.");
         }
     };
 
