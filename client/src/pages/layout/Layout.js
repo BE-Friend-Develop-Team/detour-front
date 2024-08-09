@@ -3,16 +3,16 @@ import S from "./style";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Outlet } from "react-router-dom";
 import Lottie from 'react-lottie';
-import { useSpring, animated } from 'react-spring'; // react-spring 추가
+import { useSpring, animated } from 'react-spring';
 import { useDispatch, useSelector } from "react-redux";
 import { setUser, setUserStatus } from "../../modules/login";
 import axios from "axios";
-import heartAnimation from './heart.json'; // 하트 애니메이션 JSON 파일 임포트
+import heartAnimation from './heart.json';
 
 const Layout = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const location = useLocation(); // useLocation 훅 사용
+    const location = useLocation();
 
     const [isLoading, setIsLoading] = useState(true);
     const [storedUser, setStoredUser] = useState(null);
@@ -38,7 +38,6 @@ const Layout = () => {
             },
         }).catch((e) => {
             console.log('e : ', e)
-            // 이미 만료된 토큰일 경우
             if (e.response.data.code === -401) {
                 window.location.href = '/'
             }
@@ -72,11 +71,9 @@ const Layout = () => {
                 throw new Error("로그아웃 요청에 실패했습니다.");
             }
             const result = await response.json();
-            console.log(result.message);
             localStorage.removeItem('token');
             localStorage.removeItem('nickname');
             localStorage.removeItem('userId');
-         //   localStorage.removeItem('Kakao-Token');
             dispatch(setUser(null));
             dispatch(setUserStatus(false));
             navigate('/login');
@@ -95,7 +92,7 @@ const Layout = () => {
         setTimeout(() => {
             setShowHearts(false);
             setShowMessage(false);
-        }, 3000); // 3초 후에 하트 애니메이션 및 메시지 끄기
+        }, 3000);
     };
 
     const messageAnimation = useSpring({

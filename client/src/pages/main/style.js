@@ -118,7 +118,6 @@ S.LoadingText = styled.p`
     margin-top: 20px;
 `;
 
-// 기존 스타일 유지
 S.ArticleContainer = styled.div`
     display: flex;
     justify-content: center;

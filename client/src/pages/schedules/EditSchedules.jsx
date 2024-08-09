@@ -117,7 +117,7 @@ const EditSchedules = () => {
         const locations = {};
         scheduleData.dailyPlanList.forEach((dailyPlan, index) => {
             locations[index] = dailyPlan.markerList
-                .sort((a, b) => a.markerIndex - b.markerIndex) // markerIndex에 따라 정렬
+                .sort((a, b) => a.markerIndex - b.markerIndex)
                 .map(marker => ({
                     place_name: marker.name,
                     address_name: marker.address,
@@ -183,14 +183,12 @@ const EditSchedules = () => {
                     "Authorization": `Bearer ${accessToken}`,
                 },
             });
-            console.log(response);
             if (!response.ok) {
                 throw new Error("마커 정보를 불러오는데 실패했습니다.");
             }
 
             const data = await response.json();
             const markerDetails = data.data;
-            console.log("테스트"+ markerDetails);
             setSelectedLocation({
                 ...location,
                 cardIndex,
@@ -272,7 +270,6 @@ const EditSchedules = () => {
 
             alert('마커가 성공적으로 삭제되었습니다.');
 
-            // 서버에서 최신 데이터를 가져와 동기화
             await fetchScheduleDetails();
 
         } catch (err) {

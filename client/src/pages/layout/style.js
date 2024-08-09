@@ -21,15 +21,15 @@ S.Wrapper = styled.div`
 `;
 
 S.Header = styled.header`
-    background-color: #fff; /* 배경색 */
+    background-color: #fff;
     padding: 20px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     position: relative;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 부드러운 그림자 */
-    border-radius: 10px; /* 모서리 둥글게 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
 
     &::after {
         content: '';
@@ -38,8 +38,8 @@ S.Header = styled.header`
         left: 0;
         width: 100%;
         height: 4px;
-        background: linear-gradient(to right, #fdf9f3, #fa9704); /* 그라디언트 색상 */
-        border-radius: 0 0 10px 10px; /* 모서리 둥글게 */
+        background: linear-gradient(to right, #fdf9f3, #fa9704);
+        border-radius: 0 0 10px 10px;
     }
 
     .header-top {
@@ -47,12 +47,12 @@ S.Header = styled.header`
         width: 100%;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 15px; /* 마진 조정 */
+        margin-bottom: 15px;
     }
 `;
 
 S.MainLogo = styled.div`
-    height: 60px; /* 로고 크기 조정 */
+    height: 60px;
     width: auto;
     & img {
         width: 100%;
@@ -70,15 +70,15 @@ S.SearchBarTop = styled.div`
     & input {
         padding: 8px;
         font-size: 1em;
-        border: none; /* 테두리 색상 */
+        border: none;
         outline: none;
         border-radius: 20px;
         height: 35px;
         width: 200px;
-        transition: border-color 0.3s; /* 테두리 색상 변화 */
+        transition: border-color 0.3s;
 
         &:focus {
-            border-color: #f57c00; /* 포커스 시 테두리 색상 */
+            border-color: #f57c00;
         }
     }
 `;
@@ -90,16 +90,16 @@ S.UserContainer = styled.div`
     & a {
         margin-left: 20px;
         text-decoration: none;
-        color: #000000; /* 링크 색상 */
+        color: #000000;
         transition: color 0.1s;
 
         &:hover {
-            color: #7e7e7e; /* 링크 호버 색상 */
+            color: #7e7e7e;
         }
     }
 
     .welcome-name {
-        color: #009688; /* 환영 메시지 색상 */
+        color: #009688;
         font-weight: bold;
     }
 `;

@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import S from './style'; // 스타일 파일 import
 import {useNavigate} from 'react-router-dom';
-import Modal from '../../components/modal/Modal'; // 모달 컴포넌트 import
-import {ModalButton} from './style'; // 새로운 스타일 import
+import Modal from '../../components/modal/Modal';
+import {ModalButton} from './style';
 
 const MyTripList = ({search}) => {
     const [trips, setTrips] = useState(null);
@@ -10,9 +10,9 @@ const MyTripList = ({search}) => {
     const [error, setError] = useState(null);
     const [editingImage, setEditingImage] = useState(null);
     const [newImageFile, setNewImageFile] = useState(null);
-    const [modalOpen, setModalOpen] = useState(false); // 모달 상태 추가
-    const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태 추가
-    const [totalPages, setTotalPages] = useState(1); // 총 페이지 상태 추가
+    const [modalOpen, setModalOpen] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -24,7 +24,6 @@ const MyTripList = ({search}) => {
     };
 
     const fetchTrips = async () => {
-        console.log('fetchTrips called with search:', search);
         const accessToken = localStorage.getItem('token')?.substring(7);
         if (!accessToken) {
             setError("로그인이 필요합니다.");
@@ -47,7 +46,6 @@ const MyTripList = ({search}) => {
             }
 
             const result = await response.json();
-            console.log("data:", JSON.stringify(result, null, 2));
             setTrips(result.data.content);
             setTotalPages(result.data.totalPages);
         } catch (error) {
@@ -183,14 +181,13 @@ const MyTripList = ({search}) => {
             );
 
             setEditingImage(null);
-            setModalOpen(false); // 모달 닫기
+            setModalOpen(false);
         } catch (error) {
             console.error('Error updating image:', error);
             alert(error.message);
         }
     };
 
-    // 카드 클릭 시 상세 페이지로 이동
     const handleCardClick = (scheduleId) => {
         navigate(`/schedules/${scheduleId}`);
     };
@@ -202,7 +199,7 @@ const MyTripList = ({search}) => {
                     trips.map((trip) => (
                         <S.TripCard
                             key={trip.scheduleId || `trip-${Math.random()}`}
-                            onClick={() => handleCardClick(trip.scheduleId)} // 카드 클릭 시 이동
+                            onClick={() => handleCardClick(trip.scheduleId)}
                         >
                             <S.TripHeader>
                                 <h3>{trip.title}</h3>

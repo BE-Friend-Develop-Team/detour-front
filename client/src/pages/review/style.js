@@ -1,4 +1,3 @@
-// src/pages/review/style.js
 import styled from 'styled-components';
 
 const S = {};
@@ -25,8 +24,8 @@ S.FormContainer = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    position: relative; /* 자식 요소가 부모 범위를 넘지 않도록 설정 */
-    overflow: auto; /* 자식 요소가 부모 범위를 넘을 경우 스크롤 활성화 */
+    position: relative;
+    overflow: auto;
 `;
 
 S.ImageTitle = styled.img`
@@ -58,7 +57,7 @@ S.InputField = styled.div`
 
     input, textarea {
         width: 100%;
-        max-width: 100%; /* 입력 칸의 최대 너비를 부모 컨테이너의 너비로 제한 */
+        max-width: 100%;
         padding: 12px;
         border: 1px solid #ccc;
         border-radius: 8px;
@@ -68,7 +67,7 @@ S.InputField = styled.div`
 
     textarea {
         height: 120px;
-        resize: both; /* 크기 조정 활성화 */
+        resize: both;
     }
 `;
 

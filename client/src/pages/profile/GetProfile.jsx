@@ -102,15 +102,8 @@ const GetProfile = () => {
                 throw new Error(result.message || "일정 정보를 가져오는데 실패했습니다.");
             }
 
-
-            if (!response.ok) {
-                const result = await response.json();
-                throw new Error(result.message || "일정 정보를 가져오는데 실패했습니다.");
-            }
-
             const result = await response.json();
-            console.log("작성 스케쥴:", result);
-            setSchedules(result.data.content.slice(0,3)); // 앞에 있는 3개의 값만 저장
+            setSchedules(result.data.content.slice(0,3));
         } catch (error) {
             console.error("Error fetching schedules:", error);
             setError(error.message);
@@ -138,9 +131,7 @@ const GetProfile = () => {
             }
 
             const result = await response.json();
-            // 배열의 처음 3개 항목만 저장
             const topThreeLikedSchedules = result.data.content.slice(0, 3);
-            console.log(topThreeLikedSchedules);
             setLikedSchedules(topThreeLikedSchedules);
         } catch (error) {
             console.error("Error fetching liked schedules:", error);
@@ -246,7 +237,6 @@ const GetProfile = () => {
 
             if (!response.ok) {
                 if (response.status === 400 && result.errors) {
-                    // Validation 오류 처리
                     result.errors.forEach(error => {
                         alert(error.defaultMessage);
                     });

@@ -1,6 +1,5 @@
-// MyReviewList.jsx
 import React, { useEffect, useState } from 'react';
-import S from './style'; // 스타일 파일 import
+import S from './style';
 import { useNavigate } from 'react-router-dom';
 
 const MyReviewList = ({ search, refetch }) => {
@@ -8,12 +7,12 @@ const MyReviewList = ({ search, refetch }) => {
     const [averageRating, setAverageRating] = useState(0);
     const [reviewCount, setReviewCount] = useState(0);
     const [error, setError] = useState(null);
-    const [currentPage, setCurrentPage] = useState(0); // 현재 페이지
-    const [pageSize, setPageSize] = useState(5); // 페이지 당 항목 수
-    const [totalPages, setTotalPages] = useState(0); // 전체 페이지 수
+    const [currentPage, setCurrentPage] = useState(0);
+    const [pageSize, setPageSize] = useState(5);
+    const [totalPages, setTotalPages] = useState(0);
     const navigate = useNavigate();
-    const starImg = '/images/review/star.png'; // public 폴더에서 URL 접근
-    const noStarImg = '/images/review/nostar.png'; // public 폴더에서 URL 접근
+    const starImg = '/images/review/star.png';
+    const noStarImg = '/images/review/nostar.png';
 
     useEffect(() => {
         fetchReviews();

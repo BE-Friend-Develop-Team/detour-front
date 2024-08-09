@@ -66,7 +66,7 @@ const Withdraw = () => {
 
     const handleCancelDelete = () => {
         alert("계정 탈퇴가 취소되었습니다.");
-        navigate("/"); // Navigate to the main page
+        navigate("/");
     };
 
     const handleFinalConfirm = async () => {
@@ -93,7 +93,7 @@ const Withdraw = () => {
 
             alert("계정이 성공적으로 탈퇴되었습니다.");
             setIsModalOpen(false);
-            navigate("/login"); // 계정 탈퇴 시 로그인 페이지로 이동
+            navigate("/login");
         } catch (error) {
             console.error("Error during account deletion:", error);
             alert("계정 탈퇴에 실패했습니다. 비밀번호를 확인해주세요");

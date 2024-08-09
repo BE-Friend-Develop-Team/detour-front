@@ -9,21 +9,16 @@ const SearchLocation = ({ onClose, searchValue, setSearchValue, onSelectLocation
 
     const ps = new kakao.maps.services.Places();
 
-    // 키워드 검색을 요청하는 함수입니다
     const searchPlaces = (searchValue) => {
         if (!searchValue.trim()) {
             alert("키워드를 입력해주세요!");
             return false;
         }
-        // console.log(ps.keywordSearch(searchValue, placesSearchCB));
-        // ps.keywordSearch(searchValue, placesSearchCB);
         ps.keywordSearch(searchValue, (data, status) => placesSearchCB(data, status, setSearchResults));
     };
 
-    // 장소검색이 완료됐을 때 호출되는 콜백함수 입니다
     const placesSearchCB = (data, status, setSearchResults) => {
         if (status === kakao.maps.services.Status.OK) {
-            console.log(data);
             setSearchResults(data);
         } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
             alert("검색 결과가 존재하지 않습니다.");

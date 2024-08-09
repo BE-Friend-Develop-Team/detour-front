@@ -10,8 +10,8 @@ const LocationPlaceModal = ({ isOpen, onClose, location, onSave, userName, depar
 
     useEffect(() => {
         if (location) {
-            setDescription(location.content || ""); // content를 description으로 설정
-            setImages(location.images || []); // images를 상태로 설정
+            setDescription(location.content || "");
+            setImages(location.images || []);
         }
     }, [location]);
 

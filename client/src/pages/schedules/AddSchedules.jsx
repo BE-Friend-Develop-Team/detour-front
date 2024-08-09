@@ -116,7 +116,6 @@ const AddSchedules = ({ title, startDate, endDate }) => {
         try {
             setIsLoading(true);
 
-            // 1. Create schedule
             const scheduleResponse = await fetch('https://detourofficial.shop/api/schedules', {
                 method: "POST",
                 headers: {
@@ -125,8 +124,8 @@ const AddSchedules = ({ title, startDate, endDate }) => {
                 },
                 body: JSON.stringify({
                     title: title,
-                    departureDate: new Date(startDate).toISOString(), // ISO format
-                    arrivalDate: new Date(endDate).toISOString(), // ISO format
+                    departureDate: new Date(startDate).toISOString(),
+                    arrivalDate: new Date(endDate).toISOString(),
                 }),
             });
 
@@ -136,7 +135,6 @@ const AddSchedules = ({ title, startDate, endDate }) => {
             const scheduleData = await scheduleResponse.json();
             const scheduleId = scheduleData.data.scheduleId;
 
-            // 2. Create daily plans
             const totalDays = (new Date(endDate) - new Date(startDate)) / 86400000 + 1;
 
             for (let day = 1; day <= totalDays; day++) {
@@ -155,7 +153,6 @@ const AddSchedules = ({ title, startDate, endDate }) => {
                 const dailyPlanData = await dailyPlanResponse.json();
                 const dailyPlanId = dailyPlanData.data.dailyPlanId;
 
-                // 3. Create places and markers for each location
                 for (const location of cardLocations[day - 1] || []) {
                     const placeResponse = await fetch("https://detourofficial.shop/api/place", {
                         method: "POST",

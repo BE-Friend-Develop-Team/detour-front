@@ -1,4 +1,3 @@
-// src/components/modal/ConfirmModal.js
 import React from 'react';
 import styled from 'styled-components';
 
@@ -12,7 +11,7 @@ const ModalOverlay = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000; /* Ensure modal is above other content */
+    z-index: 1000;
 `;
 
 const ModalContent = styled.div`
@@ -22,7 +21,7 @@ const ModalContent = styled.div`
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     width: 300px;
     text-align: center;
-    z-index: 1001; /* Ensure content is above the overlay */
+    z-index: 1001;
 `;
 
 const ModalButton = styled.button`

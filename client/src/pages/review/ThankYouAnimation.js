@@ -1,11 +1,11 @@
 import React from 'react';
 import Lottie from 'react-lottie';
-import animationData from './thank.json'; // thank.json 파일 경로
+import animationData from './thank.json';
 
 const ThankYouAnimation = () => {
     const defaultOptions = {
-        loop: false, // 애니메이션이 반복되지 않도록 설정
-        autoplay: true, // 애니메이션이 자동으로 재생되도록 설정
+        loop: false,
+        autoplay: true,
         animationData: animationData,
         rendererSettings: {
             preserveAspectRatio: 'xMidYMid slice'
@@ -15,10 +15,10 @@ const ThankYouAnimation = () => {
     return (
         <div style={{
             position: 'fixed',
-            top: '40%', // 중앙보다 위로 이동
+            top: '40%',
             left: '50%',
-            transform: 'translate(-50%, -50%)', // 중앙 정렬
-            zIndex: 1000, // 다른 컴포넌트 위에 표시되도록 설정
+            transform: 'translate(-50%, -50%)',
+            zIndex: 1000,
             width: '400px',
             height: 'auto'
         }}>

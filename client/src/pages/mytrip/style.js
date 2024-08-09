@@ -53,22 +53,22 @@ S.SearchBar = styled.div`
 `;
 
 S.TripSection = styled.section`
-    position: relative; /* 필수 추가 */
+    position: relative;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 40px; /* 공백을 늘림 */
+    gap: 40px;
     justify-content: center;
     padding: 20px;
 `;
 
 S.SortSection = styled.div`
-    position: relative; /* 상대 위치 지정 */
-    right: -430px; /* 우측으로 이동 */
+    position: relative;
+    right: -430px;
     width: auto;
     display: flex;
     justify-content: center;
     margin-bottom: 20px;
-    z-index: 10; /* 카드보다 위로 위치 시킴 */
+    z-index: 10;
 
     label {
         margin-right: 10px;
@@ -96,12 +96,10 @@ S.TripCard = styled.div`
     position: relative;
     display: flex;
     flex-direction: column;
-    /* 입체감을 주기 위한 그림자 추가 */
     box-shadow: 0 8px 10px rgba(0, 0, 0, 0.2), 0 12px 24px rgba(0, 0, 0, 0.15);
     transition: box-shadow 0.3s ease-in-out;
 
     &:hover {
-        /* 호버 시 그림자 확대 효과 */
         box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3), 0 16px 32px rgba(0, 0, 0, 0.2);
     }
 `;
@@ -112,8 +110,8 @@ S.TripHeader = styled.div`
 
     h3 {
         margin: 0;
-        font-size: 1.2em; /* 가장 큰 크기 */
-        text-align: center; /* 제목을 가운데 정렬 */
+        font-size: 1.2em;
+        text-align: center;
         font-weight: bold;
         white-space: nowrap;
         overflow: hidden;
@@ -122,35 +120,35 @@ S.TripHeader = styled.div`
 
     h4 {
         margin: 5px 0;
-        font-size: 0.7em; /* 중간 크기 */
+        font-size: 0.7em;
         color: gray;
-        text-align: left; /* 좌측 정렬 */
+        text-align: left;
     }
 
     h5 {
-        margin: 16px 0 5px 0; /* 제목과 nickname 사이에 공백 추가, 아래쪽에 약간의 여백 추가 */
-        font-size: 0.8em; /* 두 번째로 큰 크기 */
-        color: #333; /* 기본 텍스트 색상 */
-        text-align: left; /* 좌측 정렬 */
+        margin: 16px 0 5px 0;
+        font-size: 0.8em;
+        color: #333;
+        text-align: left;
         display: flex;
-        align-items: center; /* 수직 가운데 정렬 */
+        align-items: center;
     }
 `;
 
 S.Nickname = styled.span`
-    color: #4f1818; /* 빨간색으로 설정 */
+    color: #4f1818;
     font-weight: bold;
 `;
 
 S.ScheduleText = styled.span`
-    color: black; /* 검정색으로 설정 */
+    color: black;
 `;
 
 S.TripImageWrapper = styled.div`
     width: 100%;
     height: 200px;
-    border: 1px solid #c0c0c0; /* 프레임 색상 */
-    border-radius: 10px; /* 프레임의 모서리 둥글기 */
+    border: 1px solid #c0c0c0;
+    border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;

@@ -1,11 +1,10 @@
-// src/pages/review/Review.js
 import React, { useState } from 'react';
 import S from './style';
 import GetReview from './GetReview';
 import MyReviewList from './MyReviewList';
 import StarRating from './StarRating';
-import ThankYouAnimation from './ThankYouAnimation'; // 새로 추가된 컴포넌트 import
-import ConfirmModal from '../../components/modal/ConfirmModal'; // ConfirmModal 컴포넌트 import
+import ThankYouAnimation from './ThankYouAnimation';
+import ConfirmModal from '../../components/modal/ConfirmModal';
 
 const Review = () => {
     const [search, setSearch] = useState('');
@@ -13,8 +12,8 @@ const Review = () => {
     const [star, setStar] = useState(0);
     const [username, setUsername] = useState('');
     const [refetch, setRefetch] = useState(false);
-    const [showThankYou, setShowThankYou] = useState(false); // 애니메이션 표시 상태 추가
-    const [showModal, setShowModal] = useState(false); // ConfirmModal 표시 상태 추가
+    const [showThankYou, setShowThankYou] = useState(false);
+    const [showModal, setShowModal] = useState(false);
 
     const handleSearch = (keyword) => {
         setSearch(keyword);
@@ -43,14 +42,12 @@ const Review = () => {
             setStar(0);
             setUsername('');
 
-            // 리뷰 저장 성공 후 애니메이션 표시
             setShowThankYou(true);
 
             setTimeout(() => {
                 setShowThankYou(false);
             }, 3000);
 
-            // 데이터 새로 고침 트리거
             setRefetch(prev => !prev);
         } catch (error) {
             alert(error.message);
@@ -103,8 +100,8 @@ const Review = () => {
                     </S.CenteredFields>
                 </form>
             </S.FormContainer>
-            {showThankYou && <ThankYouAnimation />} {/* 애니메이션 컴포넌트 표시 */}
-            {showModal && <ConfirmModal onConfirm={handleConfirm} onCancel={handleCancel} />} {/* ConfirmModal 컴포넌트 표시 */}
+            {showThankYou && <ThankYouAnimation />}
+            {showModal && <ConfirmModal onConfirm={handleConfirm} onCancel={handleCancel} />}
             <GetReview onSearch={handleSearch} />
             <MyReviewList search={search} refetch={refetch} />
         </S.Main>

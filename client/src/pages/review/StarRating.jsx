@@ -1,10 +1,9 @@
-// src/pages/review/StarRating.jsx
 import React, { useState } from 'react';
 
 const StarRating = ({ rating, setRating }) => {
     const [hoveredStar, setHoveredStar] = useState(null);
-    const starImg = '/images/review/star.png'; // public 폴더에서 URL 접근
-    const noStarImg = '/images/review/nostar.png'; // public 폴더에서 URL 접근
+    const starImg = '/images/review/star.png';
+    const noStarImg = '/images/review/nostar.png';
 
     const handleMouseEnter = (index) => setHoveredStar(index);
     const handleMouseLeave = () => setHoveredStar(null);

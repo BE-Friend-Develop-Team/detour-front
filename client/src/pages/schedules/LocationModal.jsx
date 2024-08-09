@@ -75,7 +75,6 @@ const LocationModal = ({ isOpen, onClose, location, onSave, userName, departureD
                 throw new Error("로그인이 필요합니다.");
             }
 
-            // 이미지 업로드
             let uploadedImageUrls = [];
             if (newImageFiles.length > 0) {
                 const formData = new FormData();
@@ -100,7 +99,6 @@ const LocationModal = ({ isOpen, onClose, location, onSave, userName, departureD
                 }
             }
 
-            // 삭제된 이미지 처리
             for (const imageUrl of deletedImages) {
                 const encodedImageUrl = encodeURIComponent(imageUrl);
                 await fetch(`https://detourofficial.shop/api/daily-plans/markers/${location.markerId}/files?fileUrl=${encodedImageUrl}`, {
@@ -112,7 +110,6 @@ const LocationModal = ({ isOpen, onClose, location, onSave, userName, departureD
                 });
             }
 
-            // 마커 정보 저장
             const remainingImages = images.filter(img => !deletedImages.includes(img) && !newImageFiles.some(item => item.url === img));
             const requestData = {
                 content: description,

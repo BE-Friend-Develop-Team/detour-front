@@ -102,7 +102,6 @@ const SchedulesDetail = () => {
                 throw new Error("Failed to fetch invited users");
             }
             const result = await response.json();
-            console.log("초대한 사용자 목록:", result.data); // 디버깅용 콘솔 로그
             setInvitedUsers(result.data);
         } catch (error) {
             console.error("Failed to fetch invited users:", error);
@@ -249,7 +248,6 @@ const SchedulesDetail = () => {
                 comments.id === commentId ? {...comment, content: editedCommentContent} : comment
             ));
             setEditingCommentId(null);
-            // 수정 후 수정한 댓글이 보이도록 새로고침
             await fetchComments();
 
         } catch (error) {
@@ -289,7 +287,7 @@ const SchedulesDetail = () => {
     };
 
     const handleInviteClick = async () => {
-        await fetchInvitedUsers(); // 모달 열 때 초대한 사용자 목록을 가져옵니다
+        await fetchInvitedUsers();
         setIsModalOpen(true);
     };
 
@@ -319,7 +317,7 @@ const SchedulesDetail = () => {
             }
             alert("초대가 성공적으로 전송되었습니다.");
             await fetchInvitedUsers();
-            setInvitedUsers((prevUsers) => [...prevUsers, {nickname: inviteUserId}]); // 초대한 사용자 목록에 추가
+            setInvitedUsers((prevUsers) => [...prevUsers, {nickname: inviteUserId}]);
             setIsModalOpen(false);
             setInviteUserId("");
         } catch (error) {
@@ -410,7 +408,6 @@ const SchedulesDetail = () => {
         if (!window.confirm("정말로 이 일정을 삭제하시겠습니까?")) {
             return;
         }
-        console.log("scheduleId", scheduleId);
 
         try {
             const response = await fetch(`https://detourofficial.shop/api/schedules/${scheduleId}`, {
@@ -429,7 +426,6 @@ const SchedulesDetail = () => {
         navigate('/mytrip');
     };
 
-    // 예시: X 버튼 클릭 시 호출되는 함수
     const handleCancelClick = (nickname) => {
         handleCancelInvitation(nickname);
     };
@@ -528,7 +524,6 @@ const SchedulesDetail = () => {
                                 ))}
                             </S.CardsContainer>
                         </S.CardsWrapper>
-                        {/*==== 여기 댓글 여기 ====*/}
                         <S.CommentSection>
                             <S.CommentForm onSubmit={handleCommentSubmit}>
                                 <S.CommentInput

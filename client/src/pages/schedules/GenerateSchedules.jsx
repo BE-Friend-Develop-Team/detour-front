@@ -40,10 +40,8 @@ const GenerateSchedules = () => {
         setCalendarVisible(true);
     };
 
-    // 여행일정 만들기 버튼 눌렀을 때, 저장된 title, startDate, endDate를 title, departualDate, arrivalDate로 fetch요청
 
     const onClickShowAddSchedules = () => {
-        // const onClickGenerateSchedules = async () => {
         console.log(title);
         console.log(startDate);
         console.log(endDate);

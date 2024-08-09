@@ -63,9 +63,9 @@ const TripList = ({search}) => {
     const [error, setError] = useState(null);
     const [editingImage, setEditingImage] = useState(null);
     const [newImageFile, setNewImageFile] = useState(null);
-    const [modalOpen, setModalOpen] = useState(false); // 모달 상태 추가
-    const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태 추가
-    const [totalPages, setTotalPages] = useState(1); // 총 페이지 상태 추가
+    const [modalOpen, setModalOpen] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
     const [easterEggActive, setEasterEggActive] = useState(false);
     const [clickCount, setClickCount] = useState(0);
     const navigate = useNavigate();
@@ -82,7 +82,6 @@ const TripList = ({search}) => {
     };
 
     const fetchTrips = async () => {
-        console.log('fetchTrips called with search:', search);
         const accessToken = localStorage.getItem('token')?.substring(7);
         if (!accessToken) {
             setError("로그인이 필요합니다.");
@@ -105,11 +104,9 @@ const TripList = ({search}) => {
             }
 
             const result = await response.json();
-            console.log("data:", JSON.stringify(result, null, 2));
             setTrips(result.data.content);
 
             const createdAtDates = result.data.content.map(item => item.createdAt);
-            console.log("CreatedAt dates:", createdAtDates);
 
             setTotalPages(result.data.totalPages);
         } catch (error) {
@@ -134,8 +131,6 @@ const TripList = ({search}) => {
             console.error('Schedule ID is undefined or null');
             return;
         }
-
-        console.log(`scheduleId: ${scheduleId}, current isLiked: ${liked}`);
 
         try {
             if (liked && !likeId) {
@@ -195,8 +190,8 @@ const TripList = ({search}) => {
 
     const handleImageEdit = (scheduleId) => {
         setEditingImage(scheduleId);
-        setNewImageFile(null); // 파일 선택 상태 초기화
-        setModalOpen(true); // 모달 열기
+        setNewImageFile(null);
+        setModalOpen(true);
     };
 
     const submitNewImage = async () => {
@@ -215,14 +210,13 @@ const TripList = ({search}) => {
         try {
             let fileToUpload = newImageFile;
 
-            // HEIC 파일 변환
             if (fileToUpload.type === 'image/heic') {
                 const convertedBlob = await heic2any({ blob: fileToUpload, toType: 'image/jpeg' });
                 fileToUpload = new File([convertedBlob], fileToUpload.name.replace('.heic', '.jpg'), { type: 'image/jpeg' });
             }
 
             const formData = new FormData();
-            formData.append('file', fileToUpload); // 'file'이라는 키로 추가
+            formData.append('file', fileToUpload);
 
             const response = await fetch(`https://detourofficial.shop/api/schedules/${editingImage}/files`, {
                 method: "PATCH",

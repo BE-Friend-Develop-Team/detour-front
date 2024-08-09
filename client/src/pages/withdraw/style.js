@@ -6,7 +6,6 @@ const S = {};
 
 export default S;
 
-// main
 S.Main = styled.main`
     flex: 1;
     display: flex;
@@ -38,7 +37,6 @@ S.ProfileSectionH2 = styled.h2`
     font-weight: bold;
 `;
 
-//profile
 S.ProfileDetails = styled.div`
     background-color: #fff5cc;
     padding: 20px;

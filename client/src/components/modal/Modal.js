@@ -1,8 +1,6 @@
-// src/components/Modal.js
 import React from 'react';
 import styled from 'styled-components';
 
-// 모달 배경 스타일
 const ModalBackground = styled.div`
     position: fixed;
     top: 0;
@@ -16,7 +14,6 @@ const ModalBackground = styled.div`
     z-index: 1000;
 `;
 
-// 모달 내용 스타일
 const ModalContent = styled.div`
     background: #fff;
     padding: 30px;
@@ -40,7 +37,6 @@ const ModalContent = styled.div`
     }
 `;
 
-// 닫기 버튼 스타일
 const CloseButton = styled.button`
     position: absolute;
     top: 15px;
@@ -62,14 +58,12 @@ const CloseButton = styled.button`
     }
 `;
 
-// 모달 제목 스타일
 const ModalTitle = styled.h2`
     margin-bottom: 20px;
     font-size: 1.5em;
     color: #333;
 `;
 
-// 입력 스타일
 const Input = styled.input`
     width: 100%;
     padding: 12px;
@@ -91,7 +85,6 @@ const Input = styled.input`
     }
 `;
 
-// 제출 버튼 스타일
 const SubmitButton = styled.button`
     background-color: #007bff;
     color: #fff;
@@ -113,7 +106,6 @@ const SubmitButton = styled.button`
     }
 `;
 
-// 모달 컴포넌트
 const Modal = ({ isOpen, onClose, children }) => {
     if (!isOpen) return null;
 

@@ -29,13 +29,10 @@ S.Wrapper = styled.div`
     width: 100%;
     ${flexCenterColumn};
     position: absolute;
-    /* position: relative */
 `;
 
 S.CharacterWrapper = styled.div`
-    /* margin-top: 100px; */
     margin-top: 2rem;
-    /* height: 400px; */
     height: 16rem;
     & img {
         height: 100%;
@@ -44,13 +41,11 @@ S.CharacterWrapper = styled.div`
 `;
 
 S.LogoWrapper = styled.div`
-    /* height: 200px; */
     height: 8rem;
     & img {
         height: 100%;
     }
     position: absolute;
-    /* top: 500px; */
     top: 18rem;
     margin-left: 4.5rem;
 `;
@@ -60,7 +55,6 @@ S.LoginFormWrapper = styled.div`
 `;
 
 S.LoginForm = styled.form`
-    /* margin-top: 160px; */
     margin-top: 5rem;
     ${flexCenterColumn}
 `;
@@ -91,7 +85,6 @@ S.ErrorMessage = styled.span`
 `;
 
 S.LoginButtonContainer = styled.div`
-    /* margin-top: 1rem; */
     ${flexCenter}
     & button {
         margin: 0.5rem 1.25rem;

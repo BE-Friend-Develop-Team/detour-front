@@ -9,7 +9,7 @@ const SignUp = () => {
     const navigate = useNavigate();
     const [isAdminChecked, setIsAdminChecked] = useState(false);
     const [isEmailVerified, setIsEmailVerified] = useState(false);
-    const [isAuthCodeVerified, setIsAuthCodeVerified] = useState(false); // 인증번호 검증 상태 추가
+    const [isAuthCodeVerified, setIsAuthCodeVerified] = useState(false);
     const [timer, setTimer] = useState(null);
     const [timeLeft, setTimeLeft] = useState(180);
     const [emailError, setEmailError] = useState("");
@@ -82,7 +82,7 @@ const SignUp = () => {
             return;
         }
 
-        setEmailError(""); // 이메일 오류 메시지 초기화
+        setEmailError("");
 
         const userEmail = watch("email");
 
@@ -102,11 +102,11 @@ const SignUp = () => {
             }
 
             const result = await response.json();
-            console.log(result.message); // 성공 메시지 출력
+            console.log(result.message);
 
-            setTimeLeft(180); // 3 minutes in seconds
+            setTimeLeft(180);
             setIsEmailVerified(true);
-            setIsAuthCodeVerified(false); // 인증번호 검증 상태 초기화
+            setIsAuthCodeVerified(false);
             setTimer(setInterval(() => {
                 setTimeLeft((prevTime) => {
                     if (prevTime <= 1) {
@@ -145,22 +145,19 @@ const SignUp = () => {
                 throw new Error(result.message || "인증번호 검증에 실패하였습니다.");
             }
 
-            // 인증 성공 처리
             const result = await response.json();
-            console.log(result.message); // 성공 메시지 출력
 
-            // 타이머 제거
+            console.log(result.message);
+
             if (timer) {
                 clearInterval(timer);
                 setTimer(null);
             }
 
-            // 인증번호 입력 필드와 버튼 비활성화
             setIsAuthCodeDisabled(true);
-            setAuthCode(""); // 인증번호 입력 필드 초기화
-            setAuthCodeError(""); // 인증번호 오류 메시지 초기화
+            setAuthCode("");
+            setAuthCodeError("");
 
-            // 인증번호 검증 상태 업데이트
             setIsAuthCodeVerified(true);
         } catch (error) {
             setAuthCodeError(error.message || "인증번호 검증에 실패하였습니다.");
@@ -281,7 +278,7 @@ const SignUp = () => {
                                     </>
                                 )}
                             </S.ErrorMessageWrapper>
-                            {isEmailVerified && !isAuthCodeVerified && ( // 인증번호 검증이 완료되지 않았을 때만 인증번호 입력 필드와 타이머 표시
+                            {isEmailVerified && !isAuthCodeVerified && (
                                 <>
                                     <S.AuthCodeWrapper>
                                         <S.SignUpLabel htmlFor="authCode">
@@ -321,7 +318,7 @@ const SignUp = () => {
                                     </S.TimerWrapper>
                                 </>
                             )}
-                            {isAuthCodeVerified && ( // 인증번호 검증 성공 시 성공 메시지 표시
+                            {isAuthCodeVerified && (
                                 <S.SuccessMessage>이메일 인증에 성공하였습니다!</S.SuccessMessage>
                             )}
                         </S.SignUpLabel>
@@ -368,7 +365,7 @@ const SignUp = () => {
                                 size={"small"}
                                 color={"black"}
                                 border={"gray"}
-                                disabled={isSubmitting || !isEmailVerified || !isAuthCodeVerified} // 이메일 인증과 인증번호 검증이 완료되어야만 활성화
+                                disabled={isSubmitting || !isEmailVerified || !isAuthCodeVerified}
                             >
                                 회원가입
                             </DetourButton>

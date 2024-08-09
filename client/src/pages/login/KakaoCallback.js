@@ -8,7 +8,6 @@ export default function KakaoCallback() {
     useEffect(() => {
         const params = new URL(document.location.toString()).searchParams;
         const code = params.get("code");
-        console.log("code: " + code);
 
         const kakaoLogin = async (code) => {
             try {
@@ -18,10 +17,6 @@ export default function KakaoCallback() {
                 localStorage.setItem("Kakao-Token", KAKAO_TOKEN);
                 localStorage.setItem("token", res.headers.get('Authorization'));
                 localStorage.setItem("nickname", res.data.data[1])
-
-                console.log("kakao-token:", KAKAO_TOKEN);
-                console.log("token", res.headers.get('Authorization'));
-
 
                 navigate("/", { replace: true });
             } catch (err) {

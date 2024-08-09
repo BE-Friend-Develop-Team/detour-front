@@ -13,15 +13,12 @@ const Login = () => {
     const currentUser = useSelector((state) => state.login.currentUser);
     const userStatus = useSelector((state) => state.login.isLogin);
 
-    // 로그인이 되어있을 시 메인페이지로 이동
     useEffect(() => {
-        console.log(userStatus);
         if (userStatus) {
             navigate("/");
         }
     }, [userStatus, navigate]);
 
-    // useForm
     const {
         register,
         handleSubmit,
@@ -29,11 +26,9 @@ const Login = () => {
         setError,
     } = useForm({ mode: "onSubmit" });
 
-    // id 정규식
     const idRegex = /^[a-z0-9]{4,10}$/;
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,15}$/;
 
-    // 로그인 눌렀을 시 fetch
     const onSubmit = async (data) => {
         try {
             const response = await fetch("https://detourofficial.shop/api/users/login", {
@@ -46,10 +41,6 @@ const Login = () => {
                     password: data.password,
                 }),
             });
-            console.log(response, "response data");
-            console.log(response.ok);
-
-            console.log([...response.headers.entries()]);
 
             if (!response.ok) {
                 const result = await response.json();
@@ -57,13 +48,9 @@ const Login = () => {
             }
 
             const authHeader = response.headers.get('Authorization');
-            console.log(authHeader);
-            const result = await response.json();
-            console.log(result);
-            console.log(result.data.nickname);
 
-            let { token, user } = result;
-            console.log(token, user);
+            const result = await response.json();
+
             dispatch(setUser(result.data));
             dispatch(setUserStatus(true));
             localStorage.setItem('nickname', result.data.nickname);
@@ -86,7 +73,6 @@ const Login = () => {
         }
     };
 
-    // 회원가입으로 이동
     const onClickSignUp = () => {
         navigate("/signUp");
     };

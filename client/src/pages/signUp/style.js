@@ -4,7 +4,6 @@ import { flexCenter, flexCenterColumn } from "../../global/common";
 
 const S = {};
 
-// 전체 배경
 S.Background = styled.div`
     width: 100vw;
     height: 100vh;
@@ -13,7 +12,6 @@ S.Background = styled.div`
     overflow: hidden;
 `;
 
-// 노란색 배경
 S.YellowBackground = styled.div`
     width: 100%;
     height: 52%;
@@ -23,7 +21,6 @@ S.YellowBackground = styled.div`
     left: 0;
 `;
 
-// 흰색 배경
 S.WhiteBackground = styled.div`
     width: 100%;
     height: 48%;
@@ -33,7 +30,6 @@ S.WhiteBackground = styled.div`
     left: 0;
 `;
 
-// 전체 래퍼
 S.Wrapper = styled.div`
     ${flexCenterColumn}
     position: absolute;
@@ -42,7 +38,6 @@ S.Wrapper = styled.div`
     transform: translateY(-50%);
 `;
 
-// 로고 래퍼
 S.SignUpLogoWrapper = styled.div`
     height: 8rem;
     margin-bottom: 1rem;
@@ -51,7 +46,6 @@ S.SignUpLogoWrapper = styled.div`
     }
 `;
 
-// 캐치프레이즈 래퍼
 S.CatchphraseWrapper = styled.div`
     height: 10rem;
     margin-bottom: 2rem;
@@ -60,14 +54,12 @@ S.CatchphraseWrapper = styled.div`
     }
 `;
 
-// 회원가입 폼 컨테이너
 S.SignUpFormContainer = styled.div`
     width: 28rem;
     background-color: transparent;
     ${flexCenterColumn}
 `;
 
-// 회원가입 폼
 S.SignUpForm = styled.form`
     width: 100%;
     background-color: ${theme.PALETTE.white};
@@ -81,13 +73,11 @@ S.SignUpForm = styled.form`
     }
 `;
 
-// 레이블
 S.SignUpLabel = styled.label`
     width: 100%;
     margin-bottom: 1rem;
 `;
 
-// 이메일 입력 필드와 인증 버튼 래퍼
 S.EmailInputWrapper = styled.div`
     display: flex;
     align-items: center;
@@ -108,7 +98,6 @@ S.EmailInputWrapper = styled.div`
     }
 `;
 
-// 아이디 중복 확인과 닉네임 중복 확인 버튼 래퍼
 S.CheckInputWrapper = styled.div`
     display: flex;
     align-items: center;
@@ -119,32 +108,27 @@ S.CheckInputWrapper = styled.div`
     }
 `;
 
-// 인증번호 입력 필드와 타이머 래퍼
 S.AuthCodeWrapper = styled.div`
     display: flex;
     flex-direction: column;
     margin-top: 1rem;
 `;
 
-// 인증번호 입력 필드
 S.AuthCodeInputWrapper = styled.div`
     margin-bottom: 1rem;
 `;
 
-// 타이머 래퍼
 S.TimerWrapper = styled.div`
     width: 20rem;
     height: 2rem;
     margin-top: 0.5rem;
 `;
 
-// 타이머 텍스트
 S.TimerText = styled.span`
     font-size: 0.75rem;
     color: ${theme.PALETTE.text};
 `;
 
-// 오류 메시지 래퍼
 S.ErrorMessageWrapper = styled.div`
     width: 100%;
     height: 2rem;
@@ -152,13 +136,11 @@ S.ErrorMessageWrapper = styled.div`
     padding: 0 1rem;
 `;
 
-// 오류 메시지
 S.ErrorMessage = styled.span`
     font-size: 0.75rem;
     color: ${theme.PALETTE.error};
 `;
 
-// 관리자 체크박스와 텍스트
 S.ForAdminLabel = styled.label`
     display: flex;
     align-items: center;
@@ -173,20 +155,17 @@ S.ForAdminLabel = styled.label`
     }
 `;
 
-// 관리자 키 입력 필드 래퍼
 S.AdminInputDiv = styled.div`
     width: 100%;
     margin-bottom: 1rem;
 `;
 
-// 회원가입 버튼 래퍼
 S.SignUpButtonWrapper = styled.div`
     display: flex;
     justify-content: center;
     margin-top: 1rem;
 `;
 
-// 회원가입 버튼 스타일
 S.SignUpButton = styled.button`
     background-color: ${theme.PALETTE.primary};
     color: ${theme.PALETTE.white};
@@ -207,7 +186,6 @@ S.SignUpButton = styled.button`
     }
 `;
 
-// 인증 성공 메시지 스타일
 S.SuccessMessage = styled.span`
     font-size: 0.875rem;
     color: ${theme.PALETTE.success};
