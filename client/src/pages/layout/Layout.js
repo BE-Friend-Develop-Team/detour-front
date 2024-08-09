@@ -50,6 +50,7 @@ const Layout = () => {
         try {
             const accessToken = localStorage.getItem('token');
             const kakaoToken = localStorage.getItem('Kakao-Token');
+
             if (!accessToken) {
                 console.error("로그인 상태가 아닙니다.");
                 navigate('/login');
@@ -63,6 +64,7 @@ const Layout = () => {
                 method: "POST",
                 headers: {
                     "Authorization": accessToken,
+                    "Kakao-Token": kakaoToken,
                     "Content-Type": "application/json"
                 }
             });
@@ -74,7 +76,7 @@ const Layout = () => {
             localStorage.removeItem('token');
             localStorage.removeItem('nickname');
             localStorage.removeItem('userId');
-            localStorage.removeItem('Kakao-Token');
+         //   localStorage.removeItem('Kakao-Token');
             dispatch(setUser(null));
             dispatch(setUserStatus(false));
             navigate('/login');
