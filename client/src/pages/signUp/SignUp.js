@@ -28,7 +28,7 @@ const SignUp = () => {
 
     const email = watch("email");
 
-    const idRegex = /^[a-z0-9]{4,10}$/;
+    const idRegex = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{4,10}$/;
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,15}$/;
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
@@ -202,7 +202,9 @@ const SignUp = () => {
                             />
                             <S.ErrorMessageWrapper>
                                 {errors?.loginId?.type === "pattern" && (
-                                    <S.ErrorMessage>아이디는 영어 소문자와 숫자만, 최소 4자에서 최대 10자 사이여야 합니다</S.ErrorMessage>
+                                    <S.ErrorMessage>
+                                        아이디는 영어 소문자와 숫자만, 최소 4자에서 최대 10자 사이여야 합니다
+                                    </S.ErrorMessage>
                                 )}
                                 {errors?.loginId?.type === "required" && <S.ErrorMessage>아이디를 입력해주세요</S.ErrorMessage>}
                             </S.ErrorMessageWrapper>
