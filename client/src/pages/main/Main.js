@@ -36,7 +36,7 @@ const Main = () => {
             const topScheduleIds = responseJson.data;
 
             const fetchScheduleDetails = async (scheduleId) => {
-                const detailResponse = await fetch(`https://detourofficial.shop/api/schedules/${scheduleId}/details`, {
+                const detailResponse = await fetch(`https://detourofficial.shop/api/schedules/${scheduleId}`, {
                     method: "GET",
                     headers: {
                         "Authorization": accessToken,
