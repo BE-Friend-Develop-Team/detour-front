@@ -651,24 +651,26 @@ const SchedulesDetail = () => {
                                                 }}>
                                                     👤 {user}
                                                 </span>
-                                                <button
-                                                    onClick={() => handleCancelClick(user)}
-                                                    style={{
-                                                        background: 'none',
-                                                        border: 'none',
-                                                        cursor: 'pointer',
-                                                        color: '#ff4d4d',
-                                                        fontSize: '1.2rem',
-                                                        transition: 'color 0.3s',
-                                                        position: 'absolute',
-                                                        right: '-30px',
-                                                        top: '50%',
-                                                        transform: 'translateY(-50%)'
-                                                    }}
-                                                    title="Remove"
-                                                >
-                                                    &times;
-                                                </button>
+                                                {user !== currentNickname && (
+                                                    <button
+                                                        onClick={() => handleCancelClick(user)}
+                                                        style={{
+                                                            background: 'none',
+                                                            border: 'none',
+                                                            cursor: 'pointer',
+                                                            color: '#ff4d4d',
+                                                            fontSize: '1.2rem',
+                                                            transition: 'color 0.3s',
+                                                            position: 'absolute',
+                                                            right: '-30px',
+                                                            top: '50%',
+                                                            transform: 'translateY(-50%)'
+                                                        }}
+                                                        title="Remove"
+                                                    >
+                                                        &times;
+                                                    </button>
+                                                )}
                                             </li>
                                         ))}
                                     </ul>
